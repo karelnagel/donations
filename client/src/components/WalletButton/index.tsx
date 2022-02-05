@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Button } from "./../Button";
+import { useEffect, useState } from "react";
 import { Web3Provider } from "@ethersproject/providers";
+import styles from "./styles.module.css";
 
 export function WalletButton({
   provider,
@@ -39,10 +39,11 @@ export function WalletButton({
       }
     }
     fetchAccount();
-  }, [ provider, setRendered]);
+  }, [provider, setRendered]);
 
   return (
-    <Button
+    <button
+      className={styles.button}
       onClick={() => {
         if (!provider) {
           loadWeb3Modal();
@@ -52,6 +53,6 @@ export function WalletButton({
       }}
     >
       {rendered === "" ? "Connect Wallet" : rendered}
-    </Button>
+    </button>
   );
 }

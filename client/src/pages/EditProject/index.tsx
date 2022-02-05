@@ -1,6 +1,5 @@
-import styles from "./styles.module.css";
 
-export function EditProject(props:{project:number}){
+export function EditProject(props:{}){
   return (
     <div>
       <p>edit page</p>

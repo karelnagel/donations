@@ -1,3 +1,38 @@
-.header{
-    background-color:yellow;
+.content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  max-width: 70%;
+  margin: auto;
+}
+.imageBorder {
+  margin-top: 160px;
+  height: 110px;
+  width: 110px;
+  border-radius: 50%;
+  display: flex;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(82, 80, 180, 0) 0%, rgba(0, 255, 194, 0.98) 100%);
+}
+.image {
+  height: 100px;
+  width: 100px;
+  margin: auto;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.text1 {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 24px;
+  color: #ffffff;
+}
+.text2 {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  color: #ffffff;
 }

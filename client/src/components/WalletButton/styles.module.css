@@ -1,3 +1,12 @@
-.button{
-    background-color:blue;
+.button {
+  background: rgba(196, 196, 196, 0.54);
+  border-radius: 15px;
+  border: 0ch;
+  padding: 10px 10px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 16px;
+  position: relative;
+  color: #ffffff;
 }

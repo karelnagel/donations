@@ -1,6 +1,5 @@
-import styles from "./styles.module.css";
 
-export function Projects(props:{user:string}){
+export function Projects(props:{}){
   return (
     <div>
       <p>Projects page</p>

@@ -13,7 +13,7 @@ export function Header({
   }) {
   return (
     <div className={styles.header}>
-      <p>DONATIONS</p>
+      <p className={styles.title}>DONATIONS</p>
       <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
     </div>
   );

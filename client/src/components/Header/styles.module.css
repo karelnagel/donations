@@ -1,2 +1,16 @@
-.header{
+.header {
+  position: relative;
+  padding: 0px 15px;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  background: rgba(0, 0, 0, 0.19);
+}
+.title {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 18px;
+
+  color: #ffffff;
 }
