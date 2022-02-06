@@ -34,5 +34,11 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.2"
+  },
+  "scripts": {
+    "compile" :"npx hardhat compile",
+    "test" :"npx hardhat test",
+    "deploy" :"npx hardhat run --network localhost scripts/deploy.ts",
+    "start" :"npx hardhat node"
   }
 }

@@ -16,8 +16,9 @@ contract Donations is Ownable {
         bool active;
     }
     DonationsToken token;
-    uint256 projectsCount = 0;
+    uint256 projectsCount = 1;
     mapping(uint256 => Project) public projects;
+    mapping(string => uint256) public titles;
 
     constructor(address tokenAddress) {
         token = DonationsToken(tokenAddress);
@@ -39,6 +40,7 @@ contract Donations is Ownable {
         string memory styling,
         string memory tokenUri
     ) public {
+        require(titles[title] == 0, "Title already exists");
         projects[projectsCount] = Project(
             IERC20(coin),
             msg.sender,
@@ -49,6 +51,8 @@ contract Donations is Ownable {
             true
         );
         token.setUri(projectsCount, tokenUri);
+        titles[title] = projectsCount;
+        emit NewProject(projectsCount,title, msg.sender);
         projectsCount++;
     }
 
@@ -76,15 +80,15 @@ contract Donations is Ownable {
     {
         projects[id].active = false;
         projects[id].coin.transfer(msg.sender, projects[id].balance);
-        projects[id].balance = 0;
     }
 
     event Donation(
-        uint256 id,
+        uint256 indexed id,
         address indexed sender,
         uint256 amount,
-        string indexed message
+        string message
     );
+    event NewProject(uint256 indexed id,string indexed title, address indexed owner);
 
     function donate(
         uint256 id,

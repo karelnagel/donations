@@ -1,3 +1,9 @@
-.header{
-    background-color:yellow;
+.content{
+    display: flex;
+    flex-direction: column;
+    width:70%;
+    align-content: center;
+}
+textarea{
+    height: 200px;
 }

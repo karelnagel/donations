@@ -25,7 +25,13 @@ export function WalletButton({
         const account = accounts[0];
 
         // Resolve the ENS name for the first account.
-        const name = await provider.lookupAddress(accounts[0]);
+        let  name 
+        try {
+          name = await provider.lookupAddress(accounts[0]);
+        }
+        catch{
+          console.log("No ens")
+        }
 
         // Render either the ENS name or the shortened account address.
         if (name) {

@@ -7,7 +7,7 @@ let contract: Donations;
 let usdc: USDC;
 let owner: SignerWithAddress;
 let investor: SignerWithAddress;
-const projectId = 0;
+const projectId = 1;
 const userInitialCoinBalance = ethers.utils.parseEther("10000");
 const donation = ethers.utils.parseEther("100");
 
@@ -35,21 +35,30 @@ before("Start", async function () {
 });
 
 describe("Start project", function () {
-  before(async function () {
-    await contract.startProject(
-      usdc.address,
-      "My project",
-      ethers.utils.parseEther("10"),
-      "styling_uri",
-      "token_uri"
-    );
+  it("emits an event", async function () {
+    expect(
+      await contract.startProject(
+        usdc.address,
+        "my_project",
+        ethers.utils.parseEther("10"),
+        "styling_uri",
+        "token_uri"
+      )
+    )
+      .to.emit(contract, "NewProject")
+      .withArgs(projectId, "my_project", owner.address);
   });
 
+  it("has correct title mapping", async function () {
+    const id = await contract.titles("my_project");
+    expect(id).to.equal(projectId);
+  });
+  // Todo test starting with same name
   it("has correct parameters", async function () {
     const project = await contract.projects(projectId);
     expect(project.coin).to.equal(usdc.address);
     expect(project.owner).to.equal(owner.address);
-    expect(project.title).to.equal("My project");
+    expect(project.title).to.equal("my_project");
     expect(project.balance).to.equal(0);
     expect(project.goal).to.equal(ethers.utils.parseEther("10"));
     expect(project.styling).to.equal("styling_uri");
@@ -58,6 +67,17 @@ describe("Start project", function () {
   it("token has correct uri", async function () {
     const tokenUri = await token.uri(projectId);
     expect(tokenUri).to.equal("token_uri");
+  });
+  it("can't create a new project with same title", async function () {
+    await expect(
+      contract.startProject(
+        usdc.address,
+        "my_project",
+        ethers.utils.parseEther("10"),
+        "styling_uri",
+        "token_uri"
+      )
+    ).to.be.revertedWith("Title already exists");
   });
 });
 
@@ -125,10 +145,10 @@ describe("End", async function () {
   before(async function () {
     await contract.endProject(projectId);
   });
-  it("project status not active and balance == 0", async function () {
+  it("project status not active but balance still same", async function () {
     const project = await contract.projects(projectId);
     expect(project.active).to.equal(false);
-    expect(project.balance).to.equal(0);
+    expect(project.balance).to.equal(donation);
   });
   it("owner has more money", async function () {
     const balance = await usdc.balanceOf(owner.address);

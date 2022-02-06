@@ -1,4 +1,4 @@
-import useWeb3Modal from "./hooks/useWeb3Modal";
+import useWeb3Modal from "./functions/useWeb3Modal";
 import { useEffect } from "react";
 import { Body } from "./components/Body";
 import { Header } from "./components/Header";
@@ -25,11 +25,10 @@ function App() {
         <Header provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
         <BrowserRouter>
           <Routes>
-            <Route path="donate/:projectId" element={<Donate />}/>
-            <Route path="edit/:projectId" element={<EditProject />}/>
-            <Route path="new" element={<EditProject />}/>
-            <Route path="projects" element={<Projects />}/>
-
+            <Route path="donate/:title" element={provider ? <Donate provider={provider!}/>: <p>Connect wallet</p>} />
+            <Route path="edit/:title" element={provider ? <EditProject provider={provider} /> : <p>Connect wallet</p>} />
+            <Route path="new" element={provider ? <EditProject provider={provider} /> : <p>Connect wallet</p>} />
+            <Route path="projects" element={<Projects />} />
             <Route path="*" element={<Home />} />
           </Routes>
         </BrowserRouter>

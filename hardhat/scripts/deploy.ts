@@ -1,25 +1,27 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `npx hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
+
 import { ethers } from "hardhat";
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
+  const Token = await ethers.getContractFactory("DonationsToken");
+  const token = await Token.deploy();
+  await token.deployed();
 
-  // We get the contract to deploy
-  const Greeter = await ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  // Deploy token
+  const Contract = await ethers.getContractFactory("Donations");
+  const contract = await Contract.deploy(token.address);
+  await contract.deployed();
 
-  await greeter.deployed();
+  // Deploy token
+  const USDC = await ethers.getContractFactory("USDC");
+  const usdc = await USDC.deploy();
+  await usdc.deployed();
 
-  console.log("Greeter deployed to:", greeter.address);
+  // Change token owner to Contract
+  token.transferOwnership(contract.address);
+
+  console.log("Contract:", contract.address);
+  console.log("token:", token.address);
+  console.log("coin:", usdc.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
