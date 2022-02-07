@@ -1,18 +1,27 @@
 import * as IPFS from "ipfs-core";
+import { ProjectObj } from "../consts/interfaces";
 
 const gateway = "https://ipfs.io/ipfs/";
-
-export const uploadJson = async (array: string[]): Promise<string[]> => {
-  const ipfs = await IPFS.create();
-  const returnValue = [];
-  for (let i = 0; i < array.length; i++) {
-    const uri = (await ipfs.add(array[i])).cid.toString();
-    returnValue.push(gateway + uri);
+let ipfs: any;
+export const upload = async (
+  style: ProjectObj,
+  image?: any
+): Promise<string> => {
+  if (!ipfs) ipfs = await IPFS.create();
+  if (image) {
+    const imageUri = await uploadObject(image);
+    style.image = imageUri;
   }
-  return returnValue;
+  const uri = await uploadObject(JSON.stringify(style, null, 2));
+  return uri;
 };
 
-export const getJson = async (uri: string) => {
+export const getProjectObj = async (uri: string) => {
   const result = await fetch(uri);
   return await result.json();
+};
+
+export const uploadObject = async (object: any) => {
+  let url = (await ipfs.add(object)).cid.toString();
+  return gateway + url;
 };

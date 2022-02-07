@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import Donations from "../abi/contracts/Donations.sol/Donations.json";
 import DonationsToken from "./../abi/contracts/DonationsToken.sol/DonationsToken.json";
 import USDC from "../abi/contracts/USDC.sol/USDC.json";
+import { Project } from "../consts/interfaces";
 
 export const contract = (provider: Web3Provider | ethers.Signer) =>
   new ethers.Contract(
@@ -26,15 +27,13 @@ export async function startProject(
   coin: string,
   title: string,
   goal: number,
-  stylingUri: string,
-  token_uri: string
+  uri: string
 ): Promise<string> {
   const result = await contract(provider.getSigner()).startProject(
     coin,
     title,
     ethers.utils.parseEther(goal.toString()),
-    stylingUri,
-    token_uri
+    uri
   );
   await result.wait(1);
   return title;
@@ -43,21 +42,14 @@ export async function startProject(
 export async function getProject(
   provider: Web3Provider,
   projectId: number
-): Promise<{
-  goal: number;
-  balance: number;
-  owner: string;
-  coin: string;
-  styling: string;
-  active: boolean;
-}> {
+): Promise<Project> {
   const result = await contract(provider.getSigner()).projects(projectId);
   return {
     goal: Number(ethers.utils.formatEther(result.goal)),
     balance: Number(ethers.utils.formatEther(result.balance)),
     owner: result.owner,
     coin: result.coin,
-    styling: result.styling,
+    uri: result.uri,
     active: result.active,
   };
 }
@@ -72,18 +64,6 @@ export async function editProject(
     projectId,
     ethers.utils.parseEther(goal.toString()),
     stylingUri
-  );
-  await result.wait(1);
-}
-
-export async function editToken(
-  provider: Web3Provider,
-  projectId: number,
-  tokenUri: string
-) {
-  const result = await contract(provider.getSigner()).editProject(
-    projectId,
-    tokenUri
   );
   await result.wait(1);
 }

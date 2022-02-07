@@ -41,8 +41,7 @@ describe("Start project", function () {
         usdc.address,
         "my_project",
         ethers.utils.parseEther("10"),
-        "styling_uri",
-        "token_uri"
+        "uri"
       )
     )
       .to.emit(contract, "NewProject")
@@ -61,12 +60,12 @@ describe("Start project", function () {
     expect(project.title).to.equal("my_project");
     expect(project.balance).to.equal(0);
     expect(project.goal).to.equal(ethers.utils.parseEther("10"));
-    expect(project.styling).to.equal("styling_uri");
+    expect(project.uri).to.equal("uri");
     expect(project.active).to.equal(true);
   });
   it("token has correct uri", async function () {
     const tokenUri = await token.uri(projectId);
-    expect(tokenUri).to.equal("token_uri");
+    expect(tokenUri).to.equal("uri");
   });
   it("can't create a new project with same title", async function () {
     await expect(
@@ -74,8 +73,7 @@ describe("Start project", function () {
         usdc.address,
         "my_project",
         ethers.utils.parseEther("10"),
-        "styling_uri",
-        "token_uri"
+        "uri"
       )
     ).to.be.revertedWith("Title already exists");
   });
@@ -84,31 +82,21 @@ describe("Start project", function () {
 describe("Edit project", function () {
   it("not owners can't edit", async function () {
     await expect(
-      contract.connect(investor).editProject(projectId, 1000, "styling2")
+      contract.connect(investor).editProject(projectId, 1000, "uri2")
     ).to.be.revertedWith("Not project owner");
   });
   it("parameters changed", async function () {
     await contract.editProject(
       projectId,
       ethers.utils.parseEther("10000"),
-      "styling3"
+      "uri3"
     );
     const project = await contract.projects(projectId);
     expect(project.goal).to.equal(ethers.utils.parseEther("10000"));
-    expect(project.styling).to.equal("styling3");
-  });
-});
+    expect(project.uri).to.equal("uri3");
 
-describe("Edit project token", function () {
-  it("not owners can't edit", async function () {
-    await expect(
-      contract.connect(investor).editProjectToken(projectId, "token_uri2")
-    ).to.be.revertedWith("Not project owner");
-  });
-  it("token uri changed", async function () {
-    await contract.editProjectToken(projectId, "token_uri3");
     const uri = await token.uri(projectId);
-    expect(uri).to.equal("token_uri3");
+    expect(uri).to.equal("uri3");
   });
 });
 
@@ -166,11 +154,6 @@ describe("End", async function () {
   it("can't edit project anymore", async function () {
     await expect(
       contract.editProject(projectId, 0, "styling")
-    ).to.be.revertedWith("Project not active!");
-  });
-  it("can't edit token anymore", async function () {
-    await expect(
-      contract.editProjectToken(projectId, "uri")
     ).to.be.revertedWith("Project not active!");
   });
 });

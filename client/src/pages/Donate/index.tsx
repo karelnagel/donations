@@ -4,8 +4,8 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useEffect, useState } from "react";
 import { contract, donate, getCoinBalance, getProject, getProjectId } from "../../functions/contract";
 import { ethers } from "ethers";
-import { getJson } from "../../functions/ipfs";
-import { Style } from "../../consts/Style";
+import { getProjectObj } from "../../functions/ipfs";
+import { ProjectObj } from "../../consts/interfaces";
 import { coins } from "../../consts/coins";
 
 export function Donate(props: { provider: Web3Provider }) {
@@ -20,7 +20,7 @@ export function Donate(props: { provider: Web3Provider }) {
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState(true);
   const [user, setUser] = useState("");
-  const [style, setStyle] = useState<Style>({});
+  const [style, setStyle] = useState<ProjectObj>({});
   const [userBalance, setUserBalance] = useState(0);
   const [newDonation, setNewDonation] = useState<{ sender: string; amount: number; message: string } | undefined>();
 
@@ -49,9 +49,9 @@ export function Donate(props: { provider: Web3Provider }) {
         setCoin(project.coin);
         setActive(project.active);
 
-        if (project.styling) {
-          const json = (await getJson(project.styling)) as Style;
-          setDonation(json.donationDefault!)
+        if (project.uri) {
+          const json = (await getProjectObj(project.uri)) as ProjectObj;
+          setDonation(json.donationDefault!);
           setStyle(json);
         }
 
@@ -75,11 +75,11 @@ export function Donate(props: { provider: Web3Provider }) {
         <div className={styles.imageBorder}>
           <img className={styles.image} src={style!.image} alt="a" />
         </div>
-        <p className={styles.text1}>{style.title}</p>
-        <p className={styles.text2}>{style.title2}</p>
+        <p className={styles.text1}>{style.name}</p>
+        <p className={styles.text2}>{style.description}</p>
         <p className={styles.text2}>Owner: {owner}</p>
         <p>
-          Reached {balance} of {goal} {coins.find((c)=>c.value===coin)?.label}
+          Reached {balance} of {goal} {coins.find((c) => c.value === coin)?.label}
         </p>
 
         <input type="number" placeholder="Donation" value={donation} onChange={(e) => setDonation(Number(e.target.value))} disabled={!active} />

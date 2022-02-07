@@ -12,7 +12,7 @@ contract Donations is Ownable {
         string title;
         uint256 balance;
         uint256 goal;
-        string styling;
+        string uri;
         bool active;
     }
     DonationsToken token;
@@ -37,8 +37,7 @@ contract Donations is Ownable {
         address coin,
         string memory title,
         uint256 goal,
-        string memory styling,
-        string memory tokenUri
+        string memory uri
     ) public {
         require(titles[title] == 0, "Title already exists");
         projects[projectsCount] = Project(
@@ -47,10 +46,10 @@ contract Donations is Ownable {
             title,
             0,
             goal,
-            styling,
+            uri,
             true
         );
-        token.setUri(projectsCount, tokenUri);
+        token.setUri(projectsCount, uri);
         titles[title] = projectsCount;
         emit NewProject(projectsCount,title, msg.sender);
         projectsCount++;
@@ -59,18 +58,11 @@ contract Donations is Ownable {
     function editProject(
         uint256 id,
         uint256 goal,
-        string memory styling
+        string memory uri
     ) public onlyProjectOwner(id) activeProject(id) {
         projects[id].goal = goal;
-        projects[id].styling = styling;
-    }
-
-    function editProjectToken(uint256 id, string memory tokenUri)
-        public
-        onlyProjectOwner(id)
-        activeProject(id)
-    {
-        token.setUri(id, tokenUri);
+        projects[id].uri = uri;
+        token.setUri(id, uri);
     }
 
     function endProject(uint256 id)
