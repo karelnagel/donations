@@ -4,99 +4,104 @@ import { Web3Provider } from "@ethersproject/providers";
 import { useEffect, useState } from "react";
 import { contract, donate, getCoinBalance, getProject, getProjectId } from "../../functions/contract";
 import { ethers } from "ethers";
-import { getProjectObj } from "../../functions/ipfs";
-import { ProjectObj } from "../../consts/interfaces";
-import { coins } from "../../consts/coins";
+import { getProjectStyle } from "../../functions/ipfs";
+import { MessageType, NetworkInfo, Project, ProjectStyle } from "../../consts/interfaces";
+import {} from "../../consts/setup";
 
-export function Donate(props: { provider: Web3Provider }) {
+export function Donate({
+  provider,
+  addMessage,
+  networkInfo,
+}: {
+  provider: Web3Provider;
+  networkInfo: NetworkInfo;
+  addMessage: (message: string, type?: MessageType, time?: number | undefined) => void;
+}) {
   let title = useParams().title;
+
   const [projectId, setProjectId] = useState(0);
-  const [balance, setBalance] = useState(0);
-  const [goal, setGoal] = useState(0);
-  const [owner, setOwner] = useState("");
-  const [coin, setCoin] = useState("");
+  const [project, setProject] = useState<Project>({ balance: 0, goal: 0, active: true, owner: "", coin: "", uri: "" });
+  const [style, setStyle] = useState<ProjectStyle>({});
+  const [user, setUser] = useState<{ address: string; balance: number }>();
   const [donation, setDonation] = useState(5);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
-  const [active, setActive] = useState(true);
-  const [user, setUser] = useState("");
-  const [style, setStyle] = useState<ProjectObj>({});
-  const [userBalance, setUserBalance] = useState(0);
-  const [newDonation, setNewDonation] = useState<{ sender: string; amount: number; message: string } | undefined>();
 
   useEffect(() => {
-    contract(props.provider).on("Donation", (id, sender, amount, message) => {
-      if (id.toNumber() === projectId) {
-        amount = Number(ethers.utils.formatEther(amount));
-        setNewDonation({ sender, amount, message });
-        setBalance(balance + amount);
-      }
+    contract(provider).on(contract(provider).filters.Donation(projectId), (id, sender, amount, message) => {
+      amount = Number(ethers.utils.formatEther(amount));
+      addMessage(`${sender} donated ${amount}! "${message}""`, MessageType.donation);
+      setProject((p) => ({ ...p, balance: p.balance + amount }));
     });
     return () => {
-      contract(props.provider).removeAllListeners();
+      contract(provider).removeAllListeners();
     };
-  }, [balance, projectId, props.provider]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId, provider]);
 
   useEffect(() => {
     async function effect() {
-      if (props.provider && title) {
-        setProjectId(await getProjectId(props.provider, title));
+      if (provider && title) {
+        const getId = await getProjectId(provider, title);
+        getId.result ? setProjectId(getId.result) : addMessage(getId.error!);
 
-        const project = await getProject(props.provider, projectId);
-        setGoal(project.goal);
-        setBalance(project.balance);
-        setOwner(project.owner);
-        setCoin(project.coin);
-        setActive(project.active);
+        const getProj = await getProject(provider, projectId);
+        getProj.result ? setProject(getProj.result) : addMessage(getProj.error!);
 
         if (project.uri) {
-          const json = (await getProjectObj(project.uri)) as ProjectObj;
-          setDonation(json.donationDefault!);
-          setStyle(json);
+          const getStyle = await getProjectStyle(project.uri);
+          if (getStyle.result) {
+            setDonation(getStyle.result.donationDefault!);
+            setStyle(getStyle.result);
+          } else addMessage(getStyle.error!);
         }
-
-        setUser(await props.provider.getSigner().getAddress());
-        setUserBalance(await getCoinBalance(props.provider, project.coin));
-
+        const address = await provider.getSigner().getAddress();
+        if (project.coin && address) {
+          const getBalance = await getCoinBalance(provider, project.coin, address);
+          getBalance.result ? setUser({ address, balance: getBalance.result }) : addMessage(getBalance.error!);
+        }
         setLoading(false);
       }
     }
     effect();
-  }, [coin, projectId, props.provider, title]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project.coin, project.uri, projectId, provider, title]);
 
   const makeDonation = async () => {
-    await donate(props.provider, projectId, donation, message, coin);
+    const don = await donate(provider, projectId, donation, message, project.coin);
+    if (don.error) addMessage(don.error);
   };
 
   if (projectId && !loading) {
     return (
       <div className={styles.content}>
-        {!active && <p>This project ended</p>}
+        {!project.active && <p>This project ended</p>}
         <div className={styles.imageBorder}>
           <img className={styles.image} src={style!.image} alt="a" />
         </div>
         <p className={styles.text1}>{style.name}</p>
         <p className={styles.text2}>{style.description}</p>
-        <p className={styles.text2}>Owner: {owner}</p>
+        <p className={styles.text2}>Owner: {project.owner}</p>
         <p>
-          Reached {balance} of {goal} {coins.find((c) => c.value === coin)?.label}
+          Reached {project.balance} of {project.goal} {networkInfo.coins.find((c) => c.value === project.coin)?.label}
         </p>
 
-        <input type="number" placeholder="Donation" value={donation} onChange={(e) => setDonation(Number(e.target.value))} disabled={!active} />
-        <p>Max {userBalance}</p>
-        <input type="text" placeholder="Message" value={message} onChange={(e) => setMessage(e.target.value)} disabled={!active} />
-        <button onClick={makeDonation} disabled={!active}>
+        <input
+          type="number"
+          placeholder="Donation"
+          value={donation}
+          onChange={(e) => setDonation(Number(e.target.value))}
+          disabled={!project.active}
+        />
+        <p>Max {user?.balance}</p>
+        <input type="text" placeholder="Message" value={message} onChange={(e) => setMessage(e.target.value)} disabled={!project.active} />
+        <button onClick={makeDonation} disabled={!project.active}>
           Donate
         </button>
-        {owner === user && (
-          <button disabled={!active}>
+        {project.owner === user?.address && (
+          <button disabled={!project.active}>
             <Link to={"/edit/" + title}>Edit</Link>
           </button>
-        )}
-        {newDonation && (
-          <p>
-            User {newDonation.sender} just donated {newDonation.amount} with message "{newDonation.message}"
-          </p>
         )}
       </div>
     );

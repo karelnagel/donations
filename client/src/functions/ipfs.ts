@@ -1,24 +1,39 @@
 import * as IPFS from "ipfs-core";
-import { ProjectObj } from "../consts/interfaces";
+import {
+  error,
+  ProjectStyle,
+  ReturnProjectStyle,
+  ReturnString,
+} from "../consts/interfaces";
 
 const gateway = "https://ipfs.io/ipfs/";
 let ipfs: any;
 export const upload = async (
-  style: ProjectObj,
+  style: ProjectStyle,
   image?: any
-): Promise<string> => {
-  if (!ipfs) ipfs = await IPFS.create();
-  if (image) {
-    const imageUri = await uploadObject(image);
-    style.image = imageUri;
+): Promise<ReturnString> => {
+  try {
+    if (!ipfs) ipfs = await IPFS.create();
+    if (image) {
+      const imageUri = await uploadObject(image);
+      style.image = imageUri;
+    }
+    const uri = await uploadObject(JSON.stringify(style, null, 2));
+    return { result: uri };
+  } catch (e) {
+    return error("Upload failed", e);
   }
-  const uri = await uploadObject(JSON.stringify(style, null, 2));
-  return uri;
 };
 
-export const getProjectObj = async (uri: string) => {
-  const result = await fetch(uri);
-  return await result.json();
+export const getProjectStyle = async (
+  uri: string
+): Promise<ReturnProjectStyle> => {
+  try {
+    const result = await fetch(uri);
+    return { result: await result.json() };
+  } catch (e) {
+    return error("Can't get project style", e);
+  }
 };
 
 export const uploadObject = async (object: any) => {

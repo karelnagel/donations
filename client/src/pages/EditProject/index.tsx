@@ -6,11 +6,18 @@ import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
 import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
-import { coins } from "../../consts/coins";
-import { getProjectObj, upload } from "../../functions/ipfs";
-import { ProjectObj } from "../../consts/interfaces";
+import { getProjectStyle, upload } from "../../functions/ipfs";
+import { MessageType, NetworkInfo, ProjectStyle } from "../../consts/interfaces";
 
-export function EditProject(props: { provider: Web3Provider }) {
+export function EditProject({
+  provider,
+  addMessage,
+  networkInfo
+}: {
+  provider: Web3Provider;
+  networkInfo:NetworkInfo;
+  addMessage: (message: string, type?: MessageType, time?: number | undefined) => void;
+}) {
   const paramsTitle = useParams().title;
 
   const navigate = useNavigate();
@@ -26,45 +33,53 @@ export function EditProject(props: { provider: Web3Provider }) {
   const [isOwner, setIsOwner] = useState(true);
 
   const [img, setImg] = useState<any>();
-  const [projectObj, setProjectObj] = useState<ProjectObj>({});
+  const [style, setStyle] = useState<ProjectStyle>({});
 
   useEffect(() => {
     const effect = async () => {
       if (paramsTitle) {
-        setProjectId(await getProjectId(props.provider, paramsTitle));
+        const getId = await getProjectId(provider, paramsTitle);
+        getId.result ? setProjectId(getId.result) : addMessage(getId.error!);
 
         if (projectId) {
           setTitle(paramsTitle);
-          const project = await getProject(props.provider, projectId);
-          setCoin(project.coin);
-          setGoal(project.goal);
-          setBalance(project.balance);
-          setActive(project.active);
-          setIsOwner(project.owner === (await props.provider.getSigner().getAddress()));
 
-          setProjectObj(await getProjectObj(project.uri));
+          const getProj = await getProject(provider, projectId);
+          if (!getProj.result) addMessage(getProj.error!);
+          else {
+            setCoin(getProj.result.coin);
+            setGoal(getProj.result.goal);
+            setBalance(getProj.result.balance);
+            setActive(getProj.result.active);
+            setIsOwner(getProj.result.owner === (await provider.getSigner().getAddress()));
+
+            const getStyle = await getProjectStyle(getProj.result.uri);
+            getStyle.result ? setStyle(getStyle.result) : addMessage(getStyle.error!);
+          }
         }
       }
     };
     effect();
-  }, [paramsTitle, projectId, props.provider]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paramsTitle, projectId, provider]);
 
   const edit = async () => {
-    const uri = await upload(projectObj, img);
-
-    console.log(uri);
-    if (projectId) {
-      await editProject(props.provider, projectId, goal, uri);
-    } else {
-      await startProject(props.provider, coin, title, goal, uri);
-      routeToEditPage(`/edit/${title}`);
-    }
-    console.log("success");
+    const upl = await upload(style, img);
+    if (upl.result) {
+      console.log(upl);
+      if (projectId) {
+        const editProj = await editProject(provider, projectId, goal, upl.result);
+        if (editProj.error) addMessage(editProj.error!);
+      } else {
+        const startProj = await startProject(provider, coin, title, goal, upl.result);
+        !startProj.error ? routeToEditPage(`/edit/${title}`) : addMessage(startProj.error!);
+      }
+    } else addMessage(upl.error!);
   };
 
   const buttonEnd = async () => {
     if (projectId) {
-      await end(props.provider, projectId);
+      await end(provider, projectId);
       setActive(false);
       setBalance(0);
     }
@@ -77,72 +92,66 @@ export function EditProject(props: { provider: Web3Provider }) {
       {!active && <p>This project has ended</p>}
       <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} disabled={!!paramsTitle} />
       <input type="number" placeholder="Goal" value={goal} onChange={(e) => setGoal(Number(e.target.value))} disabled={!active} />
-      <Dropdown options={coins} onChange={(e) => setCoin(e.value)} value={coin} placeholder="Select an option" disabled={!!paramsTitle} />
+      <Dropdown options={networkInfo.coins} onChange={(e) => setCoin(e.value)} value={coin} placeholder="Select an option" disabled={!!paramsTitle} />
       <br />
 
       <input type="file" onChange={(event) => setImg(event.target.files![0])} />
-      <input
-        type="text"
-        placeholder="Name"
-        value={projectObj.name}
-        onChange={(e) => setProjectObj({ ...projectObj, name: e.target.value })}
-        disabled={!active}
-      />
+      <input type="text" placeholder="Name" value={style.name} onChange={(e) => setStyle({ ...style, name: e.target.value })} disabled={!active} />
       <input
         type="text"
         placeholder="Description"
-        value={projectObj.description}
-        onChange={(e) => setProjectObj({ ...projectObj, description: e.target.value })}
+        value={style.description}
+        onChange={(e) => setStyle({ ...style, description: e.target.value })}
         disabled={!active}
       />
       <input
         type="number"
         placeholder="Donation default"
-        value={projectObj.donationDefault}
-        onChange={(e) => setProjectObj({ ...projectObj, donationDefault: Number(e.target.value) })}
+        value={style.donationDefault}
+        onChange={(e) => setStyle({ ...style, donationDefault: Number(e.target.value) })}
         disabled={!active}
       />
       <input
         type="text"
         placeholder="Donation options"
-        value={projectObj.donationOptions?.join(",")}
-        onChange={(e) => setProjectObj({ ...projectObj, donationOptions: e.target.value.split(",").map((x) => Number(x)) })}
+        value={style.donationOptions?.join(",")}
+        onChange={(e) => setStyle({ ...style, donationOptions: e.target.value.split(",").map((x) => Number(x)) })}
         disabled={!active}
       />
       <div>
         <input
           type="text"
           placeholder="Website"
-          value={projectObj.external_url}
-          onChange={(e) => setProjectObj({ ...projectObj, external_url: e.target.value })}
+          value={style.external_url}
+          onChange={(e) => setStyle({ ...style, external_url: e.target.value })}
           disabled={!active}
         />
         <input
           type="text"
           placeholder="Twitter"
-          value={projectObj.links?.twitter}
-          onChange={(e) => setProjectObj({ ...projectObj, links: { ...projectObj.links, twitter: e.target.value } })}
+          value={style.links?.twitter}
+          onChange={(e) => setStyle({ ...style, links: { ...style.links, twitter: e.target.value } })}
           disabled={!active}
         />
         <input
           type="text"
           placeholder="Instagram"
-          value={projectObj.links?.instagram}
-          onChange={(e) => setProjectObj({ ...projectObj, links: { ...projectObj.links, instagram: e.target.value } })}
+          value={style.links?.instagram}
+          onChange={(e) => setStyle({ ...style, links: { ...style.links, instagram: e.target.value } })}
           disabled={!active}
         />
         <input
           type="text"
           placeholder="Opensea"
-          value={projectObj.links?.opensea}
-          onChange={(e) => setProjectObj({ ...projectObj, links: { ...projectObj.links, opensea: e.target.value } })}
+          value={style.links?.opensea}
+          onChange={(e) => setStyle({ ...style, links: { ...style.links, opensea: e.target.value } })}
           disabled={!active}
         />
         <input
           type="text"
           placeholder="Youtube"
-          value={projectObj.links?.youtube}
-          onChange={(e) => setProjectObj({ ...projectObj, links: { ...projectObj.links, youtube: e.target.value } })}
+          value={style.links?.youtube}
+          onChange={(e) => setStyle({ ...style, links: { ...style.links, youtube: e.target.value } })}
           disabled={!active}
         />
       </div>

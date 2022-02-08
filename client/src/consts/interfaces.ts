@@ -5,7 +5,7 @@ export interface LinksObj {
   youtube?: string;
 }
 
-export interface ProjectObj {
+export interface ProjectStyle {
   image?: string;
   name?: string;
   description?: string;
@@ -22,4 +22,43 @@ export interface Project {
   coin: string;
   uri: string;
   active: boolean;
+}
+export interface Message {
+  message: string;
+  type: MessageType;
+  time?: number;
+}
+export enum MessageType {
+  network,
+  donation,
+  error,
+  else,
+}
+
+export interface Return {
+  error?: string;
+}
+export interface ReturnString extends Return {
+  result?: string;
+}
+export interface ReturnNumber extends Return {
+  result?: number;
+}
+export interface ReturnProject extends Return {
+  result?: Project;
+}
+export interface ReturnProjectStyle extends Return {
+  result?: ProjectStyle;
+}
+export const error = (error: string, e: unknown): Return => {
+  console.log(e);
+  return { error };
+};
+
+export interface NetworkInfo {
+  chainId: number;
+  name: string;
+  contract: string;
+  token: string;
+  coins: { value: string; label: string }[];
 }
