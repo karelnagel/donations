@@ -1,9 +1,15 @@
 .messages {
-  background-color: red;
+  position: absolute;
+  right: 0;
+  left: 0;
 }
 .message {
   background-color: red;
+  text-align: center;
+  padding: 5px;
+  color: white;
+  margin: 5px;
+  border-radius: 10px;
 }
 .message-error {
-  background-color: red;
 }

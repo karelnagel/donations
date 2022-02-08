@@ -37,7 +37,7 @@ export function WalletButton({
         if (name) {
           setRendered(name);
         } else {
-          setRendered(account.substring(0, 6) + "..." + account.substring(36));
+          setRendered(account.substring(0, 5) + "..." + account.substring(37));
         }
       } catch (err) {
         setRendered("");

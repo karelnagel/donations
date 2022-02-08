@@ -18,7 +18,6 @@ export function Donate({
   addMessage: (message: string, type?: MessageType, time?: number | undefined) => void;
 }) {
   let title = useParams().title;
-
   const [projectId, setProjectId] = useState(0);
   const [project, setProject] = useState<Project>({ balance: 0, goal: 0, active: true, owner: "", coin: "", uri: "" });
   const [style, setStyle] = useState<ProjectStyle>({});
@@ -26,6 +25,8 @@ export function Donate({
   const [donation, setDonation] = useState(5);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const coin = project ? networkInfo.coins.find((c) => c.value === project.coin)?.label : "";
 
   useEffect(() => {
     contract(provider).on(contract(provider).filters.Donation(projectId), (id, sender, amount, message) => {
@@ -36,7 +37,7 @@ export function Donate({
     return () => {
       contract(provider).removeAllListeners();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, provider]);
 
   useEffect(() => {
@@ -81,10 +82,35 @@ export function Donate({
         </div>
         <p className={styles.text1}>{style.name}</p>
         <p className={styles.text2}>{style.description}</p>
-        <p className={styles.text2}>Owner: {project.owner}</p>
-        <p>
-          Reached {project.balance} of {project.goal} {networkInfo.coins.find((c) => c.value === project.coin)?.label}
+        {style.external_url && <a href={style.external_url} className={styles.website}>{style.external_url.replace(/^https?:\/\//, "")}</a>}
+        <div className={styles.icons}>
+          {style.links?.twitter && (
+            <a href={style.links.twitter}>
+              <img src="/icons/twitter.png" alt="twitter" />
+            </a>
+          )}
+          {style.links?.instagram && (
+            <a href={style.links.instagram}>
+              <img src="/icons/instagram.png" alt="instagram" />
+            </a>
+          )}
+          {style.links?.youtube && (
+            <a href={style.links.youtube}>
+              <img src="/icons/youtube.png" alt="youtube" />
+            </a>
+          )}
+          {style.links?.opensea && (
+            <a href={style.links.opensea}>
+              <img src="/icons/opensea.png" alt="opensea" />
+            </a>
+          )}
+        </div>
+        <p className={styles.goalText}>
+          {project.balance} {coin} of {project.goal} {coin}
         </p>
+        <div className={styles.goal}>
+          <div className={styles.progress} style={{ width: `${(project.balance / project.goal) * 100}%` }}></div>
+        </div>
 
         <input
           type="number"
@@ -93,13 +119,21 @@ export function Donate({
           onChange={(e) => setDonation(Number(e.target.value))}
           disabled={!project.active}
         />
-        <p>Max {user?.balance}</p>
+        {style.donationOptions && (
+          <div className={styles.donations}>
+            <span onClick={() => setDonation(style.donationOptions![0])}>{style.donationOptions[0]}</span>
+            <span onClick={() => setDonation(style.donationOptions![1])}>{style.donationOptions![1]}</span>
+            <span onClick={() => setDonation(style.donationOptions![2])}>{style.donationOptions![2]}</span>
+            <span onClick={() => setDonation(user?.balance!)}>{user?.balance}</span>
+          </div>
+        )}
+        <br />
         <input type="text" placeholder="Message" value={message} onChange={(e) => setMessage(e.target.value)} disabled={!project.active} />
-        <button onClick={makeDonation} disabled={!project.active}>
+        <button onClick={makeDonation} disabled={!project.active} className="button">
           Donate
         </button>
         {project.owner === user?.address && (
-          <button disabled={!project.active}>
+          <button disabled={!project.active} className="button">
             <Link to={"/edit/" + title}>Edit</Link>
           </button>
         )}

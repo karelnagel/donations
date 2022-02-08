@@ -1,9 +1,12 @@
-.content{
+
+.content {
     display: flex;
+    align-items: center;
     flex-direction: column;
-    width:70%;
-    align-content: center;
-}
+    width: 70%;
+    max-width: 300px;
+    margin: auto;
+  }
 textarea{
     height: 200px;
 }

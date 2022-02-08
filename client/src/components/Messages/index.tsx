@@ -3,6 +3,10 @@ import { Message } from "../../consts/interfaces";
 import styles from "./styles.module.css";
 
 export function Messages({ messages, setMessages }: { messages: Message[]; setMessages: React.Dispatch<React.SetStateAction<Message[]>> }) {
+  const removeMessage = (index: number) => {
+    console.log("asd")
+    setMessages((m) => [...m.filter((mes,i)=>i!==index)]);
+  };
   useEffect(() => {
     messages.forEach((message) => {
       if (message.time) {
@@ -12,10 +16,11 @@ export function Messages({ messages, setMessages }: { messages: Message[]; setMe
       }
     });
   }, [messages, setMessages]);
+
   return (
     <div className={styles.messages}>
       {messages.map((message, i) => (
-        <div key={i} className={`message message-${message.type}`}>
+        <div key={i} className={styles.message} onClick={() => removeMessage(i)}>
           {message.message}
         </div>
       ))}

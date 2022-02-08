@@ -157,16 +157,16 @@ export function EditProject({
       </div>
 
       <br />
-      <button onClick={edit} disabled={!active}>
+      <button className="button" onClick={edit} disabled={!active}>
         {!!paramsTitle ? "Edit" : "Start"}
       </button>
       {!!paramsTitle && (
-        <button onClick={buttonEnd} disabled={!active}>
+        <button className="button" onClick={buttonEnd} disabled={!active}>
           End project and collect {balance}
         </button>
       )}
       {!!paramsTitle && (
-        <button>
+        <button className="button">
           <Link to={"/donate/" + title}>View project</Link>
         </button>
       )}

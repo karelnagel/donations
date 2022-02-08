@@ -32,30 +32,28 @@ function App() {
   }, [provider]);
 
   return (
-    <div>
-      <Body>
-        <Header provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
-        <Messages messages={messages} setMessages={setMessages} />
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="donate/:title"
-              element={provider ? <Donate provider={provider} addMessage={addMessage} networkInfo={networkInfo} /> : <p>Connect wallet</p>}
-            />
-            <Route
-              path="edit/:title"
-              element={provider ? <EditProject provider={provider} addMessage={addMessage} networkInfo={networkInfo} /> : <p>Connect wallet</p>}
-            />
-            <Route
-              path="new"
-              element={provider ? <EditProject provider={provider} addMessage={addMessage} networkInfo={networkInfo} /> : <p>Connect wallet</p>}
-            />
-            <Route path="projects" element={<Projects />} />
-            <Route path="*" element={<Home />} />
-          </Routes>
-        </BrowserRouter>
-      </Body>
-    </div>
+    <Body>
+      <Header provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
+      <Messages messages={messages} setMessages={setMessages} />
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="donate/:title"
+            element={provider ? <Donate provider={provider} addMessage={addMessage} networkInfo={networkInfo} /> : <p>Connect wallet</p>}
+          />
+          <Route
+            path="edit/:title"
+            element={provider ? <EditProject provider={provider} addMessage={addMessage} networkInfo={networkInfo} /> : <p>Connect wallet</p>}
+          />
+          <Route
+            path="new"
+            element={provider ? <EditProject provider={provider} addMessage={addMessage} networkInfo={networkInfo} /> : <p>Connect wallet</p>}
+          />
+          <Route path="projects" element={<Projects />} />
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </BrowserRouter>
+    </Body>
   );
 }
 
