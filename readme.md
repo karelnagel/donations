@@ -9,4 +9,4 @@
 8. instant title check
 9. loading screens
 10. success messages
-11. 
+11. change token and contract addresses to global
