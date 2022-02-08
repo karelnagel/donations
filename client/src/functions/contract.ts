@@ -7,14 +7,14 @@ import { error, Return, ReturnNumber, ReturnProject, ReturnString } from "../con
 
 export const contract = (provider: Web3Provider | ethers.Signer) =>
   new ethers.Contract(
-    process.env.REACT_APP_CONTRACT_ADDRESS!,
+    "0xEc018cA938556f5A344004D36E6363069e59C727",
     Donations.abi,
     provider
   );
 
 const token = (provider: Web3Provider | ethers.Signer) =>
   new ethers.Contract(
-    process.env.REACT_APP_TOKEN_ADDRESS!,
+    "0xF7892f6B302bca8a4AeA744e0A0e2ba5825d1463", // Todo change
     DonationsToken.abi,
     provider
   );
