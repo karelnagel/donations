@@ -52,9 +52,7 @@ export function useFunctions() {
     }
   };
 
-  const getProject = async (
-    projectId: number
-  ): Promise<ReturnProject> => {
+  const getProject = async (projectId: number): Promise<ReturnProject> => {
     try {
       const result = await contract().projects(projectId);
       return {
@@ -98,7 +96,7 @@ export function useFunctions() {
   ): Promise<Return> => {
     try {
       const contractObj = contract();
-      const coinObj = coin( coinAddress);
+      const coinObj = coin(coinAddress);
       const donationInWei = ethers.utils.parseEther(donation.toString());
 
       const allowance = await coinObj.allowance(
@@ -125,10 +123,11 @@ export function useFunctions() {
     }
   };
 
-  const end = async ( projectId: number) => {
+  const end = async (projectId: number): Promise<Return> => {
     try {
       const result = await contract().endProject(projectId);
       await result.wait(1);
+      return {};
     } catch (e) {
       return error("Ending project failed", e);
     }
@@ -146,9 +145,7 @@ export function useFunctions() {
     }
   };
 
-  const getProjectId = async (
-    title: string
-  ): Promise<ReturnNumber> => {
+  const getProjectId = async (title: string): Promise<ReturnNumber> => {
     try {
       const result = (await contract().titles(title)).toNumber();
       return { result };
@@ -157,9 +154,7 @@ export function useFunctions() {
     }
   };
 
-  const getTokenUri = async (
-    projectId: number
-  ): Promise<ReturnString> => {
+  const getTokenUri = async (projectId: number): Promise<ReturnString> => {
     try {
       const result = await token().uri(projectId);
       return { result };
@@ -167,5 +162,17 @@ export function useFunctions() {
       return error("Can't get token uri", e);
     }
   };
-  return{getTokenUri,getProjectId,getCoinBalance,end,donate,editProject,getProject,startProject,coin,token,contract}
+  return {
+    getTokenUri,
+    getProjectId,
+    getCoinBalance,
+    end,
+    donate,
+    editProject,
+    getProject,
+    startProject,
+    coin,
+    token,
+    contract,
+  };
 }

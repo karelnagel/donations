@@ -4,8 +4,7 @@ import styles from "./styles.module.css";
 
 export function Messages({ messages, setMessages }: { messages: Message[]; setMessages: React.Dispatch<React.SetStateAction<Message[]>> }) {
   const removeMessage = (index: number) => {
-    console.log("asd")
-    setMessages((m) => [...m.filter((mes,i)=>i!==index)]);
+    setMessages((m) => [...m.filter((mes, i) => i !== index)]);
   };
   useEffect(() => {
     messages.forEach((message) => {
@@ -20,7 +19,7 @@ export function Messages({ messages, setMessages }: { messages: Message[]; setMe
   return (
     <div className={styles.messages}>
       {messages.map((message, i) => (
-        <div key={i} className={styles.message} onClick={() => removeMessage(i)}>
+        <div key={i} className={`${styles.message} message-${message.type.toString()}`} onClick={() => removeMessage(i)}>
           {message.message}
         </div>
       ))}

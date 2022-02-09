@@ -1,0 +1,15 @@
+.screen{
+    position:absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(117, 116, 116, 0.5);
+}
+.content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    flex-direction: column;
+    font-weight: bold;
+    font-size: 24px;
+}

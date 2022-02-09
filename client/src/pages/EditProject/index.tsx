@@ -6,11 +6,11 @@ import "react-dropdown/style.css";
 import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
 import { getProjectStyle, upload } from "../../functions/ipfs";
-import { ProjectStyle } from "../../consts/interfaces";
+import { MessageType, ProjectStyle } from "../../consts/interfaces";
 import { Context } from "../../context";
 
 export function EditProject() {
-  const { provider, network, addMessage } = useContext(Context);
+  const { provider, network, addMessage, setLoading } = useContext(Context);
   const { editProject, end, getProject, getProjectId, startProject } = useFunctions();
   const paramsTitle = useParams().title;
 
@@ -31,6 +31,7 @@ export function EditProject() {
 
   useEffect(() => {
     const effect = async () => {
+      setLoading!("Loading content");
       if (paramsTitle && provider) {
         const getId = await getProjectId(paramsTitle);
         getId.result ? setProjectId(getId.result) : addMessage(getId.error!);
@@ -52,12 +53,14 @@ export function EditProject() {
           }
         }
       }
+      setLoading!("");
     };
     effect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsTitle, projectId, provider]);
 
   const edit = async () => {
+    setLoading!("Uploading your project!");
     const upl = await upload(style, img);
     if (upl.result) {
       console.log(upl);
@@ -68,16 +71,23 @@ export function EditProject() {
         const startProj = await startProject(coin, title, goal, upl.result);
         !startProj.error ? routeToEditPage(`/edit/${title}`) : addMessage(startProj.error!);
       }
+      addMessage("Project successfully uploaded!", MessageType.success);
     } else addMessage(upl.error!);
+    setLoading!("");
   };
 
   const buttonEnd = async () => {
+    setLoading!("Ending project");
     if (projectId) {
-      await end(projectId);
-      setActive(false);
-      setBalance(0);
+      const e = await end(projectId);
+      if (e.error) addMessage(e.error);
+      else {
+        setActive(false);
+        setBalance(0);
+        addMessage("Project ended successfully!", MessageType.success);
+      }
     }
-    console.log("success");
+    setLoading!("");
   };
 
   if (!isOwner) return <p>Not owner</p>;

@@ -67,3 +67,27 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+/* Network */
+.message-0{
+  background-color: red;
+}
+
+/* Donation */
+.message-1{
+  background-color: blue;
+}
+
+/* error */
+.message-2{
+  background-color: red;
+}
+
+/* success */
+.message-3{
+  background-color: green;
+}
+/* else */
+.message-4{
+  background-color: black;
+}

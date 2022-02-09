@@ -9,7 +9,7 @@ import {} from "../../consts/setup";
 import { Context } from "../../context";
 
 export function Donate() {
-  const { provider, network, addMessage } = useContext(Context);
+  const { provider, network, addMessage, setLoading } = useContext(Context);
   const { contract, donate, getCoinBalance, getProject, getProjectId } = useFunctions();
   let title = useParams().title;
   const [projectId, setProjectId] = useState(0);
@@ -18,7 +18,6 @@ export function Donate() {
   const [user, setUser] = useState<{ address: string; balance: number }>();
   const [donation, setDonation] = useState(5);
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true);
 
   const coin = project ? network.coins.find((c) => c.value === project.coin)?.label : "";
 
@@ -37,6 +36,7 @@ export function Donate() {
 
   useEffect(() => {
     async function effect() {
+      setLoading!("Loading content");
       if (provider && title) {
         const getId = await getProjectId(title);
         getId.result ? setProjectId(getId.result) : addMessage!(getId.error!);
@@ -56,7 +56,7 @@ export function Donate() {
           const getBalance = await getCoinBalance(project.coin, address);
           getBalance.result ? setUser({ address, balance: getBalance.result }) : addMessage!(getBalance.error!);
         }
-        setLoading(false);
+        setLoading!("");
       }
     }
     effect();
@@ -64,11 +64,14 @@ export function Donate() {
   }, [project.coin, project.uri, projectId, provider, title]);
 
   const makeDonation = async () => {
+    setLoading!("Making donation! This will take two transactions. Continue to your wallet!");
     const don = await donate(projectId, donation, message, project.coin);
     if (don.error) addMessage!(don.error);
+    else addMessage!("Donation successful", MessageType.success);
+    setLoading!("");
   };
   const progress = (project.balance / project.goal) * 100;
-  if (projectId && !loading) {
+  if (projectId) {
     return (
       <div className={styles.content}>
         {!project.active && <p>This project ended</p>}
@@ -111,7 +114,7 @@ export function Donate() {
           <div className={styles.goal}>
             <div className={styles.progress} style={{ width: `${progress < 100 ? progress : "100"}%`, borderRadius: "5px" }}></div>
           </div>
-          <p>{progress}% finished</p>
+          {/* <p>{progress}% finished</p> */}
         </div>
         <input
           type="number"
@@ -140,6 +143,5 @@ export function Donate() {
         )}
       </div>
     );
-  } else if (loading) return <p>Loading ...</p>;
-  else return <p>No project</p>;
+  } else return <p>No project</p>;
 }

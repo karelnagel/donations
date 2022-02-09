@@ -32,6 +32,7 @@ export enum MessageType {
   network,
   donation,
   error,
+  success,
   else,
 }
 
