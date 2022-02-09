@@ -1,23 +1,17 @@
-import { Web3Provider } from "@ethersproject/providers";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { editProject, end, getProject, getProjectId, startProject } from "../../functions/contract";
+import { useFunctions } from "../../functions/contract";
 import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
 import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
 import { getProjectStyle, upload } from "../../functions/ipfs";
-import { MessageType, NetworkInfo, ProjectStyle } from "../../consts/interfaces";
+import { ProjectStyle } from "../../consts/interfaces";
+import { Context } from "../../context";
 
-export function EditProject({
-  provider,
-  addMessage,
-  networkInfo
-}: {
-  provider: Web3Provider;
-  networkInfo:NetworkInfo;
-  addMessage: (message: string, type?: MessageType, time?: number | undefined) => void;
-}) {
+export function EditProject() {
+  const { provider, network, addMessage } = useContext(Context);
+  const { editProject, end, getProject, getProjectId, startProject } = useFunctions();
   const paramsTitle = useParams().title;
 
   const navigate = useNavigate();
@@ -37,14 +31,14 @@ export function EditProject({
 
   useEffect(() => {
     const effect = async () => {
-      if (paramsTitle) {
-        const getId = await getProjectId(provider, paramsTitle);
+      if (paramsTitle && provider) {
+        const getId = await getProjectId(paramsTitle);
         getId.result ? setProjectId(getId.result) : addMessage(getId.error!);
 
         if (projectId) {
           setTitle(paramsTitle);
 
-          const getProj = await getProject(provider, projectId);
+          const getProj = await getProject(projectId);
           if (!getProj.result) addMessage(getProj.error!);
           else {
             setCoin(getProj.result.coin);
@@ -60,7 +54,7 @@ export function EditProject({
       }
     };
     effect();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsTitle, projectId, provider]);
 
   const edit = async () => {
@@ -68,10 +62,10 @@ export function EditProject({
     if (upl.result) {
       console.log(upl);
       if (projectId) {
-        const editProj = await editProject(provider, projectId, goal, upl.result);
+        const editProj = await editProject(projectId, goal, upl.result);
         if (editProj.error) addMessage(editProj.error!);
       } else {
-        const startProj = await startProject(provider, coin, title, goal, upl.result);
+        const startProj = await startProject(coin, title, goal, upl.result);
         !startProj.error ? routeToEditPage(`/edit/${title}`) : addMessage(startProj.error!);
       }
     } else addMessage(upl.error!);
@@ -79,7 +73,7 @@ export function EditProject({
 
   const buttonEnd = async () => {
     if (projectId) {
-      await end(provider, projectId);
+      await end(projectId);
       setActive(false);
       setBalance(0);
     }
@@ -92,7 +86,7 @@ export function EditProject({
       {!active && <p>This project has ended</p>}
       <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} disabled={!!paramsTitle} />
       <input type="number" placeholder="Goal" value={goal} onChange={(e) => setGoal(Number(e.target.value))} disabled={!active} />
-      <Dropdown options={networkInfo.coins} onChange={(e) => setCoin(e.value)} value={coin} placeholder="Select an option" disabled={!!paramsTitle} />
+      <Dropdown options={network.coins} onChange={(e) => setCoin(e.value)} value={coin} placeholder="Select an option" disabled={!!paramsTitle} />
       <br />
 
       <input type="file" onChange={(event) => setImg(event.target.files![0])} />

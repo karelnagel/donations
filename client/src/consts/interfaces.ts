@@ -62,3 +62,7 @@ export interface NetworkInfo {
   token: string;
   coins: { value: string; label: string }[];
 }
+export interface User {
+  address: string;
+  balance?:number;
+}
