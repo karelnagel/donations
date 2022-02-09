@@ -7,14 +7,14 @@ import { error, Return, ReturnNumber, ReturnProject, ReturnString } from "../con
 
 export const contract = (provider: Web3Provider | ethers.Signer) =>
   new ethers.Contract(
-    "0xEc018cA938556f5A344004D36E6363069e59C727",
+    "0x7d261b57F0aD3b13eD2f618a24e0D655Ad4C7B90", // Todo change
     Donations.abi,
     provider
   );
 
 const token = (provider: Web3Provider | ethers.Signer) =>
   new ethers.Contract(
-    "0xF7892f6B302bca8a4AeA744e0A0e2ba5825d1463", // Todo change
+    "0x0C6fCB79743D4F6dE21C6351fFA8Acd7AA4136F8", // Todo change
     DonationsToken.abi,
     provider
   );

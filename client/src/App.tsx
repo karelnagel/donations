@@ -25,7 +25,7 @@ function App() {
       if (provider) {
         const chainId = (await provider?.getNetwork()).chainId;
         const info = getNetworkInfo(chainId);
-        info ? setNetworkInfo(info) : addMessage("Wrong chain! Use Polygon or Mumbai", MessageType.network, 0);
+        info ? setNetworkInfo(info) : addMessage("Wrong chain! Use Rinkeby", MessageType.network, 0);
       }
     }
     effect();
