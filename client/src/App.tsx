@@ -6,7 +6,7 @@ import { Home } from "./pages/Home";
 import { Donate } from "./pages/Donate";
 import { Projects } from "./pages/Projects";
 import { EditProject } from "./pages/EditProject";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 import { Message, MessageType, NetworkInfo, User } from "./consts/interfaces";
 import { Messages } from "./components/Messages";
 import { getNetworkInfo, networks } from "./consts/setup";
@@ -39,7 +39,7 @@ function App() {
       <Context.Provider value={{ provider, network, addMessage, user }}>
         <Header provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
         <Messages messages={messages} setMessages={setMessages} />
-        <BrowserRouter>
+        <HashRouter>
           <Routes>
             <Route path="donate/:title" element={provider ? <Donate /> : <p>Connect wallet</p>} />
             <Route
@@ -53,7 +53,7 @@ function App() {
             <Route path="projects" element={<Projects />} />
             <Route path="*" element={<Home />} />
           </Routes>
-        </BrowserRouter>
+        </HashRouter>
       </Context.Provider>
     </Body>
   );
