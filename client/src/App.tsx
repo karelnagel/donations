@@ -13,6 +13,7 @@ import { Loading } from "./components/Loading";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { getENS } from "./hooks/useFunctions";
 import { Message, MessageType } from "./interfaces/message";
+import { Progress } from "./pages/Progress";
 
 function App() {
   const [web3Provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
@@ -25,11 +26,11 @@ function App() {
     setMessages((m) => [...m.filter((mes) => mes.type !== type), { message, type, time }]);
   };
 
-  const load=async (asyncFunc:()=>Promise<void>,message:string):Promise<void>=>{
-    setLoading(message)
-    await asyncFunc()
-    setLoading("")
-  }
+  const load = async (asyncFunc: () => Promise<void>, message: string): Promise<void> => {
+    setLoading(message);
+    await asyncFunc();
+    setLoading("");
+  };
   useEffect(() => {
     async function effect() {
       // If user is logged in then it is useing web3provider and getting address
@@ -51,21 +52,29 @@ function App() {
   }, [web3Provider]);
 
   return (
-    <Context.Provider value={{ provider, network, addMessage, user, load }}>
-      <Body>
-        {loading && <Loading loading={loading} />}
-        <Header loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
-        <Messages messages={messages} setMessages={setMessages} />
-        <HashRouter>
-          <Routes>
-            <Route path="donate/:title" element={<Donate />} />
-            <Route path="edit/:title" element={<EditProject />} />
-            <Route path="new" element={<EditProject />} />
-            <Route path="*" element={<Home />} />
-          </Routes>
-        </HashRouter>
-      </Body>
-    </Context.Provider>
+    <HashRouter>
+      <Context.Provider value={{ provider, network, addMessage, user, load }}>
+        <Routes>
+          <Route path="progress/:title" element={<Progress />} />
+          <Route
+            path="*"
+            element={
+              <Body>
+                {loading && <Loading loading={loading} />}
+                <Header loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
+                <Messages messages={messages} setMessages={setMessages} />
+                <Routes>
+                  <Route path="donate/:title" element={<Donate />} />
+                  <Route path="edit/:title" element={<EditProject />} />
+                  <Route path="new" element={<EditProject />} />
+                  <Route path="*" element={<Home />} />
+                </Routes>
+              </Body>
+            }
+          />
+        </Routes>
+      </Context.Provider>
+    </HashRouter>
   );
 }
 

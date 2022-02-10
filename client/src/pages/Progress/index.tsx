@@ -1,8 +1,9 @@
+import { ProgressBar } from "../../components/ProgressBar";
+import { useProjects } from "../../hooks/useProjects";
 
-export function Progress(props:{}){
+export function Progress(){
+const {project}=useProjects()
   return (
-    <div>
-      <p>Projects page</p>
-     </div>
+   <ProgressBar balance={project.balance} goal={project.goal} coin={project.coin}/>
   );
 }
