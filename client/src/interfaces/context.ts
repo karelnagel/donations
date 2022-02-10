@@ -1,16 +1,17 @@
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { ethers } from "ethers";
 import { createContext } from "react";
-import { MessageType, NetworkInfo, User } from "./consts/interfaces";
-import { networks } from "./consts/setup";
+import { networks } from "../networks";
+import { MessageType } from "./message";
 
-const rpcUrl = `https://${process.env.REACT_APP_NETWORK}.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`;
+export const rpcUrl = `https://${process.env.REACT_APP_NETWORK}.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`;
 export const defaultProvider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
 export const Context = createContext<ContextInterface>({
-  network: networks[1],
+  network: networks[0],
   addMessage: () => {},
   provider: defaultProvider,
+  load: ()=>{}
 });
 
 export interface ContextInterface {
@@ -23,5 +24,18 @@ export interface ContextInterface {
     type?: MessageType,
     time?: number | undefined
   ) => void;
-  setLoading?: React.Dispatch<React.SetStateAction<string>>;
+  load: (asyncFunc: () => Promise<void>, message: string) => void;
+}
+
+export interface NetworkInfo {
+  chainId: number;
+  name: string;
+  contract: string;
+  token: string;
+  coins: { value: string; label: string }[];
+}
+export interface User {
+  address: string;
+  name?: string;
+  balance?: number;
 }

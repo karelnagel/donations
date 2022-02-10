@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Message } from "../../consts/interfaces";
+import { Message } from "../../interfaces/message";
 import styles from "./styles.module.css";
 
 export function Messages({ messages, setMessages }: { messages: Message[]; setMessages: React.Dispatch<React.SetStateAction<Message[]>> }) {

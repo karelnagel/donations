@@ -12,3 +12,15 @@
   line-height: 18px;
   color: #ffffff;
 }
+.button {
+  background: rgba(196, 196, 196, 0.5);
+  border-radius: 10px;
+  border: 0ch;
+  padding: 10px 10px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 16px;
+  position: relative;
+  color: #ffffff;
+}

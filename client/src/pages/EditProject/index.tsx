@@ -1,21 +1,21 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { useReadFunctions } from "../../functions/contractRead";
+import { useFunctions } from "../../hooks/useFunctions";
 import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
 import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
-import { getProjectStyle, upload } from "../../functions/ipfs";
-import { MessageType, ProjectStyle } from "../../consts/interfaces";
-import { Context } from "../../context";
-import { useWriteFunctions } from "../../functions/contractWrite";
+import { Context } from "../../interfaces/context";
+import { getProjectStyle, useIPFS } from "../../hooks/useIPFS";
+import { defaultProjectStyle, ProjectStyle } from "../../interfaces/project";
+import { MessageType } from "../../interfaces/message";
 
 export function EditProject() {
-  const { provider, network, addMessage, setLoading, user } = useContext(Context);
-  const { getProject, getProjectId } = useReadFunctions();
-  const { editProject, end, startProject } = useWriteFunctions();
   const paramsTitle = useParams().title;
 
+  const { network, addMessage, user, load } = useContext(Context);
+  const { getProject, getProjectId, editProject, endProject, startProject } = useFunctions();
+  const { uploadObject } = useIPFS();
   const navigate = useNavigate();
   const routeToEditPage = useCallback((page) => navigate(page, { replace: true }), [navigate]);
 
@@ -30,73 +30,70 @@ export function EditProject() {
   const [owner, setOwner] = useState("");
 
   const [img, setImg] = useState<any>();
-  const [style, setStyle] = useState<ProjectStyle>({});
+  const [style, setStyle] = useState<ProjectStyle>(defaultProjectStyle);
 
   useEffect(() => {
     const effect = async () => {
-      setLoading!("Loading content");
-      if (paramsTitle && provider) {
-        const getId = await getProjectId(paramsTitle);
-        getId.result ? setProjectId(getId.result) : addMessage(getId.error!);
+      if (!paramsTitle) return; //If new project
 
-        if (projectId) {
-          setTitle(paramsTitle);
+      setTitle(paramsTitle);
 
-          const getProj = await getProject(projectId);
-          if (!getProj.result) addMessage(getProj.error!);
-          else {
-            setCoin(getProj.result.coin);
-            setGoal(getProj.result.goal);
-            setBalance(getProj.result.balance);
-            setActive(getProj.result.active);
-            setOwner(getProj.result.owner);
+      const getId = await getProjectId(paramsTitle);
+      if (!getId.result) return addMessage(getId.error!);
+      setProjectId(getId.result!);
 
-            const getStyle = await getProjectStyle(getProj.result.uri);
-            getStyle.result ? setStyle(getStyle.result) : addMessage(getStyle.error!);
-          }
-        }
-      }
-      setLoading!("");
+      const getProj = await getProject(getId.result!);
+      if (!getProj.result) return addMessage(getProj.error!);
+      setCoin(getProj.result.coin);
+      setGoal(getProj.result.goal);
+      setBalance(getProj.result.balance);
+      setActive(getProj.result.active);
+      setOwner(getProj.result.owner);
+
+      const getStyle = await getProjectStyle(getProj.result.uri);
+      if (!getStyle.result) return addMessage(getStyle.error!);
+      setStyle(getStyle.result);
     };
-    effect();
+    load(effect, "Loading content");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramsTitle, projectId, provider]);
+  }, []);
 
-  const edit = async () => {
-    setLoading!("Uploading your project!");
-    const upl = await upload(style, img);
-    if (upl.result) {
+  const edit = () =>
+    load(async () => {
+      if (img) {
+        const imageUrl = await uploadObject(img);
+        if (imageUrl.error) return addMessage(imageUrl.error);
+        setStyle((s) => ({ ...s, image: imageUrl.result! }));
+      }
+      const styleUrl = await uploadObject(style, true);
+      if (styleUrl.error) return addMessage(styleUrl.error);
+
       if (projectId) {
-        const editProj = await editProject(projectId, goal, upl.result);
-        if (editProj.error) addMessage(editProj.error!);
-        else {
-          addMessage("Project successfully uploaded!", MessageType.success);
-        }
+        const editProj = await editProject(projectId, goal, styleUrl.result!);
+        if (editProj.error) return addMessage(editProj.error!);
+        addMessage("Project successfully uploaded!", MessageType.success);
       } else {
-        const startProj = await startProject(coin, title, goal, upl.result);
-        if (startProj.error) addMessage(startProj.error!);
+        const startProj = await startProject(coin, title, goal, styleUrl.result!);
+        if (startProj.error) return addMessage(startProj.error!);
         else {
           routeToEditPage(`/edit/${title}`);
           addMessage("Project successfully uploaded!", MessageType.success);
         }
       }
-    } else addMessage(upl.error!);
-    setLoading!("");
-  };
+    }, "Uploading your project!");
 
-  const buttonEnd = async () => {
-    setLoading!("Ending project");
-    if (projectId) {
-      const e = await end(projectId);
-      if (e.error) addMessage(e.error);
-      else {
-        setActive(false);
-        setBalance(0);
-        addMessage("Project ended successfully!", MessageType.success);
+  const end = () =>
+    load(async () => {
+      if (projectId) {
+        const e = await endProject(projectId);
+        if (e.error) addMessage(e.error);
+        else {
+          setActive(false);
+          setBalance(0);
+          addMessage("Project ended successfully!", MessageType.success);
+        }
       }
-    }
-    setLoading!("");
-  };
+    }, "Ending project");
 
   const setTitleHandler = async (e: any) => {
     setTitle(e.target.value);
@@ -105,8 +102,9 @@ export function EditProject() {
     else if (!e.target.value) setTitleError("Title is required!");
     else setTitleError("");
   };
+
   if (!user) return <p>Please login to create new project or edit</p>;
-  else if (user.address!==owner && paramsTitle) return <p>Not owner</p>;
+  else if (user.address !== owner && paramsTitle) return <p>Not owner</p>;
   return (
     <div className={styles.content}>
       {!active && <p className={styles.errorMessage}>This project has ended</p>}
@@ -182,7 +180,7 @@ export function EditProject() {
         {!!paramsTitle ? "Edit" : "Start"}
       </button>
       {!!paramsTitle && (
-        <button className="button" onClick={buttonEnd} disabled={!active}>
+        <button className="button" onClick={end} disabled={!active}>
           End project and collect {balance}
         </button>
       )}

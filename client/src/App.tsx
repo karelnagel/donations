@@ -1,4 +1,4 @@
-import useWeb3Modal from "./functions/useWeb3Modal";
+import useWeb3Modal from "./hooks/useWeb3Modal";
 import { useEffect, useState } from "react";
 import { Body } from "./components/Body";
 import { Header } from "./components/Header";
@@ -7,13 +7,13 @@ import { Donate } from "./pages/Donate";
 import { Projects } from "./pages/Projects";
 import { EditProject } from "./pages/EditProject";
 import { Routes, Route, HashRouter } from "react-router-dom";
-import { Message, MessageType, NetworkInfo, User } from "./consts/interfaces";
 import { Messages } from "./components/Messages";
-import { getNetworkInfo, networks } from "./consts/setup";
-import { Context, defaultProvider } from "./context";
+import { getNetworkInfo, networks } from "./networks";
+import { Context, defaultProvider, NetworkInfo, User } from "./interfaces/context";
 import { Loading } from "./components/Loading";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { getENS } from "./functions/contractRead";
+import { getENS } from "./hooks/useFunctions";
+import { Message, MessageType } from "./interfaces/message";
 
 function App() {
   const [web3Provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
@@ -26,6 +26,11 @@ function App() {
     setMessages((m) => [...m.filter((mes) => mes.type !== type), { message, type, time }]);
   };
 
+  const load=async (asyncFunc:()=>Promise<void>,message:string):Promise<void>=>{
+    setLoading(message)
+    await asyncFunc()
+    setLoading("")
+  }
   useEffect(() => {
     async function effect() {
       // If user is logged in then it is useing web3provider and getting address
@@ -47,7 +52,7 @@ function App() {
   }, [web3Provider]);
 
   return (
-    <Context.Provider value={{ provider, network, addMessage, user, setLoading }}>
+    <Context.Provider value={{ provider, network, addMessage, user, load }}>
       <Body>
         {loading && <Loading loading={loading} />}
         <Header loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />

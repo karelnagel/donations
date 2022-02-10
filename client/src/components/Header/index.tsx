@@ -1,19 +1,17 @@
-import { WalletButton } from "../WalletButton";
 import styles from "./styles.module.css";
+import { useContext } from "react";
+import { Context } from "../../interfaces/context";
+export function Header({ loadWeb3Modal, logoutOfWeb3Modal }: { loadWeb3Modal: () => Promise<void>; logoutOfWeb3Modal: () => Promise<void> }) {
+  const { user } = useContext(Context);
 
-export function Header({
-  loadWeb3Modal,
-  logoutOfWeb3Modal,
-}: {
-  loadWeb3Modal: () => Promise<void>;
-  logoutOfWeb3Modal: () => Promise<void>;
-}) {
   return (
     <div className={styles.header}>
       <p className={styles.title}>
         <a href="/">DONATIONS</a>
       </p>
-      <WalletButton  loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
+      <button className={styles.button} onClick={() => (user ? logoutOfWeb3Modal() : loadWeb3Modal())}>
+        {!user ? "Connect Wallet" : user?.name ?? user.address}
+      </button>
     </div>
   );
 }
