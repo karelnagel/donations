@@ -1,8 +1,7 @@
 import styles from "./styles.module.css";
 import { Link, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { getENS, useFunctions } from "../../hooks/useFunctions";
-import { ethers } from "ethers";
+import { useFunctions } from "../../hooks/useFunctions";
 import {} from "../../networks";
 import { Context } from "../../interfaces/context";
 import { MessageType } from "../../interfaces/message";
@@ -13,30 +12,14 @@ import { useProjects } from "../../hooks/useProjects";
 export function Donate() {
   const title = useParams().title;
 
-  const { provider, network, addMessage, load, user } = useContext(Context);
-  const { contract, getCoinBalance, donate } = useFunctions();
-  const { id, project, style,setProject, } = useProjects();
+  const { network, addMessage, load, user } = useContext(Context);
+  const { getCoinBalance, donate } = useFunctions();
+  const { id, project, style } = useProjects();
   const [userBalance, setUserBalance] = useState(0);
   const [donation, setDonation] = useState(0);
   const [message, setMessage] = useState("");
 
   const coin = project ? network.coins.find((c) => c.value === project.coin)?.label : "";
-
-  useEffect(() => {
-    const effect = async (id: string, sender: string, amount: number, message: string) => {
-      amount = Number(ethers.utils.formatEther(amount));
-      const name = (await getENS(provider, sender)) ?? sender;
-      addMessage(`${name} donated ${amount}! "${message}""`, MessageType.donation);
-      setProject((p) => ({ ...p, balance: p.balance + amount }));
-    };
-    contract().on(contract().filters.Donation(id), (id, sender, amount, message) => {
-      effect(id, sender, amount, message);
-    });
-    return () => {
-      contract().removeAllListeners();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
 
   useEffect(() => {
     async function effect() {
