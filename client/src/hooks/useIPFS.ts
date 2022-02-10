@@ -17,10 +17,14 @@ export function useIPFS() {
 
   useEffect(() => {
     const effect=async ()=>{
+      try{
       setIpfs(await create())// Todo fix the lock somehow
+      }
+      catch{
+        console.log("ipfs fucked")
+      }
     }
     effect()
-    return ()=>{setIpfs(undefined)}
   }, []);
 
   

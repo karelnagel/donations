@@ -4,7 +4,6 @@ import { Body } from "./components/Body";
 import { Header } from "./components/Header";
 import { Home } from "./pages/Home";
 import { Donate } from "./pages/Donate";
-import { Projects } from "./pages/Projects";
 import { EditProject } from "./pages/EditProject";
 import { Routes, Route, HashRouter } from "react-router-dom";
 import { Messages } from "./components/Messages";
@@ -59,10 +58,9 @@ function App() {
         <Messages messages={messages} setMessages={setMessages} />
         <HashRouter>
           <Routes>
-            <Route path="donate/:title" element={provider ? <Donate /> : <p>Connect wallet</p>} />
-            <Route path="edit/:title" element={provider ? <EditProject /> : <p>Connect wallet</p>} />
-            <Route path="new" element={provider ? <EditProject /> : <p>Connect wallet</p>} />
-            <Route path="projects" element={<Projects />} />
+            <Route path="donate/:title" element={<Donate />} />
+            <Route path="edit/:title" element={<EditProject />} />
+            <Route path="new" element={<EditProject />} />
             <Route path="*" element={<Home />} />
           </Routes>
         </HashRouter>
