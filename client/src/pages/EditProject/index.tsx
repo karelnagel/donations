@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { useFunctions } from "../../functions/contract";
+import { useReadFunctions } from "../../functions/contractRead";
 import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
 import { Link } from "react-router-dom";
@@ -8,10 +8,12 @@ import styles from "./styles.module.css";
 import { getProjectStyle, upload } from "../../functions/ipfs";
 import { MessageType, ProjectStyle } from "../../consts/interfaces";
 import { Context } from "../../context";
+import { useWriteFunctions } from "../../functions/contractWrite";
 
 export function EditProject() {
-  const { provider, network, addMessage, setLoading } = useContext(Context);
-  const { editProject, end, getProject, getProjectId, startProject } = useFunctions();
+  const { provider, network, addMessage, setLoading, user } = useContext(Context);
+  const { getProject, getProjectId } = useReadFunctions();
+  const { editProject, end, startProject } = useWriteFunctions();
   const paramsTitle = useParams().title;
 
   const navigate = useNavigate();
@@ -21,10 +23,11 @@ export function EditProject() {
   const [balance, setBalance] = useState(0);
 
   const [title, setTitle] = useState("");
+  const [titleError, setTitleError] = useState("");
   const [coin, setCoin] = useState("");
   const [goal, setGoal] = useState(0);
   const [active, setActive] = useState(true);
-  const [isOwner, setIsOwner] = useState(true);
+  const [owner, setOwner] = useState("");
 
   const [img, setImg] = useState<any>();
   const [style, setStyle] = useState<ProjectStyle>({});
@@ -46,7 +49,7 @@ export function EditProject() {
             setGoal(getProj.result.goal);
             setBalance(getProj.result.balance);
             setActive(getProj.result.active);
-            setIsOwner(getProj.result.owner === (await provider.getSigner().getAddress()));
+            setOwner(getProj.result.owner);
 
             const getStyle = await getProjectStyle(getProj.result.uri);
             getStyle.result ? setStyle(getStyle.result) : addMessage(getStyle.error!);
@@ -63,15 +66,20 @@ export function EditProject() {
     setLoading!("Uploading your project!");
     const upl = await upload(style, img);
     if (upl.result) {
-      console.log(upl);
       if (projectId) {
         const editProj = await editProject(projectId, goal, upl.result);
         if (editProj.error) addMessage(editProj.error!);
+        else {
+          addMessage("Project successfully uploaded!", MessageType.success);
+        }
       } else {
         const startProj = await startProject(coin, title, goal, upl.result);
-        !startProj.error ? routeToEditPage(`/edit/${title}`) : addMessage(startProj.error!);
+        if (startProj.error) addMessage(startProj.error!);
+        else {
+          routeToEditPage(`/edit/${title}`);
+          addMessage("Project successfully uploaded!", MessageType.success);
+        }
       }
-      addMessage("Project successfully uploaded!", MessageType.success);
     } else addMessage(upl.error!);
     setLoading!("");
   };
@@ -90,11 +98,20 @@ export function EditProject() {
     setLoading!("");
   };
 
-  if (!isOwner) return <p>Not owner</p>;
+  const setTitleHandler = async (e: any) => {
+    setTitle(e.target.value);
+    const projectId = await getProjectId(e.target.value);
+    if (projectId.result && projectId.result > 0) setTitleError("Title already taken");
+    else if (!e.target.value) setTitleError("Title is required!");
+    else setTitleError("");
+  };
+  if (!user) return <p>Please login to create new project or edit</p>;
+  else if (user.address!==owner && paramsTitle) return <p>Not owner</p>;
   return (
     <div className={styles.content}>
-      {!active && <p>This project has ended</p>}
-      <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} disabled={!!paramsTitle} />
+      {!active && <p className={styles.errorMessage}>This project has ended</p>}
+      {titleError && <p>{titleError}</p>}
+      <input type="text" placeholder="Title" value={title} onChange={setTitleHandler} disabled={!!paramsTitle} />
       <input type="number" placeholder="Goal" value={goal} onChange={(e) => setGoal(Number(e.target.value))} disabled={!active} />
       <Dropdown options={network.coins} onChange={(e) => setCoin(e.value)} value={coin} placeholder="Select an option" disabled={!!paramsTitle} />
       <br />

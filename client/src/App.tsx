@@ -10,37 +10,47 @@ import { Routes, Route, HashRouter } from "react-router-dom";
 import { Message, MessageType, NetworkInfo, User } from "./consts/interfaces";
 import { Messages } from "./components/Messages";
 import { getNetworkInfo, networks } from "./consts/setup";
-import { Context } from "./context";
+import { Context, defaultProvider } from "./context";
 import { Loading } from "./components/Loading";
+import { JsonRpcProvider } from "@ethersproject/providers";
+import { getENS } from "./functions/contractRead";
 
 function App() {
-  const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
+  const [web3Provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
   const [messages, setMessages] = useState<Message[]>([]);
   const [network, setNetwork] = useState<NetworkInfo>(networks[0]);
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState("");
+  const [provider, setProvider] = useState<JsonRpcProvider>(defaultProvider);
   const addMessage = (message: string, type = MessageType.error, time = 10) => {
     setMessages((m) => [...m.filter((mes) => mes.type !== type), { message, type, time }]);
   };
 
   useEffect(() => {
     async function effect() {
-      if (provider) {
-        const chainId = (await provider?.getNetwork()).chainId;
+      // If user is logged in then it is useing web3provider and getting address
+      if (web3Provider) {
+        setProvider(web3Provider);
+        const address = await web3Provider.getSigner().getAddress();
+        const name = await getENS(web3Provider, address);
+        setUser({ address, name });
+
+        const chainId = (await web3Provider.getNetwork()).chainId;
         const info = getNetworkInfo(chainId);
         info ? setNetwork(info) : addMessage("Wrong chain! Use Rinkeby!", MessageType.network, 0);
-        const address = await provider.getSigner().getAddress();
-        setUser((u) => ({ ...u, address }));
+      } else {
+        setProvider(defaultProvider);
+        setUser(undefined);
       }
     }
     effect();
-  }, [provider]);
+  }, [web3Provider]);
 
   return (
     <Context.Provider value={{ provider, network, addMessage, user, setLoading }}>
       <Body>
-        {loading && <Loading loading={loading}/>}
-        <Header provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
+        {loading && <Loading loading={loading} />}
+        <Header loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
         <Messages messages={messages} setMessages={setMessages} />
         <HashRouter>
           <Routes>

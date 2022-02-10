@@ -65,5 +65,6 @@ export interface NetworkInfo {
 }
 export interface User {
   address: string;
-  balance?:number;
+  name?: string;
+  balance?: number;
 }

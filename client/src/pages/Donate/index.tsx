@@ -1,69 +1,87 @@
 import styles from "./styles.module.css";
 import { Link, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { useFunctions } from "../../functions/contract";
+import { getENS, useReadFunctions } from "../../functions/contractRead";
 import { ethers } from "ethers";
 import { getProjectStyle } from "../../functions/ipfs";
 import { MessageType, Project, ProjectStyle } from "../../consts/interfaces";
 import {} from "../../consts/setup";
 import { Context } from "../../context";
+import { useWriteFunctions } from "../../functions/contractWrite";
 
 export function Donate() {
-  const { provider, network, addMessage, setLoading } = useContext(Context);
-  const { contract, donate, getCoinBalance, getProject, getProjectId } = useFunctions();
+  const { provider, network, addMessage, setLoading, user } = useContext(Context);
+  const { contract, getCoinBalance, getProject, getProjectId } = useReadFunctions();
+  const { donate } = useWriteFunctions();
+
   let title = useParams().title;
+
   const [projectId, setProjectId] = useState(0);
   const [project, setProject] = useState<Project>({ balance: 0, goal: 0, active: true, owner: "", coin: "", uri: "" });
   const [style, setStyle] = useState<ProjectStyle>({});
-  const [user, setUser] = useState<{ address: string; balance: number }>();
-  const [donation, setDonation] = useState(5);
+  const [userBalance, setUserBalance] = useState(0);
+  const [donation, setDonation] = useState(0);
   const [message, setMessage] = useState("");
 
   const coin = project ? network.coins.find((c) => c.value === project.coin)?.label : "";
 
   useEffect(() => {
-    const con = contract();
-    con.on(con.filters.Donation(projectId), (id, sender, amount, message) => {
+    const effect = async (id: string, sender: string, amount: number, message: string) => {
       amount = Number(ethers.utils.formatEther(amount));
-      addMessage!(`${sender} donated ${amount}! "${message}""`, MessageType.donation);
+      const name = await getENS(provider, sender) ?? sender;
+      addMessage!(`${name} donated ${amount}! "${message}""`, MessageType.donation);
       setProject((p) => ({ ...p, balance: p.balance + amount }));
+    };
+    contract().on(contract().filters.Donation(projectId), (id, sender, amount, message) => {
+      effect(id, sender, amount, message);
     });
     return () => {
-      con.removeAllListeners();
+      contract().removeAllListeners();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId, provider]);
+  }, [projectId]);
 
   useEffect(() => {
     async function effect() {
-      setLoading!("Loading content");
-      if (provider && title) {
+      if (title) {
         const getId = await getProjectId(title);
-        getId.result ? setProjectId(getId.result) : addMessage!(getId.error!);
+        if (getId.error) return addMessage!(getId.error);
+        const id = getId.result!;
+        setProjectId(id);
 
-        const getProj = await getProject(projectId);
-        getProj.result ? setProject(getProj.result) : addMessage!(getProj.error!);
+        const getProj = await getProject(id);
 
-        if (project.uri) {
-          const getStyle = await getProjectStyle(project.uri);
-          if (getStyle.result) {
-            setDonation(getStyle.result.donationDefault!);
-            setStyle(getStyle.result);
-          } else addMessage!(getStyle.error!);
+        if (getProj.error) return addMessage!(getProj.error);
+        const proj = getProj.result!;
+        setProject(proj);
+
+        if (proj.uri) {
+          const getStyle = await getProjectStyle(proj.uri);
+          if (getStyle.error) return addMessage!(getStyle.error);
+
+          setDonation(getStyle.result!.donationDefault!);
+          setStyle(getStyle.result!);
         }
-        const address = await provider.getSigner().getAddress();
-        if (project.coin && address) {
-          const getBalance = await getCoinBalance(project.coin, address);
-          getBalance.result ? setUser({ address, balance: getBalance.result }) : addMessage!(getBalance.error!);
-        }
-        setLoading!("");
+      }
+    }
+    setLoading!("Loading content");
+    effect().then(()=>setLoading!(""));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title]);
+
+  useEffect(() => {
+    async function effect() {
+      if (project.coin && user?.address) {
+        const getBalance = await getCoinBalance(project.coin, user.address);
+        getBalance.result ? setUserBalance(getBalance.result) : addMessage!(getBalance.error!);
       }
     }
     effect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project.coin, project.uri, projectId, provider, title]);
+  }, [project, user]);
 
   const makeDonation = async () => {
+    if (donation > userBalance) return addMessage("balance lower than donation");
     setLoading!("Making donation! This will take two transactions. Continue to your wallet!");
     const don = await donate(projectId, donation, message, project.coin);
     if (don.error) addMessage!(don.error);
@@ -114,32 +132,37 @@ export function Donate() {
           <div className={styles.goal}>
             <div className={styles.progress} style={{ width: `${progress < 100 ? progress : "100"}%`, borderRadius: "5px" }}></div>
           </div>
-          {/* <p>{progress}% finished</p> */}
         </div>
-        <input
-          type="number"
-          placeholder="Donation"
-          value={donation}
-          onChange={(e) => setDonation(Number(e.target.value))}
-          disabled={!project.active}
-        />
-        {style.donationOptions && (
-          <div className={styles.donations}>
-            <span onClick={() => setDonation(style.donationOptions![0])}>{style.donationOptions[0]}</span>
-            <span onClick={() => setDonation(style.donationOptions![1])}>{style.donationOptions![1]}</span>
-            <span onClick={() => setDonation(style.donationOptions![2])}>{style.donationOptions![2]}</span>
-            <span onClick={() => setDonation(user?.balance!)}>{user?.balance}</span>
+        {user ? (
+          <div>
+            <input
+              type="number"
+              placeholder="Donation"
+              value={donation}
+              onChange={(e) => setDonation(Number(e.target.value))}
+              disabled={!project.active}
+            />
+            {style.donationOptions && (
+              <div className={styles.donations}>
+                <span onClick={() => setDonation(style.donationOptions![0])}>{style.donationOptions[0]}</span>
+                <span onClick={() => setDonation(style.donationOptions![1])}>{style.donationOptions![1]}</span>
+                <span onClick={() => setDonation(style.donationOptions![2])}>{style.donationOptions![2]}</span>
+                <span onClick={() => setDonation(userBalance ?? 0)}>{userBalance}</span>
+              </div>
+            )}
+            <br />
+            <input type="text" placeholder="Message" value={message} onChange={(e) => setMessage(e.target.value)} disabled={!project.active} />
+            <button onClick={makeDonation} disabled={!project.active} className="button">
+              Donate
+            </button>
+            {project.owner === user?.address && (
+              <button disabled={!project.active} className="button">
+                <Link to={"/edit/" + title}>Edit</Link>
+              </button>
+            )}
           </div>
-        )}
-        <br />
-        <input type="text" placeholder="Message" value={message} onChange={(e) => setMessage(e.target.value)} disabled={!project.active} />
-        <button onClick={makeDonation} disabled={!project.active} className="button">
-          Donate
-        </button>
-        {project.owner === user?.address && (
-          <button disabled={!project.active} className="button">
-            <Link to={"/edit/" + title}>Edit</Link>
-          </button>
+        ) : (
+          <p>Login to donate</p>
         )}
       </div>
     );
