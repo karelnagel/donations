@@ -55,6 +55,7 @@ export function useFunctions() {
       const result = await contract().projects(projectId);
       return {
         result: {
+          title:result.title,
           goal: Number(ethers.utils.formatEther(result.goal)),
           balance: Number(ethers.utils.formatEther(result.balance)),
           owner: result.owner,

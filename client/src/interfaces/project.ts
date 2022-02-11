@@ -12,12 +12,13 @@ export const defaultProjectStyle: ProjectStyle = {
   image: "",
   description: "",
   donationDefault: 0,
-  links: {},
+  links: {twitter:"",instagram:'',youtube:'',opensea:''},
   external_url: "",
-  donationOptions: [],
+  donationOptions: [0,0,0],
 };
 
 export interface Project {
+  title:string;
   goal: number;
   balance: number;
   owner: string;
@@ -26,6 +27,7 @@ export interface Project {
   active: boolean;
 }
 export const defaultProject: Project = {
+  title:"",
   goal: 0,
   balance: 0,
   owner: "",
@@ -34,8 +36,8 @@ export const defaultProject: Project = {
   active: true,
 };
 export interface Links {
-  twitter?: string;
-  instagram?: string;
-  opensea?: string;
-  youtube?: string;
+  twitter: string;
+  instagram: string;
+  opensea: string;
+  youtube: string;
 }

@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { Body } from "./components/Body";
 import { Header } from "./components/Header";
 import { Home } from "./pages/Home";
-import { Donate } from "./pages/Donate";
-import { EditProject } from "./pages/EditProject";
+import { Project } from "./pages/Project";
 import { Routes, Route, HashRouter } from "react-router-dom";
 import { Messages } from "./components/Messages";
 import { getNetworkInfo, networks } from "./networks";
@@ -14,6 +13,7 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 import { getENS } from "./hooks/useFunctions";
 import { Message, MessageType } from "./interfaces/message";
 import { Progress } from "./pages/Progress";
+import { LastDonation } from "./pages/LastDonation";
 
 function App() {
   const [web3Provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
@@ -55,7 +55,8 @@ function App() {
     <HashRouter>
       <Context.Provider value={{ provider, network, addMessage, user, load }}>
         <Routes>
-          <Route path="progress/:title" element={<Progress />} />
+          <Route path=":title/progress" element={<Progress />} />
+          <Route path=":title/donations" element={<LastDonation />} />
           <Route
             path="*"
             element={
@@ -64,9 +65,9 @@ function App() {
                 <Header loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
                 <Messages messages={messages} setMessages={setMessages} />
                 <Routes>
-                  <Route path="donate/:title" element={<Donate />} />
-                  <Route path="edit/:title" element={<EditProject />} />
-                  <Route path="new" element={<EditProject />} />
+                  <Route path=":title" element={<Project />} />
+                  <Route path=":title/edit" element={<Project edit={true} />} />
+                  <Route path="new" element={<Project edit={true}/>} />
                   <Route path="*" element={<Home />} />
                 </Routes>
               </Body>
