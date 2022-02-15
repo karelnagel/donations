@@ -1,5 +1,5 @@
 import styles from "./styles.module.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useFunctions } from "../../hooks/useFunctions";
 import {} from "../../networks";
@@ -9,17 +9,18 @@ import { ProgressBar } from "../../components/ProgressBar";
 import { useProjects } from "../../hooks/useProjects";
 import { Input } from "./Input";
 import Dropdown from "react-dropdown";
+import { Spacer } from "../../components/Spacer";
 
 export function Project({ edit = false }) {
   const { network, addMessage, user } = useContext(Context);
   const { getCoinBalance } = useFunctions();
-  const { project, style, makeDonation, setStyle, setProject, id, save, end, setTitle, imageUpload, coin } = useProjects();
+  const { project, style,openseaUrl, makeDonation, setStyle, setProject, id, save, end, setTitle, imageUpload, coin } = useProjects();
   const [userBalance, setUserBalance] = useState(0);
   const [donation, setDonation] = useState(0);
   const [message, setMessage] = useState("");
   const [titleError, setTitleError] = useState("");
   const inputFile = useRef<HTMLInputElement | null>(null);
-
+console.log(window.location.href)
   useEffect(() => {
     async function effect() {
       if (project.coin && user?.address) {
@@ -33,36 +34,25 @@ export function Project({ edit = false }) {
   useEffect(() => {
     setDonation(style.donationDefault);
   }, [style.donationDefault]);
-
+  function currentUrl() {
+    return `${window.location.protocol}//${window.location.protocol}/#/`
+  }
   if (!user && edit) return <p>Connect wallet to edit or add new project</p>;
   return (
     <div className={styles.content}>
-      {!project.active && <p>This project ended</p>}
-
-      {edit && !id && (
-        <div>
-          <Input
-            value={project.title}
-            onChange={async (e) => {
-              const result = await setTitle(e);
-              result.error ? setTitleError(result.error) : setTitleError("");
-            }}
-          />
-          <p>{titleError}</p>
-        </div>
-      )}
-      {edit && !id && <Dropdown options={network.coins} onChange={(e) => setProject((p) => ({ ...p, coin: e.value }))} />}
-      {edit && <Input value={project.goal} isNumber={true} onChange={(e) => setProject((p) => ({ ...p, goal: Number(e.target.value) }))} />}
+      <Spacer height="100px" />
 
       <div
         className={styles.imageBorder}
         onClick={() => {
           if (edit) inputFile.current!.click();
+          else window.open(openseaUrl(), "_blank")
         }}
       >
-        <img className={styles.image} src={style.image} alt="a" />
+        {style.image && <img className={styles.image} src={style.image} alt="" />}
+        {!style.image &&edit &&<p>Click to add picture</p>}
       </div>
-
+      <Spacer height="30px" />
       <Input className={styles.name} value={style.name} edit={edit} onChange={(e) => setStyle((s) => ({ ...s, name: e.target.value }))} />
       <Input
         className={styles.description}
@@ -78,6 +68,7 @@ export function Project({ edit = false }) {
         onClick={() => window.open(style.external_url, "_blank")}
         onChange={(e) => setStyle((s) => ({ ...s, external_url: e.target.value }))}
       />
+      <Spacer height="20px" />
 
       <div className={styles.icons}>
         <Icon
@@ -105,21 +96,63 @@ export function Project({ edit = false }) {
           onChange={(e) => setStyle((s) => ({ ...s, links: { ...s.links, opensea: e.target.value } }))}
         />
       </div>
-      <ProgressBar balance={project.balance} goal={project.goal} coin={coin!} />
+      <Spacer height="20px" />
+      {!edit && <ProgressBar balance={project.balance} goal={project.goal} coin={coin!} />}
+      {!edit && <Spacer height="60px" />}
 
-      {!user && <p>Login to donate</p>}
+      {!user && <p>Connect wallet to donate</p>}
       {!project.active && <p>Project not active</p>}
       {user && project.active && (
-        <div>
-          <input
-            type="number"
-            placeholder="Donation"
-            value={donation}
-            onChange={(e) => (edit ? setStyle((s) => ({ ...s, donationDefault: Number(e.target.value) })) : setDonation(Number(e.target.value)))}
-            className={styles.input}
-          />
+        <div className={styles.donation}>
+          {edit && !id && (
+            <label>
+              Url route
+              <input
+                className={styles.input}
+                value={project.title}
+                onChange={async (e) => {
+                  const result = await setTitle(e);
+                  result.error ? setTitleError(result.error) : setTitleError("");
+                }}
+              />
+              <p>{titleError}</p>
+              <Spacer height="10px" />
+            </label>
+          )}
+
+          {edit && !id && (
+            <label>
+              Select coin
+              <Dropdown className={styles.dropdown} options={network.coins} onChange={(e) => setProject((p) => ({ ...p, coin: e.value }))} />
+              <Spacer height="10px" />
+            </label>
+          )}
+          {edit && (
+            <label>
+              Project goal
+              <input
+                type="number"
+                className={styles.input}
+                value={project.goal}
+                onChange={(e) => setProject((p) => ({ ...p, goal: Number(e.target.value) }))}
+              />
+              <Spacer height="10px" />
+            </label>
+          )}
+
+          {!edit && (
+            <input
+              type="number"
+              placeholder="Donation"
+              value={donation}
+              onChange={(e) => setDonation(Number(e.target.value))}
+              className={styles.input}
+              disabled={edit}
+            />
+          )}
+          {!edit && <Spacer height="10px" />}
           {style.donationOptions && (
-            <div className={styles.donations}>
+            <div className={styles.donationOptions}>
               <Input
                 className={styles.donationOption}
                 value={style.donationOptions[0]}
@@ -150,43 +183,72 @@ export function Project({ edit = false }) {
                   setStyle((s) => ({ ...s, donationOptions: [style.donationOptions[0], style.donationOptions[1], Number(e.target.value)] }))
                 }
               />
-              <p className={styles.donationOption} onClick={() => (edit ? setDonation(userBalance) : null)}>
-                {userBalance}
-              </p>
+              {!edit && (
+                <p className={styles.donationOption} onClick={() => setDonation(userBalance)}>
+                  {userBalance}
+                </p>
+              )}
             </div>
           )}
-          <br />
-
-          <input type="text" placeholder="Message" value={message} onChange={(e) => setMessage(e.target.value)} className={styles.input} />
+          <Spacer height="10px" />
+          {!edit && (
+            <input
+              type="text"
+              placeholder="Message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className={styles.input}
+              disabled={edit}
+            />
+          )}
+          <Spacer height="60px" />
 
           {!edit && (
-            <button onClick={() => makeDonation(donation, message)} className="button">
-              Donate
-            </button>
-          )}
-          {!edit && project.owner === user?.address && (
-            <Link to={"edit/"}>
-              <button className="button">Edit</button>
-            </Link>
+            <div>
+              <button onClick={() => makeDonation(donation, message)} className="button">
+                Donate
+              </button>
+              <Spacer height="10px" />
+
+              {project.owner === user?.address && (
+                <div>
+                  <Link to={"edit/"}>
+                    <button className="button">Edit</button>
+                  </Link>
+                  <Spacer height="10px" />
+                  <button className={"button"} onClick={() => navigator.clipboard.writeText(`${window.location.href}/progress`)}>
+                    Copy progress screen link
+                  </button>
+                  <Spacer height="10px" />
+                  <button className={"button"} onClick={() => navigator.clipboard.writeText(`${window.location.href}/donations`)}>
+                    Copy new donation link
+                  </button>
+                </div>
+              )}
+            </div>
           )}
 
           {edit && (
-            <button onClick={save} className="button">
-              {id ? "Edit" : "Start"}
-            </button>
-          )}
-          {edit && (
-            <Link to={`/${project.title}`}>
-              <button className="button">Back</button>
-            </Link>
-          )}
-          {edit && !!id && (
-            <button className="button" onClick={end}>
-              End
-            </button>
+            <div>
+              <div className={styles.twoButtons}>
+                <button onClick={save} className="button">
+                  {id ? "Edit" : "Start"}
+                </button>
+                <Spacer width="10px" />
+                <button className="button" onClick={end}>
+                  End
+                </button>
+              </div>
+              <Spacer height="10px" />
+
+              <Link to={`/${project.title}`}>
+                <button className="button">Back</button>
+              </Link>
+            </div>
           )}
         </div>
       )}
+      <Spacer height="40px" />
       <input onChange={imageUpload} type="file" id="file" ref={inputFile} style={{ display: "none" }} />
     </div>
   );

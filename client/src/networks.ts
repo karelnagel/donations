@@ -16,7 +16,7 @@ const rinkeby = {
   contract: "0x7d261b57F0aD3b13eD2f618a24e0D655Ad4C7B90",
   token: "0x0C6fCB79743D4F6dE21C6351fFA8Acd7AA4136F8",
   coins: [
-    { value: "0x352841Aab4b9164A1d34b245acE733CCBAc4DF86", label: "My Coin" },
+    { value: "0x352841Aab4b9164A1d34b245acE733CCBAc4DF86", label: "USD" },
     { value: "0xc778417e063141139fce010982780140aa0cd5ab", label: "WETH" },
   ],
 };

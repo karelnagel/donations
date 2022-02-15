@@ -16,7 +16,7 @@ import { Return } from "../interfaces/return";
 export function useProjects() {
   const title = useParams().title;
 
-  const { addMessage, load, provider,network } = useContext(Context);
+  const { addMessage, load, provider, network } = useContext(Context);
   const {
     getProjectId,
     getProject,
@@ -31,10 +31,14 @@ export function useProjects() {
   const [id, setId] = useState(0);
   const [project, setProject] = useState<Project>(defaultProject);
   const [style, setStyle] = useState<ProjectStyle>(defaultProjectStyle);
-  const [lastDonation, setLastDonation] = useState<{name:string,amount:number,message:string}>();
+  const [lastDonation, setLastDonation] =
+    useState<{ name: string; amount: number; message: string }>();
 
   const navigate = useNavigate();
-  const routeToEditPage = useCallback((page) => navigate(page, { replace: true }), [navigate]);
+  const routeToEditPage = useCallback(
+    (page) => navigate(page, { replace: true }),
+    [navigate]
+  );
 
   useEffect(() => {
     if (title) {
@@ -46,21 +50,21 @@ export function useProjects() {
       ) => {
         amount = Number(ethers.utils.formatEther(amount));
         const name = (await getENS(provider, sender)) ?? sender;
-        setLastDonation({name,amount,message})
+        setLastDonation({ name, amount, message });
         addMessage(
           `${name} donated ${amount}! "${message}"`,
           MessageType.donation
         );
         setProject((p) => ({ ...p, balance: p.balance + amount }));
       };
-      contract().on(
-        contract().filters.Donation(id),
-        (id, sender, amount, message) => {
-          effect(id, sender, amount, message);
-        }
-      );
+      const filter = contract().filters.Donation(id);
+      contract().on(filter, (id, sender, amount, message) => {
+        effect(id, sender, amount, message);
+      });
       return () => {
-        contract().removeAllListeners();
+        contract().off(filter, (id, sender, amount, message) => {
+          effect(id, sender, amount, message);
+        });
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -87,14 +91,14 @@ export function useProjects() {
       }
     }
     load(effect, "Loading content");
-    return ()=>{
-      setId(0)
-      setProject(defaultProject)
-      setStyle(defaultProjectStyle)
-    }
+    return () => {
+      setId(0);
+      setProject(defaultProject);
+      setStyle(defaultProjectStyle);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title]);
-
+  const openseaUrl = () => `https://opensea.io/assets/${network.token}/${id}`;
   const makeDonation = (donation: number, message: string) =>
     load(async () => {
       const don = await donate(id, donation, message, project.coin);
@@ -104,7 +108,6 @@ export function useProjects() {
 
   const save = () =>
     load(async () => {
-     
       const styleUrl = await uploadObject(style, true);
       if (styleUrl.error) return addMessage(styleUrl.error);
 
@@ -148,16 +151,33 @@ export function useProjects() {
     return {};
   };
 
-  const imageUpload=async (e:any)=>{
-    const img = e.target.files![0]
+  const imageUpload = async (e: any) => {
+    const img = e.target.files![0];
     if (img) {
       const imageUrl = await uploadObject(img);
       if (imageUrl.error) return addMessage(imageUrl.error);
       setStyle((s) => ({ ...s, image: imageUrl.result! }));
-      console.log(imageUrl.result)
+      console.log(imageUrl.result);
     }
-  }
+  };
 
-  const coin = project ? network.coins.find((c) => c.value === project.coin)?.label : "";
-  return {coin,lastDonation, id, setId, project, setProject, style, setStyle, makeDonation,save,end,setTitle,imageUpload };
+  const coin = project
+    ? network.coins.find((c) => c.value === project.coin)?.label
+    : "";
+  return {
+    coin,
+    lastDonation,
+    id,
+    setId,
+    project,
+    setProject,
+    style,
+    setStyle,
+    makeDonation,
+    save,
+    end,
+    setTitle,
+    imageUpload,
+    openseaUrl,
+  };
 }
