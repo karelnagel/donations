@@ -58,7 +58,7 @@ function ProjectBox({ project }: { project: Project }) {
     }
     effect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [project]);
 
   return (
     <div className={styles.project}>

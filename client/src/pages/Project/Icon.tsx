@@ -17,7 +17,7 @@ export function Icon({
         <a href={url}>
           <img src={`/icons/${icon}.png`} alt={icon} />
         </a>
-        {edit && <Input value={url!} onChange={onChange} />}
+        {edit && <Input value={url!} onChange={onChange} style={{width:"100px"}}/>}
       </div>
     );
   else if (!url) return null;
