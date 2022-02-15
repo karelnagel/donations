@@ -11,7 +11,7 @@ export function Header({ loadWeb3Modal, logoutOfWeb3Modal }: { loadWeb3Modal: ()
         <a href="/">DecDon</a>
       </p>
       <button className={styles.button} onClick={() => (user ? logoutOfWeb3Modal() : loadWeb3Modal())}>
-        {!user ? "Connect Wallet" : user?.name ?? user.address}
+        {!user ? "Connect Wallet" : user?.name ?? `${user.address.substring(0,5)}...${user.address.substring(user.address.length-5)}`}
       </button>
     </div>
   );

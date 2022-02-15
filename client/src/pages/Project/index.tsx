@@ -1,5 +1,5 @@
 import styles from "./styles.module.css";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useFunctions } from "../../hooks/useFunctions";
 import {} from "../../networks";
@@ -14,13 +14,13 @@ import { Spacer } from "../../components/Spacer";
 export function Project({ edit = false }) {
   const { network, addMessage, user } = useContext(Context);
   const { getCoinBalance } = useFunctions();
-  const { project, style,openseaUrl, makeDonation, setStyle, setProject, id, save, end, setTitle, imageUpload, coin } = useProjects();
+  const { project, style, openseaUrl, makeDonation, setStyle, setProject, id, save, end, setTitle, imageUpload, coin } = useProjects();
   const [userBalance, setUserBalance] = useState(0);
   const [donation, setDonation] = useState(0);
   const [message, setMessage] = useState("");
   const [titleError, setTitleError] = useState("");
   const inputFile = useRef<HTMLInputElement | null>(null);
-console.log(window.location.href)
+  console.log(window.location.href);
   useEffect(() => {
     async function effect() {
       if (project.coin && user?.address) {
@@ -34,9 +34,7 @@ console.log(window.location.href)
   useEffect(() => {
     setDonation(style.donationDefault);
   }, [style.donationDefault]);
-  function currentUrl() {
-    return `${window.location.protocol}//${window.location.protocol}/#/`
-  }
+
   if (!user && edit) return <p>Connect wallet to edit or add new project</p>;
   return (
     <div className={styles.content}>
@@ -46,11 +44,11 @@ console.log(window.location.href)
         className={styles.imageBorder}
         onClick={() => {
           if (edit) inputFile.current!.click();
-          else window.open(openseaUrl(), "_blank")
+          else window.open(openseaUrl(), "_blank");
         }}
       >
         {style.image && <img className={styles.image} src={style.image} alt="" />}
-        {!style.image &&edit &&<p>Click to add picture</p>}
+        {!style.image && edit && <p>Click to add picture</p>}
       </div>
       <Spacer height="30px" />
       <Input className={styles.name} value={style.name} edit={edit} onChange={(e) => setStyle((s) => ({ ...s, name: e.target.value }))} />
