@@ -1,6 +1,12 @@
+.content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .projects {
-  width: 400px;
-  margin: auto;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;

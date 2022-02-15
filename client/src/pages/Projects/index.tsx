@@ -8,6 +8,7 @@ import { Project, ProjectStyle } from "../../interfaces/project";
 import styles from "./styles.module.css";
 
 import { Image } from "../../components/Image";
+import { Spacer } from "../../components/Spacer";
 export function Projects() {
   const { getProjectsCount, getProject } = useFunctions();
   const { addMessage } = useContext(Context);
@@ -29,14 +30,17 @@ export function Projects() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div className={styles.projects}>
-      <p className={styles.title}>Latest projects</p>
-      {projects.map((p, i) => (
-        <ProjectBox key={i} project={p} />
-      ))}
-      <Link to="/new">
-        <button className="button">Create new project</button>
-      </Link>
+    <div className={styles.content}>
+      <div className={styles.projects}>
+        <Spacer height="15px" />
+        <p className={styles.title}>Latest projects</p>
+        {projects.map((p, i) => (
+          <ProjectBox key={i} project={p} />
+        ))}
+        <Link to="/new">
+          <button className="button">Create new project</button>
+        </Link>
+      </div>
     </div>
   );
 }
