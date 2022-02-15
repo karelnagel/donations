@@ -16,7 +16,7 @@ contract Donations is Ownable {
         bool active;
     }
     DonationsToken token;
-    uint256 projectsCount = 1;
+    uint256 public projectsCount = 0;
     mapping(uint256 => Project) public projects;
     mapping(string => uint256) public titles;
 
@@ -40,6 +40,7 @@ contract Donations is Ownable {
         string memory uri
     ) public {
         require(titles[title] == 0, "Title already exists");
+        projectsCount++;
         projects[projectsCount] = Project(
             IERC20(coin),
             msg.sender,
@@ -52,7 +53,6 @@ contract Donations is Ownable {
         token.setUri(projectsCount, uri);
         titles[title] = projectsCount;
         emit NewProject(projectsCount,title, msg.sender);
-        projectsCount++;
     }
 
     function editProject(

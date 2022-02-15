@@ -10,6 +10,7 @@ import { useProjects } from "../../hooks/useProjects";
 import { Input } from "./Input";
 import Dropdown from "react-dropdown";
 import { Spacer } from "../../components/Spacer";
+import { Image } from "../../components/Image";
 
 export function Project({ edit = false }) {
   const { network, addMessage, user } = useContext(Context);
@@ -20,7 +21,7 @@ export function Project({ edit = false }) {
   const [message, setMessage] = useState("");
   const [titleError, setTitleError] = useState("");
   const inputFile = useRef<HTMLInputElement | null>(null);
-  console.log(window.location.href);
+
   useEffect(() => {
     async function effect() {
       if (project.coin && user?.address) {
@@ -40,16 +41,13 @@ export function Project({ edit = false }) {
     <div className={styles.content}>
       <Spacer height="100px" />
 
-      <div
-        className={styles.imageBorder}
+      <Image
         onClick={() => {
           if (edit) inputFile.current!.click();
           else window.open(openseaUrl(), "_blank");
         }}
-      >
-        {style.image && <img className={styles.image} src={style.image} alt="" />}
-        {!style.image && edit && <p>Click to add picture</p>}
-      </div>
+        image={style.image}
+      />
       <Spacer height="30px" />
       <Input className={styles.name} value={style.name} edit={edit} onChange={(e) => setStyle((s) => ({ ...s, name: e.target.value }))} />
       <Input
@@ -232,10 +230,12 @@ export function Project({ edit = false }) {
                 <button onClick={save} className="button">
                   {id ? "Edit" : "Start"}
                 </button>
-                <Spacer width="10px" />
-                <button className="button" onClick={end}>
-                  End
-                </button>
+                {!!id && <Spacer width="10px" />}
+                {!!id && (
+                  <button className="button" onClick={end}>
+                    End
+                  </button>
+                )}
               </div>
               <Spacer height="10px" />
 

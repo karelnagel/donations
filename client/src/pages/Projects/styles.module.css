@@ -1,0 +1,40 @@
+.projects {
+  width: 400px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.project {
+  background: rgba(255, 255, 255, 0.3);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 15px 0;
+  width: 100%;
+}
+.title {
+  font-size: 24px;
+  font-weight: bold;
+}
+.flex {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+}
+.texts {
+  height: 100%;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.name {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: bold;
+}
+.description {
+  font-size: 18px;
+}

@@ -14,6 +14,7 @@ import { getENS } from "./hooks/useFunctions";
 import { Message, MessageType } from "./interfaces/message";
 import { Progress } from "./pages/Progress";
 import { LastDonation } from "./pages/LastDonation";
+import { Projects } from "./pages/Projects";
 
 function App() {
   const [web3Provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
@@ -65,9 +66,11 @@ function App() {
                 <Header loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
                 <Messages messages={messages} setMessages={setMessages} />
                 <Routes>
+                  <Route path="new" element={<Project edit={true} />} />
+                  <Route path="projects" element={<Projects />} />
                   <Route path=":title" element={<Project />} />
                   <Route path=":title/edit" element={<Project edit={true} />} />
-                  <Route path="new" element={<Project edit={true}/>} />
+                  <Route path="new" element={<Project edit={true} />} />
                   <Route path="*" element={<Home />} />
                 </Routes>
               </Body>

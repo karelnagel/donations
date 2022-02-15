@@ -1,0 +1,17 @@
+
+.imageBorder {
+  height: 105px;
+  width: 105px;
+  border-radius: 50%;
+  display: flex;
+  background: var(--vertical-color);
+  cursor: pointer;
+  margin:5px;
+}
+.image {
+  height: 95px;
+  width: 95px;
+  margin: auto;
+  border-radius: 50%;
+  object-fit: cover;
+}

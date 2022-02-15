@@ -183,6 +183,15 @@ export function useFunctions() {
       return error("Ending project failed", e);
     }
   };
+
+  const getProjectsCount=async():Promise<ReturnNumber>=>{
+    try {
+      const result = await contract(false).projectsCount();
+      return {result:result.toNumber()};
+    } catch (e) {
+      return error("Ending project failed", e);
+    }
+  }
   return {
     getENS,
     getTokenUri,
@@ -196,5 +205,6 @@ export function useFunctions() {
     editProject,
     endProject,
     donate,
+    getProjectsCount,
   };
 }

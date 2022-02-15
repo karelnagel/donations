@@ -6,21 +6,6 @@
   max-width: 300px;
   margin: auto;
 }
-.imageBorder {
-  height: 105px;
-  width: 105px;
-  border-radius: 50%;
-  display: flex;
-  background: var(--vertical-color);
-  cursor: pointer;
-}
-.image {
-  height: 95px;
-  width: 95px;
-  margin: auto;
-  border-radius: 50%;
-  object-fit: cover;
-}
 .name {
   font-style: normal;
   font-weight: bold;

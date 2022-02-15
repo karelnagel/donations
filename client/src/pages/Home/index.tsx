@@ -16,6 +16,8 @@ export function Home() {
       <p>The smart contracts aren't audited so use at your own risk</p>
       <button className="button">
         <Link to={"/new"}>Create new project</Link>
+      </button><button className="button">
+        <Link to={"/projects"}>Latest projects</Link>
       </button>
       <button className="button">
         <Link to={"/karel"}>Help this project / Example</Link>

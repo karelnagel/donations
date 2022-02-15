@@ -21,12 +21,12 @@
   top: 0%;
   left: 10%;
   background: var(--background-ellips1);
-  animation: Ellips1Move 7s linear infinite;
+  animation: Ellips1Move 10s linear infinite;
 }
 
 .ellips2 {
   background-color: var(--background-ellips2);
-  animation: Ellips2Move 10s linear infinite;
+  animation: Ellips2Move 13s linear infinite;
 }
 
 .content {

@@ -13,10 +13,11 @@ const localhost = {
 const rinkeby = {
   chainId: 4,
   name: "rinkeby",
-  contract: "0x7d261b57F0aD3b13eD2f618a24e0D655Ad4C7B90",
-  token: "0x0C6fCB79743D4F6dE21C6351fFA8Acd7AA4136F8",
+  contract: "0x991c803b678ed1724D7c769F8a5C61242989CaeD",
+  token: "0x746F70f9d0Aadb03066C9EB210463040AF5d5613",
   coins: [
-    { value: "0x352841Aab4b9164A1d34b245acE733CCBAc4DF86", label: "USD" },
+    { value: "0x352841Aab4b9164A1d34b245acE733CCBAc4DF86", label: "My coin" },
+    { value: "0x12297e40007Ff7DB9618F959A842877b42f5FE08", label: "USD" },
     { value: "0xc778417e063141139fce010982780140aa0cd5ab", label: "WETH" },
   ],
 };
