@@ -98,7 +98,7 @@ export function useProjects() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title]);
-  const openseaUrl = () => `https://opensea.io/assets/${network.token}/${id}`;
+  const openseaUrl = () => `${network.opensea}assets/${network.token}/${id}`;
   const makeDonation = (donation: number, message: string) =>
     load(async () => {
       const don = await donate(id, donation, message, project.coin);

@@ -67,7 +67,7 @@ function App() {
                 <Messages messages={messages} setMessages={setMessages} />
                 <Routes>
                   <Route path="new" element={<Project edit={true} />} />
-                  <Route path="projects" element={<Projects />} />
+                  <Route path="projects" element={<Projects count={10}/>} />
                   <Route path=":title" element={<Project />} />
                   <Route path=":title/edit" element={<Project edit={true} />} />
                   <Route path="new" element={<Project edit={true} />} />

@@ -11,7 +11,7 @@ export const Context = createContext<ContextInterface>({
   network: networks[0],
   addMessage: () => {},
   provider: defaultProvider,
-  load: ()=>{}
+  load: () => {},
 });
 
 export interface ContextInterface {
@@ -30,6 +30,9 @@ export interface ContextInterface {
 export interface NetworkInfo {
   chainId: number;
   name: string;
+  etherscan: string;
+  opensea: string;
+  openseaCollection: string;
   contract: string;
   token: string;
   coins: { value: string; label: string }[];

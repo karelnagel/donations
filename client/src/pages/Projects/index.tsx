@@ -9,7 +9,7 @@ import styles from "./styles.module.css";
 
 import { Image } from "../../components/Image";
 import { Spacer } from "../../components/Spacer";
-export function Projects() {
+export function Projects({count}:{count:number}) {
   const { getProjectsCount, getProject } = useFunctions();
   const { addMessage } = useContext(Context);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -18,7 +18,7 @@ export function Projects() {
       const result = await getProjectsCount();
       if (result.error) return addMessage(result.error);
       const last = result.result!;
-      for (let i = last; i > last - 10; i--) {
+      for (let i = last; i > last - count; i--) {
         if (i <= 0) break;
         const project = await getProject(i);
         if (project.error) return addMessage(project.error);
@@ -32,13 +32,15 @@ export function Projects() {
   return (
     <div className={styles.content}>
       <div className={styles.projects}>
-        <Spacer height="15px" />
+        <Spacer height="30px" />
         <p className={styles.title}>Latest projects</p>
+        <Spacer height="10px" />
         {projects.map((p, i) => (
           <ProjectBox key={i} project={p} />
         ))}
-        <Link to="/new">
-          <button className="button">Create new project</button>
+        <Spacer height="20px"/>
+        <Link to="/projects">
+          <button className="button">View more projects</button>
         </Link>
       </div>
     </div>

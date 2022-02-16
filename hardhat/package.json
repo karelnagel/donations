@@ -36,11 +36,11 @@
     "@openzeppelin/contracts": "^4.4.2"
   },
   "scripts": {
-    "compile" :"npx hardhat compile",
-    "test" :"npx hardhat test",
-    "deploy" :"npx hardhat run --network localhost scripts/deploy.ts",
-    "goerli" :"npx hardhat run --network goerli scripts/deploy.ts",
-    "rinkeby" :"npx hardhat run --network rinkeby scripts/deploy.ts",
-    "start" :"npx hardhat node"
+    "start": "npx hardhat node",
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "localhost": "npx hardhat run --network localhost scripts/deploy.ts",
+    "rinkeby": "npx hardhat run --network rinkeby scripts/deploy.ts",
+    "verify-rinkeby": "npx hardhat verify --network rinkeby \"$CONTRACT\" \"$TOKEN\" && npx hardhat verify \"$TOKEN\" --network rinkeby"
   }
 }

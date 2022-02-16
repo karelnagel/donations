@@ -1,5 +1,4 @@
 ## Todo
 
-2. home page 
-3. my projects and open projects page 
-4. network and account changes 
+1. obs donations page not working  
+2. network and account changes 
