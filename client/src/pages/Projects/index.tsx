@@ -6,9 +6,9 @@ import { getProjectStyle } from "../../hooks/useIPFS";
 import { Context } from "../../interfaces/context";
 import { Project, ProjectStyle } from "../../interfaces/project";
 import styles from "./styles.module.css";
-
 import { Image } from "../../components/Image";
 import { Spacer } from "../../components/Spacer";
+
 export function Projects({count}:{count:number}) {
   const { getProjectsCount, getProject } = useFunctions();
   const { addMessage } = useContext(Context);
@@ -30,7 +30,6 @@ export function Projects({count}:{count:number}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div className={styles.content}>
       <div className={styles.projects}>
         <Spacer height="30px" />
         <p className={styles.title}>Latest projects</p>
@@ -43,7 +42,6 @@ export function Projects({count}:{count:number}) {
           <button className="button">View more projects</button>
         </Link>
       </div>
-    </div>
   );
 }
 
@@ -76,6 +74,7 @@ function ProjectBox({ project }: { project: Project }) {
             </div>
           </div>
         )}
+        <Spacer height="10px"/>
         <ProgressBar balance={project.balance} goal={project.goal} coin={coin} />
       </Link>
     </div>

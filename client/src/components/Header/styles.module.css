@@ -1,10 +1,15 @@
 .header {
-  position: relative;
-  padding: 10px 40px;
+  background: rgba(0, 0, 0, 0.3);
+
+}
+.content{
+  margin: auto;
   justify-content: space-between;
   align-items: center;
   display: flex;
-  background: rgba(0, 0, 0, 0.3);
+  position: relative;
+  max-width: 1000px;
+  padding: 10px 10px;
 }
 .title {
   font-weight: bold;

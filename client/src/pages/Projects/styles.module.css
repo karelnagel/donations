@@ -1,12 +1,4 @@
-.content {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 .projects {
-  max-width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,8 +7,8 @@
   background: rgba(255, 255, 255, 0.3);
   padding: 20px;
   border-radius: 10px;
-  margin: 15px 0;
-  width: 100%;
+  margin: 15px;
+  max-width: 400px;
 }
 .title {
   font-size: 24px;
@@ -24,23 +16,30 @@
 }
 .flex {
   display: flex;
-  width: 100%;
   height: 100%;
   justify-content: space-between;
 }
 .texts {
   height: 100%;
-  width: 280px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
 }
 .name {
-  font-size: 24px;
+  font-size: 20px;
   line-height: 30px;
   font-weight: bold;
 }
 .description {
   font-size: 18px;
+}
+
+@media only screen and (min-width: 600px) {
+  .project {
+    width: 100%;
+  }
+  .texts {
+    width:280px;
+  }
 }
