@@ -34,7 +34,6 @@ export interface NetworkInfo {
   opensea: string;
   openseaCollection: string;
   contract: string;
-  token: string;
   coins: { value: string; label: string }[];
 }
 export interface User {

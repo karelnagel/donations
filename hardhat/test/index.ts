@@ -1,8 +1,7 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { Donations, DonationsToken, USDC } from "../typechain";
-let token: DonationsToken;
+import { Donations, USDC } from "../typechain";
 let contract: Donations;
 let usdc: USDC;
 let owner: SignerWithAddress;
@@ -15,16 +14,12 @@ before("Start", async function () {
   // Getting accounts
   [owner, investor] = await ethers.getSigners();
 
-  // Deploy token
+  // Deploy contract
   const Contract = await ethers.getContractFactory("Donations");
   contract = await Contract.deploy();
   await contract.deployed();
 
-  // Getting token from address
-  const Token = await ethers.getContractFactory("DonationsToken");
-  token = Token.attach(await contract.token());
-
-  // Deploy token
+  // Deploy usdc
   const USDC = await ethers.getContractFactory("USDC");
   usdc = await USDC.connect(investor).deploy();
   await usdc.deployed();
@@ -60,7 +55,7 @@ describe("Start project", function () {
     expect(project.active).to.equal(true);
   });
   it("token has correct uri", async function () {
-    const tokenUri = await token.uri(projectId);
+    const tokenUri = await contract.uri(projectId);
     expect(tokenUri).to.equal("uri");
   });
   it("can't create a new project with same title", async function () {
@@ -91,7 +86,7 @@ describe("Edit project", function () {
     expect(project.goal).to.equal(ethers.utils.parseEther("10000"));
     expect(project.uri).to.equal("uri3");
 
-    const uri = await token.uri(projectId);
+    const uri = await contract.uri(projectId);
     expect(uri).to.equal("uri3");
   });
 });
@@ -120,7 +115,7 @@ describe("Donate", function () {
     expect(project.balance).to.equal(donation);
   });
   it("user has NFT ", async function () {
-    const balance = await token.balanceOf(investor.address, projectId);
+    const balance = await contract.balanceOf(investor.address, projectId);
     expect(balance).to.equal(1);
   });
 });

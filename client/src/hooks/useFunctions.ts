@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 import Donations from "../abi/contracts/Donations.sol/Donations.json";
-import DonationsToken from "../abi/contracts/DonationsToken.sol/DonationsToken.json";
 import USDC from "../abi/contracts/USDC.sol/USDC.json";
 import {
   error,
@@ -31,13 +30,6 @@ export function useFunctions() {
     new ethers.Contract(
       network.contract,
       Donations.abi,
-      signer ? provider.getSigner() : provider
-    );
-
-  const token = (signer = false) =>
-    new ethers.Contract(
-      network.token,
-      DonationsToken.abi,
       signer ? provider.getSigner() : provider
     );
 
@@ -91,7 +83,7 @@ export function useFunctions() {
 
   const getTokenUri = async (projectId: number): Promise<ReturnString> => {
     try {
-      const result = await token().uri(projectId);
+      const result = await contract().uri(projectId);
       return { result };
     } catch (e) {
       return error("Can't get token uri", e);
@@ -197,7 +189,6 @@ export function useFunctions() {
     getCoinBalance,
     getProject,
     coin,
-    token,
     contract,
     startProject,
     editProject,

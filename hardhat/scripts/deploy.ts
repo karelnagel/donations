@@ -5,14 +5,7 @@ async function main() {
   const contract = await Contract.deploy();
   await contract.deployed();
 
-  // const USDC = await ethers.getContractFactory("USDC");
-  // const usdc = await USDC.deploy();
-  // await usdc.deployed();
-  // console.log("coin:", usdc.address);
-
-  console.log(
-    `CONTRACT=${contract.address} TOKEN=${await contract.token()} yarn verify`
-  );
+  console.log(`CONTRACT=${contract.address} yarn verify`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

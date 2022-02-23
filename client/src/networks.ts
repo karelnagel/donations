@@ -7,7 +7,6 @@ const localhost = {
   opensea: "",
   openseaCollection: "",
   contract: process.env.REACT_APP_CONTRACT_ADDRESS!,
-  token: process.env.REACT_APP_TOKEN_ADDRESS!,
   coins: [{ value: process.env.REACT_APP_USDC_ADDRESS!, label: "USDC" }],
 };
 
@@ -15,10 +14,9 @@ const rinkeby = {
   chainId: 4,
   name: "rinkeby",
   opensea: "https://testnets.opensea.io/",
-  openseaCollection: "donations4",
+  openseaCollection: "donationss",
   etherscan: "https://rinkeby.etherscan.io/address/",
-  contract: "0x5fa9E262b483E3c51bebB490258Cf4A65d673E4d",
-  token: "0x23C8D2D1562bA71e2acB62Cc4C802FDA38380209",
+  contract: "0xcD6DA1089d1eF2273D0827F18b566Cef36F616c6",
   coins: [
     { value: "0x352841Aab4b9164A1d34b245acE733CCBAc4DF86", label: "My coin" },
     { value: "0x12297e40007Ff7DB9618F959A842877b42f5FE08", label: "USD" },

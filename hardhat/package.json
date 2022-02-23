@@ -39,10 +39,11 @@
     "start": "npx hardhat node",
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
-    "localhost": "npx hardhat run --network localhost scripts/deploy.ts",
-    "dashboard": "npx hardhat run --network dashboard scripts/deploy.ts",
     "start-dashboard": "truffle dashboard",
+    "deploy": "npx hardhat run --network dashboard scripts/deploy.ts",
+    "verify": "npx hardhat verify --network dashboard \"$CONTRACT\" ",
+    "localhost": "npx hardhat run --network localhost scripts/deploy.ts",
     "rinkeby": "npx hardhat run --network rinkeby scripts/deploy.ts",
-    "verify-rinkeby": "npx hardhat verify --network rinkeby \"$CONTRACT\" && npx hardhat verify --network rinkeby \"$TOKEN\" "
+    "verify-rinkeby": "npx hardhat verify --network rinkeby \"$CONTRACT\" "
   }
 }
