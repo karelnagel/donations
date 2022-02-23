@@ -10,11 +10,12 @@ import { getNetworkInfo, networks } from "./networks";
 import { Context, defaultProvider, NetworkInfo, User } from "./interfaces/context";
 import { Loading } from "./components/Loading";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { getENS } from "./hooks/useFunctions";
 import { Message, MessageType } from "./interfaces/message";
 import { Progress } from "./pages/Progress";
 import { LastDonation } from "./pages/LastDonation";
 import { Projects } from "./pages/Projects";
+import { useFunctions } from "./hooks/useFunctions";
+import { Footer } from "./components/Footer";
 
 function App() {
   const [web3Provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
@@ -23,6 +24,7 @@ function App() {
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState("");
   const [provider, setProvider] = useState<JsonRpcProvider>(defaultProvider);
+  const { getENS } = useFunctions();
   const addMessage = (message: string, type = MessageType.error, time = 10) => {
     setMessages((m) => [...m.filter((mes) => mes.type !== type), { message, type, time }]);
   };
@@ -38,18 +40,25 @@ function App() {
       if (web3Provider) {
         setProvider(web3Provider);
         const address = await web3Provider.getSigner().getAddress();
-        const name = await getENS(web3Provider, address);
+        const name = await getENS(address);
         setUser({ address, name });
 
         const chainId = (await web3Provider.getNetwork()).chainId;
         const info = getNetworkInfo(chainId);
-        info ? setNetwork(info) : addMessage("Wrong chain! Use Rinkeby!", MessageType.network, 0);
+
+        if (info) {
+          setNetwork(info);
+        } else {
+          setProvider(defaultProvider);
+          addMessage("Wrong chain! Use Rinkeby!", MessageType.network, 0);
+        }
       } else {
         setProvider(defaultProvider);
         setUser(undefined);
       }
     }
     effect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [web3Provider]);
 
   return (
@@ -67,12 +76,13 @@ function App() {
                 <Messages messages={messages} setMessages={setMessages} />
                 <Routes>
                   <Route path="new" element={<Project edit={true} />} />
-                  <Route path="projects" element={<Projects count={10}/>} />
+                  <Route path="projects" element={<Projects count={10} />} />
                   <Route path=":title" element={<Project />} />
                   <Route path=":title/edit" element={<Project edit={true} />} />
                   <Route path="new" element={<Project edit={true} />} />
                   <Route path="*" element={<Home />} />
                 </Routes>
+                <Footer />
               </Body>
             }
           />

@@ -1,26 +1,17 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const Token = await ethers.getContractFactory("DonationsToken");
-  const token = await Token.deploy();
-  await token.deployed();
-
   const Contract = await ethers.getContractFactory("Donations");
-  const contract = await Contract.deploy(token.address);
+  const contract = await Contract.deploy();
   await contract.deployed();
-
-  // Change token owner to Contract
-  token.transferOwnership(contract.address);
 
   // const USDC = await ethers.getContractFactory("USDC");
   // const usdc = await USDC.deploy();
   // await usdc.deployed();
   // console.log("coin:", usdc.address);
 
-  console.log("Contract:", contract.address);
-  console.log("Token:", token.address);
   console.log(
-    `CONTRACT=${contract.address} TOKEN=${token.address} yarn verify`
+    `CONTRACT=${contract.address} TOKEN=${await contract.token()} yarn verify`
   );
 }
 

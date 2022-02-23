@@ -1,6 +1,6 @@
 import { Context } from "../interfaces/context";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { getENS, useFunctions } from "./useFunctions";
+import { useFunctions } from "./useFunctions";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   defaultProject,
@@ -16,7 +16,7 @@ import { Return } from "../interfaces/return";
 export function useProjects() {
   const title = useParams().title;
 
-  const { addMessage, load, provider, network } = useContext(Context);
+  const { addMessage, load, network } = useContext(Context);
   const {
     getProjectId,
     getProject,
@@ -25,6 +25,7 @@ export function useProjects() {
     editProject,
     startProject,
     endProject,
+    getENS,
   } = useFunctions();
 
   const [id, setId] = useState(0);
@@ -48,7 +49,7 @@ export function useProjects() {
         message: string
       ) => {
         amount = Number(ethers.utils.formatEther(amount));
-        const name = (await getENS(provider, sender)) ?? sender;
+        const name = (await getENS(sender)) ?? sender;
         setLastDonation({ name, amount, message });
         addMessage(
           `${name} donated ${amount}! "${message}"`,
@@ -81,7 +82,7 @@ export function useProjects() {
 
         if (getProj.error) return addMessage(getProj.error);
         const proj = getProj.result!;
-        setProject(proj);
+        setProject({ ...proj, ownerName: await getENS(proj.owner) });
 
         const getStyle = await getProjectStyle(proj.uri);
         if (getStyle.error) return addMessage(getStyle.error);

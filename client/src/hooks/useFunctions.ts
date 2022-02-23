@@ -11,22 +11,21 @@ import {
 } from "../interfaces/return";
 import { Context } from "../interfaces/context";
 import { useContext } from "react";
-import { JsonRpcProvider } from "@ethersproject/providers";
-
-export async function getENS(
-  provider: JsonRpcProvider,
-  address: string
-): Promise<string | undefined> {
-  try {
-    return (await provider.lookupAddress(address)) ?? undefined;
-  } catch {
-    console.log("no ens!");
-  }
-  return undefined;
-}
 
 export function useFunctions() {
-  const { provider, network,user } = useContext(Context);
+  const { provider, network, user } = useContext(Context);
+  const getENS = async (address: string): Promise<string> => {
+    try {
+      const name = await provider.lookupAddress(address);
+      if (name) return name;
+    } catch {
+      console.log("no ens!");
+    }
+    
+    return `${address.substring(0, 5)}...${address.substring(
+      address.length - 5
+    )}`;
+  };
 
   const contract = (signer = false) =>
     new ethers.Contract(
@@ -49,13 +48,13 @@ export function useFunctions() {
       signer ? provider.getSigner() : provider
     );
 
-    // Read functions
+  // Read functions
   const getProject = async (projectId: number): Promise<ReturnProject> => {
     try {
       const result = await contract().projects(projectId);
       return {
         result: {
-          title:result.title,
+          title: result.title,
           goal: Number(ethers.utils.formatEther(result.goal)),
           balance: Number(ethers.utils.formatEther(result.balance)),
           owner: result.owner,
@@ -99,8 +98,7 @@ export function useFunctions() {
     }
   };
 
-
-  //Write functions 
+  //Write functions
   const startProject = async (
     coin: string,
     title: string,
@@ -147,7 +145,7 @@ export function useFunctions() {
   ): Promise<Return> => {
     try {
       const contractObj = contract(true);
-      const coinObj = coin(coinAddress,true);
+      const coinObj = coin(coinAddress, true);
       const donationInWei = ethers.utils.parseEther(donation.toString());
 
       const allowance = await coinObj.allowance(
@@ -184,14 +182,14 @@ export function useFunctions() {
     }
   };
 
-  const getProjectsCount=async():Promise<ReturnNumber>=>{
+  const getProjectsCount = async (): Promise<ReturnNumber> => {
     try {
       const result = await contract(false).projectsCount();
-      return {result:result.toNumber()};
+      return { result: result.toNumber() };
     } catch (e) {
       return error("Ending project failed", e);
     }
-  }
+  };
   return {
     getENS,
     getTokenUri,

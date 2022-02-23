@@ -22,6 +22,7 @@ export interface Project {
   goal: number;
   balance: number;
   owner: string;
+  ownerName?: string;
   coin: string;
   uri: string;
   active: boolean;

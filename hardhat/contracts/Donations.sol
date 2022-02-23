@@ -15,14 +15,10 @@ contract Donations is Ownable {
         string uri;
         bool active;
     }
-    DonationsToken token;
+    DonationsToken public token;
     uint256 public projectsCount = 0;
     mapping(uint256 => Project) public projects;
     mapping(string => uint256) public titles;
-
-    constructor(address tokenAddress) {
-        token = DonationsToken(tokenAddress);
-    }
 
     modifier onlyProjectOwner(uint256 id) {
         require(msg.sender == projects[id].owner, "Not project owner!");
@@ -31,6 +27,10 @@ contract Donations is Ownable {
     modifier activeProject(uint256 id) {
         require(projects[id].active, "Project not active!");
         _;
+    }
+    
+    constructor() {
+        token = new DonationsToken();
     }
 
     function startProject(
@@ -52,7 +52,7 @@ contract Donations is Ownable {
         );
         token.setUri(projectsCount, uri);
         titles[title] = projectsCount;
-        emit NewProject(projectsCount,title, msg.sender);
+        emit NewProject(projectsCount, title, msg.sender);
     }
 
     function editProject(
@@ -74,13 +74,13 @@ contract Donations is Ownable {
         projects[id].coin.transfer(msg.sender, projects[id].balance);
     }
 
-    event Donation(
-        uint256 indexed id,
-        address indexed sender,
-        uint256 amount,
-        string message
-    );
-    event NewProject(uint256 indexed id,string indexed title, address indexed owner);
+    function changeProjectOwner(uint256 id, address newOwner)
+        public
+        onlyProjectOwner(id)
+        activeProject(id)
+    {
+        projects[id].owner = newOwner;
+    }
 
     function donate(
         uint256 id,
@@ -94,4 +94,16 @@ contract Donations is Ownable {
 
         emit Donation(id, msg.sender, amount, message);
     }
+
+    event Donation(
+        uint256 indexed id,
+        address indexed sender,
+        uint256 amount,
+        string message
+    );
+    event NewProject(
+        uint256 indexed id,
+        string indexed title,
+        address indexed owner
+    );
 }

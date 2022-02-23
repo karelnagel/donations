@@ -31,5 +31,4 @@ contract DonationsToken is ERC1155, Ownable {
     {
         return uris[id];
     }
-    // Todo change token uri
 }

@@ -27,6 +27,18 @@
   line-height: 24px;
   cursor: pointer;
 }
+
+.owner {
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.ownerName {
+  color: var(--secondary-color);
+  cursor: pointer;
+}
+
 .icons {
   width: 100%;
   display: flex;
@@ -36,7 +48,7 @@
 .icons img {
   width: 30px;
 }
-.donation{
+.donation {
   width: 100%;
 }
 .donationOptions {
@@ -53,6 +65,7 @@
   border-radius: 10px;
   padding: 5px;
   cursor: pointer;
+  overflow:hidden;
 }
 
 .input {
@@ -72,17 +85,17 @@
 }
 .twoButtons {
   display: flex;
-} 
-.dropdown{
+}
+.dropdown {
   padding: 15px;
   background: var(--white-color);
-  color:var(--primary-color);
+  color: var(--primary-color);
   box-shadow: 0px 5px 18px var(--primary-color);
-  border-radius:10px;
+  border-radius: 10px;
   font-size: 18px;
   line-height: 24px;
   font-weight: bold;
 }
-label{
+label {
   width: 100%;
 }

@@ -32,6 +32,7 @@ export function Project({ edit = false }) {
     effect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, user]);
+
   useEffect(() => {
     setDonation(style.donationDefault);
   }, [style.donationDefault]);
@@ -46,6 +47,7 @@ export function Project({ edit = false }) {
           if (edit) inputFile.current!.click();
           else window.open(openseaUrl(), "_blank");
         }}
+        edit={edit}
         image={style.image}
       />
       <Spacer height="30px" />
@@ -93,7 +95,18 @@ export function Project({ edit = false }) {
         />
       </div>
       <Spacer height="20px" />
+
       {!edit && <ProgressBar balance={project.balance} goal={project.goal} coin={coin!} />}
+
+      <Spacer height="10px" />
+      {!edit && (
+        <p className={styles.owner}>
+          by:{" "}
+          <a className={styles.ownerName} href={network.etherscan + project.owner}>
+            {project.ownerName}
+          </a>
+        </p>
+      )}
       {!edit && <Spacer height="60px" />}
 
       {!user && <p>Connect wallet to donate</p>}
@@ -181,7 +194,7 @@ export function Project({ edit = false }) {
               />
               {!edit && (
                 <p className={styles.donationOption} onClick={() => setDonation(userBalance)}>
-                  {userBalance}
+                  MAX
                 </p>
               )}
             </div>

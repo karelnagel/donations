@@ -15,10 +15,10 @@ const rinkeby = {
   chainId: 4,
   name: "rinkeby",
   opensea: "https://testnets.opensea.io/",
-  openseaCollection: "donations3",
+  openseaCollection: "donations4",
   etherscan: "https://rinkeby.etherscan.io/address/",
-  contract: "0xAc80E61208F86d41fa63272ea7769a49168fCE0c",
-  token: "0x17b04e5425b8801FEcec814A8B0cb9c01942cf33",
+  contract: "0x5fa9E262b483E3c51bebB490258Cf4A65d673E4d",
+  token: "0x23C8D2D1562bA71e2acB62Cc4C802FDA38380209",
   coins: [
     { value: "0x352841Aab4b9164A1d34b245acE733CCBAc4DF86", label: "My coin" },
     { value: "0x12297e40007Ff7DB9618F959A842877b42f5FE08", label: "USD" },

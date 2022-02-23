@@ -16,22 +16,18 @@ before("Start", async function () {
   [owner, investor] = await ethers.getSigners();
 
   // Deploy token
-  const Token = await ethers.getContractFactory("DonationsToken");
-  token = await Token.deploy();
-  await token.deployed();
-
-  // Deploy token
   const Contract = await ethers.getContractFactory("Donations");
-  contract = await Contract.deploy(token.address);
+  contract = await Contract.deploy();
   await contract.deployed();
+
+  // Getting token from address
+  const Token = await ethers.getContractFactory("DonationsToken");
+  token = Token.attach(await contract.token());
 
   // Deploy token
   const USDC = await ethers.getContractFactory("USDC");
   usdc = await USDC.connect(investor).deploy();
   await usdc.deployed();
-
-  // Change token owner to Contract
-  token.transferOwnership(contract.address);
 });
 
 describe("Start project", function () {
@@ -126,6 +122,21 @@ describe("Donate", function () {
   it("user has NFT ", async function () {
     const balance = await token.balanceOf(investor.address, projectId);
     expect(balance).to.equal(1);
+  });
+});
+
+describe("Change owner", function () {
+  it("changing from owner to investor", async function () {
+    await contract.changeProjectOwner(projectId, investor.address);
+    expect(investor.address).to.equal(
+      (await contract.projects(projectId)).owner
+    );
+  });
+  it("changing from investor to owner", async function () {
+    await contract
+      .connect(investor)
+      .changeProjectOwner(projectId, owner.address);
+    expect(owner.address).to.equal((await contract.projects(projectId)).owner);
   });
 });
 
