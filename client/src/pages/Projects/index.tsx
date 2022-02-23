@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ProgressBar } from "../../components/ProgressBar";
 import { useFunctions } from "../../hooks/useFunctions";
-import { getProjectStyle } from "../../hooks/useIPFS";
+import { getProjectStyle } from "../../hooks/ipfs";
 import { Context } from "../../interfaces/context";
 import { Project, ProjectStyle } from "../../interfaces/project";
 import styles from "./styles.module.css";

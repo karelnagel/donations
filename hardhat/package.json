@@ -40,6 +40,8 @@
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
     "localhost": "npx hardhat run --network localhost scripts/deploy.ts",
+    "dashboard": "npx hardhat run --network dashboard scripts/deploy.ts",
+    "start-dashboard": "truffle dashboard",
     "rinkeby": "npx hardhat run --network rinkeby scripts/deploy.ts",
     "verify-rinkeby": "npx hardhat verify --network rinkeby \"$CONTRACT\" \"$TOKEN\" && npx hardhat verify \"$TOKEN\" --network rinkeby"
   }

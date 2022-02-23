@@ -25,6 +25,9 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 const config: HardhatUserConfig = {
   solidity: "0.8.4",
   networks: {
+    dashboard: {
+      url: "http://localhost:24012/rpc",
+    },
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
       accounts:

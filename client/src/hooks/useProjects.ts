@@ -8,7 +8,7 @@ import {
   Project,
   ProjectStyle,
 } from "../interfaces/project";
-import { getProjectStyle, useIPFS } from "./useIPFS";
+import { getProjectStyle, pinFileToIPFS, pinJSONToIPFS } from "./ipfs";
 import { ethers } from "ethers";
 import { MessageType } from "../interfaces/message";
 import { Return } from "../interfaces/return";
@@ -26,7 +26,6 @@ export function useProjects() {
     startProject,
     endProject,
   } = useFunctions();
-  const { uploadObject } = useIPFS();
 
   const [id, setId] = useState(0);
   const [project, setProject] = useState<Project>(defaultProject);
@@ -108,7 +107,7 @@ export function useProjects() {
 
   const save = () =>
     load(async () => {
-      const styleUrl = await uploadObject(style, true);
+      const styleUrl = await pinJSONToIPFS(style);
       if (styleUrl.error) return addMessage(styleUrl.error);
 
       if (id) {
@@ -154,7 +153,7 @@ export function useProjects() {
   const imageUpload = async (e: any) => {
     const img = e.target.files![0];
     if (img) {
-      const imageUrl = await uploadObject(img);
+      const imageUrl = await pinFileToIPFS(img);
       if (imageUrl.error) return addMessage(imageUrl.error);
       setStyle((s) => ({ ...s, image: imageUrl.result! }));
       console.log(imageUrl.result);
