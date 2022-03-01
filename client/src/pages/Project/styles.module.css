@@ -99,3 +99,6 @@
 label {
   width: 100%;
 }
+.donationMessage{
+  position: absolute;
+}

@@ -13,6 +13,7 @@ import { useContext } from "react";
 
 export function useFunctions() {
   const { provider, network, user } = useContext(Context);
+
   const getENS = async (address: string): Promise<string> => {
     try {
       const name = await provider.lookupAddress(address);
@@ -20,10 +21,19 @@ export function useFunctions() {
     } catch {
       console.log("no ens!");
     }
-    
+
     return `${address.substring(0, 5)}...${address.substring(
       address.length - 5
     )}`;
+  };
+  const getAvatar = async (address: string): Promise<string> => {
+    try {
+      const avatar = await provider.getAvatar(address);
+      if (avatar) return avatar;
+    } catch {
+      console.log("no ens!");
+    }
+    return "";
   };
 
   const contract = (signer = false) =>
@@ -184,6 +194,7 @@ export function useFunctions() {
   };
   return {
     getENS,
+    getAvatar,
     getTokenUri,
     getProjectId,
     getCoinBalance,

@@ -12,6 +12,7 @@ import { getProjectStyle, pinFileToIPFS, pinJSONToIPFS } from "./ipfs";
 import { ethers } from "ethers";
 import { MessageType } from "../interfaces/message";
 import { Return } from "../interfaces/return";
+import { Donation } from "../interfaces/donation";
 
 export function useProjects() {
   const title = useParams().title;
@@ -26,13 +27,13 @@ export function useProjects() {
     startProject,
     endProject,
     getENS,
+    getAvatar,
   } = useFunctions();
 
   const [id, setId] = useState(0);
   const [project, setProject] = useState<Project>(defaultProject);
   const [style, setStyle] = useState<ProjectStyle>(defaultProjectStyle);
-  const [lastDonation, setLastDonation] =
-    useState<{ name: string; amount: number; message: string }>();
+  const [lastDonation, setLastDonation] = useState<Donation>();
 
   const navigate = useNavigate();
   const routeToEditPage = useCallback(
@@ -50,11 +51,9 @@ export function useProjects() {
       ) => {
         amount = Number(ethers.utils.formatEther(amount));
         const name = (await getENS(sender)) ?? sender;
-        setLastDonation({ name, amount, message });
-        addMessage(
-          `${name} donated ${amount}! "${message}"`,
-          MessageType.donation
-        );
+        const avatar = await getAvatar(sender);
+        setLastDonation({ name, amount, message, avatar, coin: coin });
+        
         setProject((p) => ({ ...p, balance: p.balance + amount }));
       };
       const filter = contract().filters.Donation(id);
@@ -103,7 +102,7 @@ export function useProjects() {
     load(async () => {
       const don = await donate(id, donation, message, project.coin);
       if (don.error) addMessage(don.error);
-      else addMessage("Donation successful", MessageType.success);
+      // else addMessage("Donation successful", MessageType.success);
     }, "Making donation! This will take two transactions. Continue to your wallet!");
 
   const save = () =>

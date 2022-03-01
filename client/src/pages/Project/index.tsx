@@ -11,11 +11,12 @@ import { Input } from "./Input";
 import Dropdown from "react-dropdown";
 import { Spacer } from "../../components/Spacer";
 import { Image } from "../../components/Image";
+import { DonationMessage } from "../../components/DonationMessage";
 
 export function Project({ edit = false }) {
   const { network, addMessage, user } = useContext(Context);
   const { getCoinBalance } = useFunctions();
-  const { project, style, openseaUrl, makeDonation, setStyle, setProject, id, save, end, setTitle, imageUpload, coin } = useProjects();
+  const { project, style, openseaUrl, makeDonation, setStyle, setProject, id, save, end, setTitle, imageUpload, coin,lastDonation } = useProjects();
   const [userBalance, setUserBalance] = useState(0);
   const [donation, setDonation] = useState(0);
   const [message, setMessage] = useState("");
@@ -40,6 +41,9 @@ export function Project({ edit = false }) {
   if (!user && edit) return <p>Connect wallet to edit or add new project</p>;
   return (
     <div className={styles.content}>
+      <div className={styles.donationMessage}>
+      <DonationMessage donation={lastDonation}/>
+      </div>
       <Spacer height="100px" />
 
       <Image

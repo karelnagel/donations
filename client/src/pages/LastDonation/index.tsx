@@ -1,16 +1,12 @@
+import { DonationMessage } from "../../components/DonationMessage";
 import { useProjects } from "../../hooks/useProjects";
 
 export function LastDonation() {
-  const { lastDonation, coin } = useProjects();
+  const { lastDonation } = useProjects();
+
   return (
     <div>
-      <h2>Donations</h2>
-      {lastDonation && (
-        <div>
-          <h2>{`${lastDonation.name} donated ${lastDonation.amount} ${coin}`}</h2>
-          <h2>{lastDonation.message}</h2>
-        </div>
-      )}
+       <DonationMessage donation={lastDonation ?? { name: "Peter Pan", amount: 1000, avatar: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png", message: "Hello!" }} />
     </div>
   );
 }
