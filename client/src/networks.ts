@@ -24,7 +24,23 @@ const rinkeby = {
   ],
 };
 
-export const networks: NetworkInfo[] = [rinkeby, localhost];
+const polygon = {
+  chainId: 137,
+  name: "polygon-mainnet",
+  opensea: "https://opensea.io/",
+  openseaCollection: "ethdon",
+  etherscan: "https://polygonscan.io/address/",
+  contract: "0xC5F4e7eD8D4e96D59Ad568cC3cFF8A1CFAAB6160",
+  coins: [
+    { value: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619", label: "WETH" },
+    { value: "0x0000000000000000000000000000000000001010", label: "MATIC" },
+    { value: "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6", label: "WBTC" },
+    { value: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", label: "USDC" },
+    { value: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F", label: "USDT" },
+  ],
+};
+
+export const networks: NetworkInfo[] = [polygon, rinkeby, localhost];
 
 export const getNetworkInfo = (chainId: number): NetworkInfo | undefined => {
   return networks.find((n) => n.chainId === chainId);

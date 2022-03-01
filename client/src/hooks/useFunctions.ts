@@ -189,7 +189,7 @@ export function useFunctions() {
       const result = await contract(false).projectsCount();
       return { result: result.toNumber() };
     } catch (e) {
-      return error("Ending project failed", e);
+      return error("Error loading projects", e);
     }
   };
   return {
