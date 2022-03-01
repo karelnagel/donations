@@ -50,7 +50,7 @@ function App() {
           setNetwork(info);
         } else {
           setProvider(defaultProvider);
-          addMessage("Wrong chain! Use Rinkeby!", MessageType.network, 0);
+          addMessage("Wrong chain! Use Polygon!", MessageType.network, 0);
         }
       } else {
         setProvider(defaultProvider);

@@ -20,7 +20,12 @@ function useWeb3Modal(config: { autoLoad?: boolean; infuraId?: string; network?:
         walletconnect: {
           package: WalletConnectProvider,
           options: {
-            infuraId
+            infuraId,
+            rpc: {
+              137: "https://polygon-mainnet.infura.io/v3/1fa1025d0ae7412f93785bb01b7bc589",
+            },
+            network:"matic"
+            
           }
         }
       }
