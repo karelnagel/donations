@@ -33,7 +33,7 @@ export function Home() {
       <div className={styles.videoSection}>
         <p className={styles.title2}>How to use</p>
         <Spacer height="20px" />
-        <YouTube videoId={"yqWX86uT5jM"} className={styles.video} />
+        <YouTube videoId={"eMSzaAvwrXg"} className={styles.video} />
       </div>
       <Projects count={3} />
     </div>
