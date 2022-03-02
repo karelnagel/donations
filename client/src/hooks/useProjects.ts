@@ -97,7 +97,7 @@ export function useProjects() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title]);
-  const openseaUrl = () => `${network.opensea}assets/${network.contract}/${id}`;
+  const openseaUrl = () => `${network.opensea}assets/matic/${network.contract}/${id}`;//Todo change when different networks added
   const makeDonation = (donation: number, message: string) =>
     load(async () => {
       const don = await donate(id, donation, message, project.coin);

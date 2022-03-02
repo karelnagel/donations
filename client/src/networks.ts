@@ -29,7 +29,7 @@ const polygon = {
   name: "polygon-mainnet",
   opensea: "https://opensea.io/",
   openseaCollection: "ethdon",
-  etherscan: "https://polygonscan.io/address/",
+  etherscan: "https://polygonscan.com/address/",
   contract: "0xC5F4e7eD8D4e96D59Ad568cC3cFF8A1CFAAB6160",
   coins: [
     { value: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619", label: "WETH" },

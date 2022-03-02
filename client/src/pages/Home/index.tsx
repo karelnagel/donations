@@ -9,7 +9,7 @@ export function Home() {
     <div className={styles.content}>
       <div className={styles.firstSection}>
         <Spacer height="10px" />
-        <p className={styles.title}>Decentralized donations for creators</p>
+        <p className={styles.title}>Ethereum donations for creators</p>
 
         <div className={styles.props}>
           <p>any erc20</p>

@@ -9,7 +9,7 @@ export function Header({ loadWeb3Modal, logoutOfWeb3Modal }: { loadWeb3Modal: ()
     <div className={styles.header}>
       <div className={styles.content}>
       <p className={styles.title}>
-        <a href="/">ETHDON</a>
+        <a href="/">Ethereum Donations</a>
       </p>
       <button className={styles.button} onClick={() => (user ? logoutOfWeb3Modal() : loadWeb3Modal())}>
         {!user ? "Connect Wallet" : user.name}
