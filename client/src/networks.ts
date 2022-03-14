@@ -14,9 +14,9 @@ const rinkeby = {
   chainId: 4,
   name: "rinkeby",
   opensea: "https://testnets.opensea.io/",
-  openseaCollection: "donationss",
+  openseaCollection: "donationsss",
   etherscan: "https://rinkeby.etherscan.io/address/",
-  contract: "0xcD6DA1089d1eF2273D0827F18b566Cef36F616c6",
+  contract: "0x9C27bd29c0d0564EE4d10a7F71eC6923a0D2b33E",
   coins: [
     { value: "0x352841Aab4b9164A1d34b245acE733CCBAc4DF86", label: "My coin" },
     { value: "0x12297e40007Ff7DB9618F959A842877b42f5FE08", label: "USD" },
@@ -40,7 +40,7 @@ const polygon = {
   ],
 };
 
-export const networks: NetworkInfo[] = [rinkeby, polygon, localhost];
+export const networks: NetworkInfo[] = [polygon, rinkeby, localhost];
 
 export const defaultNetwork =
   networks[Number(process.env.REACT_APP_DEFAULT_NETWORK) ?? 0];
