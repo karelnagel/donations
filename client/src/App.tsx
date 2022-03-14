@@ -6,7 +6,7 @@ import { Home } from "./pages/Home";
 import { Project } from "./pages/Project";
 import { Routes, Route, HashRouter } from "react-router-dom";
 import { Messages } from "./components/Messages";
-import { getNetworkInfo, networks } from "./networks";
+import { getNetworkInfo, defaultNetwork } from "./networks";
 import { Context, defaultProvider, NetworkInfo, User } from "./interfaces/context";
 import { Loading } from "./components/Loading";
 import { JsonRpcProvider } from "@ethersproject/providers";
@@ -20,7 +20,7 @@ import { Footer } from "./components/Footer";
 function App() {
   const [web3Provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [network, setNetwork] = useState<NetworkInfo>(networks[0]);
+  const [network, setNetwork] = useState<NetworkInfo>(defaultNetwork);
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState("");
   const [provider, setProvider] = useState<JsonRpcProvider>(defaultProvider);

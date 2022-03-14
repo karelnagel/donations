@@ -40,7 +40,10 @@ const polygon = {
   ],
 };
 
-export const networks: NetworkInfo[] = [polygon, rinkeby, localhost];
+export const networks: NetworkInfo[] = [rinkeby, polygon, localhost];
+
+export const defaultNetwork =
+  networks[Number(process.env.REACT_APP_DEFAULT_NETWORK) ?? 0];
 
 export const getNetworkInfo = (chainId: number): NetworkInfo | undefined => {
   return networks.find((n) => n.chainId === chainId);
