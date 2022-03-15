@@ -55,13 +55,14 @@ describe("Start project", function () {
     token = Token.attach(tokenAddress);
     const project = await token.info();
 
-    expect(project._coin).to.equal(usdc.address);
-    expect(project._owner).to.equal(owner.address);
-    expect(project._title).to.equal("title");
-    expect(project._balance).to.equal(0);
-    expect(project._goal).to.equal(ethers.utils.parseEther("10"));
-    expect(project._styling).to.equal("uri");
-    expect(project._active).to.equal(true);
+    expect(project.coin).to.equal(usdc.address);
+    expect(project.currentOwner).to.equal(owner.address);
+    expect(project.title).to.equal("title");
+    expect(project.balance).to.equal(0);
+    expect(project.goal).to.equal(ethers.utils.parseEther("10"));
+    expect(project.styling).to.equal("uri");
+    expect(project.active).to.equal(true);
+    expect(project.donationsCount).to.equal(0);
 
     expect(await token.contractURI()).to.equal("uri");
   });
@@ -88,13 +89,25 @@ describe("Edit", function () {
   it("parameters changed", async function () {
     await token.edit(ethers.utils.parseEther("10000"), "uri3", "image");
     const project = await token.info();
-    expect(project._goal).to.equal(ethers.utils.parseEther("10000"));
-    expect(project._styling).to.equal("uri3");
-    expect(project._image).to.equal("image");
+    expect(project.goal).to.equal(ethers.utils.parseEther("10000"));
+    expect(project.styling).to.equal("uri3");
+    expect(project.image).to.equal("image");
   });
 });
 
 describe("Donate", function () {
+  it("fails if amount == 0", async function () {
+    await expect(
+      token.connect(investor).donate(0, "I like your project!")
+    ).to.be.revertedWith("Donation amount is 0");
+  });
+
+  it("fails if not enough coins", async function () {
+    await expect(
+      token.donate(donation, "I like your project!")
+    ).to.be.revertedWith("transfer amount exceeds balance");
+  });
+
   it("emits event", async function () {
     await usdc.connect(investor).approve(token.address, donation);
     expect(
@@ -112,11 +125,31 @@ describe("Donate", function () {
     expect(await usdc.balanceOf(token.address)).to.equal(donation);
   });
   it("project balance is correct", async function () {
-    expect(await token.balance()).to.equal(donation);
+    expect((await token.info()).balance).to.equal(donation);
   });
   it("user has NFT ", async function () {
     expect(await token.ownerOf(1)).to.equal(investor.address);
-    console.log(await token.tokenURI(1));
+  });
+  it("token has correct uri ", async function () {
+    const result = await token.tokenURI(1);
+    const json = atob(result.split(",")[1]);
+    const obj = JSON.parse(json);
+
+    const donationInfo = await token.donations(1);
+
+    expect(obj.image).to.equal("image");
+    expect(obj.name).to.equal("Supporter #1");
+    expect(obj.description).to.equal("I like your project!");
+    expect(obj.external_url).to.equal("https://ethdon.xyz/#/title");
+    expect(obj.attributes[0].value.toString())
+      .to.equal(donationInfo.amount.toString())
+      .to.equal(donation.toString());
+    expect(obj.attributes[1].value)
+      .to.equal(donationInfo.message)
+      .to.equal("I like your project!");
+    expect(obj.attributes[2].value)
+      .to.equal(investor.address.toLowerCase())
+      .to.equal("0x70997970c51812dc3a010c7d01b50e0d17dc79c8");
   });
 });
 

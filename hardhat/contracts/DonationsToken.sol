@@ -8,103 +8,109 @@ import "./Base64.sol";
 
 contract DonationsToken is ERC721, Ownable {
     using Strings for uint256;
-    string public title;
-    IERC20 public coin;
 
-    uint256 public balance;
-    uint256 public goal;
-    bool public active;
-    string public styling;
-    string public image;
-    uint256 public donationsCount = 0;
+    string _title;
+    IERC20 _coin;
+    uint256 _balance;
+    uint256 _goal;
+    bool _active;
+    string _styling;
+    string _image;
+    uint256 _donationsCount = 0;
 
     struct Donation {
         uint256 amount;
         string message;
+        address donator;
     }
     mapping(uint256 => Donation) public donations;
 
     modifier isActive() {
-        require(active, "Project not active!");
+        require(_active, "Project not active!");
         _;
     }
 
     constructor(
-        address _coin,
-        string memory _title,
-        uint256 _goal,
-        string memory _styling,
-        string memory _image
+        string memory title,
+        address coin,
+        uint256 goal,
+        string memory styling,
+        string memory image
     ) ERC721(_title, _title) {
-        coin = IERC20(_coin);
-        title = _title;
-        goal = _goal;
-        active = true;
-        styling = _styling;
-        image = _image;
+        _coin = IERC20(coin);
+        _title = title;
+        _goal = goal;
+        _active = true;
+        _styling = styling;
+        _image = image;
     }
 
     function info()
         public
         view
         returns (
-            string memory _title,
-            address _coin,
-            address _owner,
-            uint256 _balance,
-            uint256 _goal,
-            bool _active,
-            string memory _styling,
-            string memory _image
+            string memory title,
+            address coin,
+            address currentOwner,
+            uint256 balance,
+            uint256 goal,
+            bool active,
+            string memory styling,
+            string memory image,
+            uint256 donationsCount
         )
     {
-        _title = title;
-        _coin = address(coin);
-        _owner = owner();
-        _balance = balance;
-        _goal = goal;
-        _active = active;
-        _styling = styling;
-        _image = image;
+        title = _title;
+        coin = address(_coin);
+        currentOwner = owner();
+        balance = _balance;
+        goal = _goal;
+        active = _active;
+        styling = _styling;
+        image = _image;
+        donationsCount = _donationsCount;
         return (
-            _title,
-            _coin,
-            _owner,
-            _balance,
-            _goal,
-            _active,
-            _styling,
-            _image
+            title,
+            coin,
+            currentOwner,
+            balance,
+            goal,
+            active,
+            styling,
+            image,
+            donationsCount
         );
     }
 
     function edit(
-        uint256 _goal,
-        string memory _styling,
-        string memory _image
+        uint256 goal,
+        string memory styling,
+        string memory image
     ) public onlyOwner isActive {
-        goal = _goal;
-        styling = _styling;
-        image = _image;
+        _goal = goal;
+        _styling = styling;
+        _image = image;
     }
 
-    function donate(uint256 _amount, string memory _message) public isActive {
-        coin.transferFrom(msg.sender, address(this), _amount);
-        balance += _amount;
+    function donate(uint256 amount, string memory message) public isActive {
+        require(amount > 0, "Donation amount is 0");
 
-        donationsCount++;
-        _safeMint(msg.sender, donationsCount);
-        donations[donationsCount] = Donation(_amount, _message);
+        _coin.transferFrom(msg.sender, address(this), amount);
+        _balance += amount;
 
-        emit NewDonation(msg.sender, _amount, _message);
+        _donationsCount++;
+        _safeMint(msg.sender, _donationsCount);
+        donations[_donationsCount] = Donation(amount, message, msg.sender);
+
+        emit NewDonation(msg.sender, amount, message);
     }
 
-    function cashOut() public onlyOwner{
-        coin.transfer(msg.sender, coin.balanceOf(address(this)));
+    function cashOut() public onlyOwner {
+        _coin.transfer(msg.sender, _coin.balanceOf(address(this)));
     }
 
     function end() public onlyOwner isActive {
-        active = false;
+        _active = false;
         cashOut();
     }
 
@@ -123,17 +129,19 @@ contract DonationsToken is ERC721, Ownable {
                         bytes(
                             abi.encodePacked(
                                 '{"image":"',
-                                image,
+                                _image,
                                 '", "name":"Supporter #',
                                 tokenId.toString(),
-                                '", "description":"Thanks for supporting ',
-                                title,
-                                '!", "external_url":"https://ethdon.xyz/',
-                                title,
+                                '", "description":"',
+                                donations[tokenId].message,
+                                '", "external_url":"https://ethdon.xyz/#/',
+                                _title,
                                 '", "attributes": [{"trait_type": "Donation","value":',
                                 donations[tokenId].amount.toString(), // Todo wei to ETH and maybe coins in the end?
                                 '},{"trait_type":"Message","value":"',
                                 donations[tokenId].message,
+                                '"},{"trait_type":"Original donator","value":"0x',
+                                toAsciiString(donations[tokenId].donator),
                                 '"}]',
                                 "}"
                             )
@@ -144,8 +152,25 @@ contract DonationsToken is ERC721, Ownable {
     }
 
     function contractURI() public view returns (string memory) {
-        return styling;
+        return _styling;
     }
 
     event NewDonation(address indexed sender, uint256 amount, string message);
+
+    function toAsciiString(address x) internal pure returns (string memory) {
+        bytes memory s = new bytes(40);
+        for (uint256 i = 0; i < 20; i++) {
+            bytes1 b = bytes1(uint8(uint256(uint160(x)) / (2**(8 * (19 - i)))));
+            bytes1 hi = bytes1(uint8(b) / 16);
+            bytes1 lo = bytes1(uint8(b) - 16 * uint8(hi));
+            s[2 * i] = char(hi);
+            s[2 * i + 1] = char(lo);
+        }
+        return string(s);
+    }
+
+    function char(bytes1 b) internal pure returns (bytes1 c) {
+        if (uint8(b) < 10) return bytes1(uint8(b) + 0x30);
+        else return bytes1(uint8(b) + 0x57);
+    }
 }
