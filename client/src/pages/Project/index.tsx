@@ -16,7 +16,7 @@ import { DonationMessage } from "../../components/DonationMessage";
 export function Project({ edit = false }) {
   const { network, addMessage, user } = useContext(Context);
   const { getCoinBalance } = useFunctions();
-  const { project, style, openseaUrl, makeDonation, setStyle, setProject, id, save, end, setTitle, imageUpload, coin,lastDonation } = useProjects();
+  const { project, style, openseaUrl, makeDonation, setStyle, setProject, address, save, end, setTitle, imageUpload, coin,lastDonation } = useProjects();
   const [userBalance, setUserBalance] = useState(0);
   const [donation, setDonation] = useState(0);
   const [message, setMessage] = useState("");
@@ -65,10 +65,10 @@ export function Project({ edit = false }) {
 
       <Input
         className={styles.website}
-        value={style.external_url}
+        value={style.external_link}
         edit={edit}
-        onClick={() => window.open(style.external_url, "_blank")}
-        onChange={(e) => setStyle((s) => ({ ...s, external_url: e.target.value }))}
+        onClick={() => window.open(style.external_link, "_blank")}
+        onChange={(e) => setStyle((s) => ({ ...s, external_link: e.target.value }))}
       />
       <Spacer height="20px" />
 
@@ -117,7 +117,7 @@ export function Project({ edit = false }) {
       {!project.active && <p>Project not active</p>}
       {user && project.active && (
         <div className={styles.donation}>
-          {edit && !id && (
+          {edit && !address && (
             <label>
               Url route
               <input
@@ -133,7 +133,7 @@ export function Project({ edit = false }) {
             </label>
           )}
 
-          {edit && !id && (
+          {edit && !address && (
             <label>
               Select coin
               <Dropdown className={styles.dropdown} options={network.coins} onChange={(e) => setProject((p) => ({ ...p, coin: e.value }))} />
@@ -245,10 +245,10 @@ export function Project({ edit = false }) {
             <div>
               <div className={styles.twoButtons}>
                 <button onClick={save} className="button">
-                  {id ? "Edit" : "Start"}
+                  {address ? "Edit" : "Start"}
                 </button>
-                {!!id && <Spacer width="10px" />}
-                {!!id && (
+                {!!address && <Spacer width="10px" />}
+                {!!address && (
                   <button className="button" onClick={end}>
                     End
                   </button>

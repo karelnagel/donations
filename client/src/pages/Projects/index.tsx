@@ -10,17 +10,19 @@ import { Image } from "../../components/Image";
 import { Spacer } from "../../components/Spacer";
 
 export function Projects({count}:{count:number}) {
-  const { getProjectsCount, getProject } = useFunctions();
+  const { getProjectCount, getProject,getProjectTitle ,getProjectAddress} = useFunctions();
   const { addMessage } = useContext(Context);
   const [projects, setProjects] = useState<Project[]>([]);
   useEffect(() => {
     async function effect() {
-      const result = await getProjectsCount();
+      const result = await getProjectCount();
       if (result.error) return addMessage(result.error);
       const last = result.result!;
       for (let i = last; i > last - count; i--) {
         if (i <= 0) break;
-        const project = await getProject(i);
+        const title = await getProjectTitle(i-1);
+        const address = await getProjectAddress(title.result!)
+        const project = await getProject(address.result!);// TODO make more efficient
         if (project.error) return addMessage(project.error);
         setProjects((p) => [...p, project.result!]);
       }

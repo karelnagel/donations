@@ -12,9 +12,6 @@ export function Footer() {
         <a href="https://github.com/karelnagel/donations">
           <img src="/icons/github.png" alt="Github" />
         </a>
-        <a href={`${network.opensea}/collection/${network.openseaCollection}`}>
-          <img src="/icons/opensea.png" alt="Opensea" />
-        </a>
         <a href="https://twitter.com/karelETH">
           <img src="/icons/twitter.png" alt="Twitter" />
         </a>
