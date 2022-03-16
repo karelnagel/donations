@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import Donations from "../abi/contracts/Donations.sol/Donations.json";
+import DonationsToken from "../abi/contracts/DonationsToken.sol/DonationsToken.json";
 import USDC from "../abi/contracts/USDC.sol/USDC.json";
 import {
   error,
@@ -26,6 +27,7 @@ export function useFunctions() {
       address.length - 5
     )}`;
   };
+
   const getAvatar = async (address: string): Promise<string> => {
     try {
       const avatar = await provider.getAvatar(address);
@@ -42,6 +44,12 @@ export function useFunctions() {
       Donations.abi,
       signer ? provider.getSigner() : provider
     );
+  const token = (address: string, signer = false) =>
+    new ethers.Contract(
+      address,
+      DonationsToken.abi,
+      signer ? provider.getSigner() : provider
+    );
 
   const coin = (address: string, signer = false) =>
     new ethers.Contract(
@@ -51,17 +59,19 @@ export function useFunctions() {
     );
 
   // Read functions
-  const getProject = async (projectId: number): Promise<ReturnProject> => {
+  const getProject = async (address: string): Promise<ReturnProject> => {
     try {
-      const result = await contract().projects(projectId);
+      const result = await token(address).info();
       return {
         result: {
           title: result.title,
           goal: Number(ethers.utils.formatEther(result.goal)),
           balance: Number(ethers.utils.formatEther(result.balance)),
-          owner: result.owner,
+          owner: result.currentOwner,
           coin: result.coin,
-          uri: result.uri,
+          uri: result.styling,
+          image: result.image,
+          donationsCount: result.donationsCount,
           active: result.active,
         },
       };
@@ -82,18 +92,29 @@ export function useFunctions() {
     }
   };
 
-  const getProjectId = async (title: string): Promise<ReturnNumber> => {
+  const getProjectTitle = async (id: number): Promise<ReturnString> => {
     try {
-      const result = (await contract().titles(title)).toNumber();
+      const result = await contract().titles(id);
+      return { result };
+    } catch (e) {
+      return error("Can't get project id ", e);
+    }
+  };
+  const getProjectAddress = async (title: string): Promise<ReturnString> => {
+    try {
+      const result = await contract().tokens(title);
       return { result };
     } catch (e) {
       return error("Can't get project id ", e);
     }
   };
 
-  const getTokenUri = async (projectId: number): Promise<ReturnString> => {
+  const getTokenUri = async (
+    address: string,
+    tokenId: number
+  ): Promise<ReturnString> => {
     try {
-      const result = await contract().uri(projectId);
+      const result = await token(address).tokenURI(tokenId);
       return { result };
     } catch (e) {
       return error("Can't get token uri", e);
@@ -102,17 +123,19 @@ export function useFunctions() {
 
   //Write functions
   const startProject = async (
-    coin: string,
     title: string,
+    coin: string,
     goal: number,
-    uri: string
+    styling: string,
+    image: string
   ): Promise<Return> => {
     try {
       const result = await contract(true).startProject(
-        coin,
         title,
+        coin,
         ethers.utils.parseEther(goal.toString()),
-        uri
+        styling,
+        image
       );
       await result.wait(1);
       return {};
@@ -122,15 +145,16 @@ export function useFunctions() {
   };
 
   const editProject = async (
-    projectId: number,
+    address: string,
     goal: number,
-    stylingUri: string
+    stylingUri: string,
+    image: string
   ): Promise<Return> => {
     try {
-      const result = await contract(true).editProject(
-        projectId,
+      const result = await token(address, true).edit(
         ethers.utils.parseEther(goal.toString()),
-        stylingUri
+        stylingUri,
+        image
       );
       await result.wait(1);
       return {};
@@ -140,30 +164,26 @@ export function useFunctions() {
   };
 
   const donate = async (
-    projectId: number,
+    address: string,
     donation: number,
     message: string,
     coinAddress: string
   ): Promise<Return> => {
     try {
-      const contractObj = contract(true);
+      const tokenObj = token(address, true);
       const coinObj = coin(coinAddress, true);
       const donationInWei = ethers.utils.parseEther(donation.toString());
 
       const allowance = await coinObj.allowance(
         user?.address,
-        contractObj.address
+        tokenObj.address
       );
       if (donationInWei.gt(allowance)) {
-        const result = await coinObj.approve(
-          contractObj.address,
-          donationInWei
-        );
+        const result = await coinObj.approve(tokenObj.address, donationInWei);
         await result.wait(1);
       }
 
-      const result2 = await contract(true).donate(
-        projectId,
+      const result2 = await tokenObj.donate(
         ethers.utils.parseEther(donation.toString()),
         message
       );
@@ -174,9 +194,9 @@ export function useFunctions() {
     }
   };
 
-  const endProject = async (projectId: number): Promise<Return> => {
+  const endProject = async (address: string): Promise<Return> => {
     try {
-      const result = await contract(true).endProject(projectId);
+      const result = await token(address, true).end();
       await result.wait(1);
       return {};
     } catch (e) {
@@ -184,9 +204,9 @@ export function useFunctions() {
     }
   };
 
-  const getProjectsCount = async (): Promise<ReturnNumber> => {
+  const getProjectCount = async (): Promise<ReturnNumber> => {
     try {
-      const result = await contract(false).projectsCount();
+      const result = await contract(false).projectCount();
       return { result: result.toNumber() };
     } catch (e) {
       return error("Error loading projects", e);
@@ -196,15 +216,17 @@ export function useFunctions() {
     getENS,
     getAvatar,
     getTokenUri,
-    getProjectId,
+    getProjectTitle,
     getCoinBalance,
     getProject,
     coin,
     contract,
+    token,
     startProject,
     editProject,
     endProject,
     donate,
-    getProjectsCount,
+    getProjectCount,
+    getProjectAddress,
   };
 }

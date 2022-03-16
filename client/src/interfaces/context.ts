@@ -32,7 +32,6 @@ export interface NetworkInfo {
   name: string;
   etherscan: string;
   opensea: string;
-  openseaCollection: string;
   contract: string;
   coins: { value: string; label: string }[];
 }

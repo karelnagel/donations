@@ -17,11 +17,11 @@ import { Donation } from "../interfaces/donation";
 export function useProjects() {
   const title = useParams().title;
 
-  const { addMessage, load, network } = useContext(Context);
+  const { addMessage, load, network,user } = useContext(Context);
   const {
-    getProjectId,
     getProject,
-    contract,
+    getProjectAddress,
+    token,
     donate,
     editProject,
     startProject,
@@ -30,7 +30,7 @@ export function useProjects() {
     getAvatar,
   } = useFunctions();
 
-  const [id, setId] = useState(0);
+  const [address, setAddress] = useState("");
   const [project, setProject] = useState<Project>(defaultProject);
   const [style, setStyle] = useState<ProjectStyle>(defaultProjectStyle);
   const [lastDonation, setLastDonation] = useState<Donation>();
@@ -42,42 +42,41 @@ export function useProjects() {
   );
 
   useEffect(() => {
-    if (title) {
+    if (title && address) {
       const effect = async (
-        id: string,
         sender: string,
         amount: number,
         message: string
       ) => {
         amount = Number(ethers.utils.formatEther(amount));
-        const name = (await getENS(sender)) ?? sender;
+        const name = await getENS(sender);
         const avatar = await getAvatar(sender);
         setLastDonation({ name, amount, message, avatar, coin: coin });
         
         setProject((p) => ({ ...p, balance: p.balance + amount }));
       };
-      const filter = contract().filters.Donation(id);
-      contract().on(filter, (id, sender, amount, message) => {
-        effect(id, sender, amount, message);
+      const filter = token(address).filters.NewDonation();
+      token(address).on(filter, (sender: string, amount: number, message: string) => {
+        effect(sender, amount, message);
       });
       return () => {
-        contract().off(filter, (id, sender, amount, message) => {
-          effect(id, sender, amount, message);
+        token(address).off(filter, (sender, amount, message) => {
+          effect(sender, amount, message);
         });
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [address]);
 
   useEffect(() => {
     async function effect() {
       if (title) {
-        const getId = await getProjectId(title);
-        if (getId.error) return addMessage(getId.error);
-        const projectId = getId.result!;
-        setId(projectId);
+        const getAddress = await getProjectAddress(title);
+        if (getAddress.error) return addMessage(getAddress.error);
+        const projectAddress = getAddress.result!;
+        setAddress(projectAddress);
 
-        const getProj = await getProject(projectId);
+        const getProj = await getProject(projectAddress);
 
         if (getProj.error) return addMessage(getProj.error);
         const proj = getProj.result!;
@@ -91,37 +90,39 @@ export function useProjects() {
     }
     load(effect, "Loading content");
     return () => {
-      setId(0);
+      setAddress('');
       setProject(defaultProject);
       setStyle(defaultProjectStyle);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title]);
-  const openseaUrl = () => `${network.opensea}assets/matic/${network.contract}/${id}`;//Todo change when different networks added
+  const openseaUrl = () => `${network.opensea}assets/${address}/1`;//Todo change 
   const makeDonation = (donation: number, message: string) =>
     load(async () => {
-      const don = await donate(id, donation, message, project.coin);
+      const don = await donate(address, donation, message, project.coin);
       if (don.error) addMessage(don.error);
       // else addMessage("Donation successful", MessageType.success);
     }, "Making donation! This will take two transactions. Continue to your wallet!");
 
   const save = () =>
     load(async () => {
-      const styleUrl = await pinJSONToIPFS(style);
+      const styleUrl = await pinJSONToIPFS({...style,fee_recipient:user?.address!});
       if (styleUrl.error) return addMessage(styleUrl.error);
 
-      if (id) {
-        const editProj = await editProject(id, project.goal, styleUrl.result!);
+      if (address) {
+        const editProj = await editProject(address, project.goal, styleUrl.result!,style.image);
         if (editProj.error) return addMessage(editProj.error!);
         addMessage("Project successfully uploaded!", MessageType.success);
       } else {
         const startProj = await startProject(
-          project.coin,
           project.title,
+          project.coin,
           project.goal,
-          styleUrl.result!
+          styleUrl.result!,
+          style.image
         );
         if (startProj.error) return addMessage(startProj.error!);
+
         else {
           routeToEditPage(`/${project.title}/edit`);
           addMessage("Project successfully uploaded!", MessageType.success);
@@ -131,8 +132,8 @@ export function useProjects() {
 
   const end = () =>
     load(async () => {
-      if (id) {
-        const e = await endProject(id);
+      if (address) {
+        const e = await endProject(address);
         if (e.error) addMessage(e.error);
         else {
           setProject((p) => ({ ...p, acive: false }));
@@ -143,8 +144,9 @@ export function useProjects() {
 
   const setTitle = async (e: any): Promise<Return> => {
     setProject((p) => ({ ...p, title: e.target.value }));
-    const projectId = await getProjectId(e.target.value);
-    if (projectId.result && projectId.result > 0)
+    const projectId = await getProjectAddress(e.target.value);
+    console.log(projectId.result)
+    if (projectId.result!=="0x0000000000000000000000000000000000000000" )
       return { error: "Title already taken" };
     else if (!e.target.value) return { error: "Title is required!" };
     return {};
@@ -166,8 +168,8 @@ export function useProjects() {
   return {
     coin,
     lastDonation,
-    id,
-    setId,
+    address,
+    setAddress,
     project,
     setProject,
     style,

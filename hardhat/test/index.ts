@@ -32,8 +32,8 @@ describe("Start project", function () {
   it("emits an event", async function () {
     expect(
       await contract.startProject(
-        usdc.address,
         "title",
+        usdc.address,
         ethers.utils.parseEther("10"),
         "uri",
         "https://ethdon.xyz/icons/opensea.png"
@@ -70,8 +70,8 @@ describe("Start project", function () {
   it("can't create a new project with same title", async function () {
     await expect(
       contract.startProject(
-        usdc.address,
         "title",
+        usdc.address,
         ethers.utils.parseEther("10"),
         "uri",
         "https://ethdon.xyz/icons/opensea.png"

@@ -10,8 +10,8 @@ contract Donations is Ownable {
     mapping(uint256 => string) public titles;
 
     function startProject(
-        address coin,
         string memory title,
+        address coin,
         uint256 goal,
         string memory styling,
         string memory image
