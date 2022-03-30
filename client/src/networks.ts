@@ -14,7 +14,7 @@ const rinkeby = {
   name: "rinkeby",
   opensea: "https://testnets.opensea.io/",
   etherscan: "https://rinkeby.etherscan.io/address/",
-  contract: "0xf7D4cFDA539369BF0610CCb359dD642789157A45",
+  contract: "0xf05D93E3d4086039d1830C1aAb0012be448CDb34",
   coins: [
     { value: "0x352841Aab4b9164A1d34b245acE733CCBAc4DF86", label: "My coin" },
     { value: "0x12297e40007Ff7DB9618F959A842877b42f5FE08", label: "USD" },

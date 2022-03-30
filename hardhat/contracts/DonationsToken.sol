@@ -58,7 +58,7 @@ contract DonationsToken is ERC721, Ownable {
         emit SetContractURI(_contractUri);
     }
 
-    event SetContractURI(string contractUri);
+    event SetContractURI(string contractURI);
 
     // Project
     function newProject(string memory _image) public onlyOwner isActive {
@@ -147,7 +147,9 @@ contract DonationsToken is ERC721, Ownable {
                                 donations[tokenId].amount.toString(), // Todo wei to ETH and maybe coins in the end?
                                 '},{"trait_type":"Message","value":"',
                                 donations[tokenId].message,
-                                '"},{"trait_type":"Original donator","value":"0x',
+                                '"},{"trait_type":"Project ID","value":',
+                                donations[tokenId].projectId.toString(),
+                                '},{"trait_type":"Original sender","value":"0x',
                                 toAsciiString(donations[tokenId].sender),
                                 '"}]',
                                 "}"

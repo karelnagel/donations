@@ -34,6 +34,7 @@ describe("Start project", function () {
       .to.emit(contract, "NewToken")
       .withArgs(
         "title",
+        "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be",
         "0x8464135c8F25Da09e49BC8782676a84730C318bC",
         owner.address,
         "uri",
@@ -146,8 +147,9 @@ const Donate = (id: number, projectId: number, image: string) => {
         .to.equal(donationInfo.message)
         .to.equal(message);
       expect(obj.attributes[2].value)
-        .to.equal(investor.address.toLowerCase())
-        .to.equal("0x70997970c51812dc3a010c7d01b50e0d17dc79c8");
+        .to.equal(donationInfo.projectId)
+        .to.equal(projectId);
+      expect(obj.attributes[3].value).to.equal(investor.address.toLowerCase());
     });
   });
 };

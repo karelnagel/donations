@@ -8,9 +8,9 @@ dataSources:
     name: Donations
     network: rinkeby
     source:
-      address: "0xf7D4cFDA539369BF0610CCb359dD642789157A45"
+      address: "0xf05D93E3d4086039d1830C1aAb0012be448CDb34"
       abi: Donations
-      startBlock: 6175244
+      startBlock: 10416997
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -22,8 +22,8 @@ dataSources:
         - name: Donations
           file: ./abis/Donations.json
       eventHandlers:
-        - event: NewProject(uint256,address,string,address,uint256,string,string)
-          handler: handleNewProject
+        - event: NewToken(string,address,address,address,string,string)
+          handler: handleNewToken
       file: ./src/mappings.ts
 
 templates:
@@ -43,11 +43,15 @@ templates:
         - name: DonationsToken
           file: ./abis/DonationsToken.json
       eventHandlers:
-        - event: Edit(uint256,string,string)
-          handler: handleEdit
+        - event: SetContractURI(string)
+          handler: handleSetContractURI
+        - event: NewProject(string)
+          handler: handleNewProject
+        - event: CashOut(uint256)
+          handler: handleCashOut
         - event: End()
           handler: handleEnd
-        - event: NewDonation(indexed address,uint256,string)
+        - event: NewDonation(uint256,address,uint256,string,uint256)
           handler: handleDonation
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred

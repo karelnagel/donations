@@ -133,7 +133,6 @@ export function useFunctions() {
       const result = await contract(true).startProject(
         title,
         coin,
-        ethers.utils.parseEther(goal.toString()),
         styling,
         image
       );

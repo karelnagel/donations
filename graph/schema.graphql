@@ -1,20 +1,27 @@
-type Project @entity {
+type Token @entity {
   id: ID!
   title: String!
   token: Bytes! 
   owner: Bytes! 
-  goal: BigInt! 
-  styling: String! 
-  image: String! 
+  contractURI: String! 
+  currentProject: Int!
+  projects: [Project!]! @derivedFrom(field: "token")
   active: Boolean!
-  balance:BigInt!
-  donations: [Donation!]! @relation
+  donated:BigInt!
+  withdrawn:BigInt!
 }
 
 type Donation @entity {
   id: ID!
-  project:Project!
   amount: BigInt!
   message: String!
   sender: Bytes!
+  project: Project!
+}
+
+type Project @entity{
+  id: ID!
+  image:String!
+  token:Token!
+  donations: [Donation!]! @derivedFrom(field: "project")
 }

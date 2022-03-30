@@ -8,26 +8,32 @@ contract Donations is Ownable {
     mapping(string => DonationsToken) public tokens;
 
     function startProject(
-        string memory title,
-        address coin,
-        string memory styling,
-        string memory image
+        string memory _title,
+        address _coin,
+        string memory _contractURI,
+        string memory _image
     ) public {
         require(
-            tokens[title] == DonationsToken(address(0)),
+            tokens[_title] == DonationsToken(address(0)),
             "Title already exists"
         );
 
-        tokens[title] = new DonationsToken(title, coin, styling, image);
-        tokens[title].transferOwnership(msg.sender);
-        emit NewToken(title, coin, msg.sender, styling, image);
+        tokens[_title] = new DonationsToken(
+            _title,
+            _coin,
+            _contractURI,
+            _image
+        );
+        tokens[_title].transferOwnership(msg.sender);
+        emit NewToken(_title,address(tokens[_title]), _coin, msg.sender, _contractURI, _image);
     }
 
     event NewToken(
         string title,
         address token,
+        address coin,
         address owner,
-        string styling,
+        string contractURI,
         string image
     );
 }
