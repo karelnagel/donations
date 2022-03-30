@@ -9,114 +9,118 @@ import "./Base64.sol";
 contract DonationsToken is ERC721, Ownable {
     using Strings for uint256;
 
-    string _title;
-    IERC20 _coin;
-    uint256 _balance;
-    uint256 _goal;
-    bool _active;
-    string _styling;
-    string _image;
-    uint256 _donationsCount = 0;
+    string public title;
+    IERC20 public coin;
+    bool public active;
+    string _contractURI;
+    uint256 public donated = 0;
+    uint256 public donationsCount = 0;
+    uint256 public currentProject = 0;
 
     struct Donation {
+        address sender;
         uint256 amount;
         string message;
-        address donator;
+        uint256 projectId;
     }
+    mapping(uint256 => string) public projects;
     mapping(uint256 => Donation) public donations;
 
     modifier isActive() {
-        require(_active, "Project not active!");
+        require(active, "Project not active!");
         _;
     }
 
     constructor(
-        string memory title,
-        address coin,
-        uint256 goal,
-        string memory styling,
-        string memory image
+        string memory _title,
+        address _coin,
+        string memory _contractUri,
+        string memory _image
     ) ERC721(_title, _title) {
-        _coin = IERC20(coin);
-        _title = title;
-        _goal = goal;
-        _active = true;
-        _styling = styling;
-        _image = image;
-    }
-
-    // Todo remove
-    function info()
-        public
-        view
-        returns (
-            string memory title,
-            address coin,
-            address currentOwner,
-            uint256 balance,
-            uint256 goal,
-            bool active,
-            string memory styling,
-            string memory image,
-            uint256 donationsCount
-        )
-    {
+        coin = IERC20(_coin);
         title = _title;
-        coin = address(_coin);
-        currentOwner = owner();
-        balance = _balance;
-        goal = _goal;
-        active = _active;
-        styling = _styling;
-        image = _image;
-        donationsCount = _donationsCount;
-        return (
-            title,
-            coin,
-            currentOwner,
-            balance,
-            goal,
-            active,
-            styling,
-            image,
-            donationsCount
-        );
+        active = true;
+        _contractURI = _contractUri;
+        projects[currentProject] = _image;
     }
 
-    function edit(
-        uint256 goal,
-        string memory styling,
-        string memory image
-    ) public onlyOwner isActive {
-        _goal = goal;
-        _styling = styling;
-        _image = image;
-        emit Edit(goal, styling, image);
+    //Contract URI
+    function contractURI() public view returns (string memory) {
+        return _contractURI;
     }
 
-    function donate(uint256 amount, string memory message) public isActive {
-        require(amount > 0, "Donation amount is 0");
-
-        _coin.transferFrom(msg.sender, address(this), amount);
-        _balance += amount;
-
-        _donationsCount++;
-        _safeMint(msg.sender, _donationsCount);
-        donations[_donationsCount] = Donation(amount, message, msg.sender);
-
-        emit NewDonation(msg.sender, amount, message);
+    function setContractURI(string memory _contractUri)
+        public
+        onlyOwner
+        isActive
+    {
+        _contractURI = _contractUri;
+        emit SetContractURI(_contractUri);
     }
 
+    event SetContractURI(string contractUri);
+
+    // Project
+    function newProject(string memory _image) public onlyOwner isActive {
+        currentProject++;
+        projects[currentProject] = _image;
+        emit NewProject(_image);
+    }
+
+    event NewProject(string image);
+
+    // Cashing out
     function cashOut() public onlyOwner {
-        _coin.transfer(msg.sender, _coin.balanceOf(address(this)));
+        uint256 amount = coin.balanceOf(address(this));
+        coin.transfer(msg.sender, amount);
+        emit CashOut(amount);
     }
 
+    event CashOut(uint256 amount);
+
+    // Ending
     function end() public onlyOwner isActive {
-        _active = false;
+        active = false;
         cashOut();
         emit End();
     }
 
+    event End();
+
+    // Donate
+    function donate(uint256 _amount, string memory _message) public isActive {
+        require(_amount > 0, "Donation amount is 0");
+
+        coin.transferFrom(msg.sender, address(this), _amount);
+        donated += _amount;
+
+        donationsCount++;
+        _safeMint(msg.sender, donationsCount);
+        donations[donationsCount] = Donation(
+            msg.sender,
+            _amount,
+            _message,
+            currentProject
+        );
+
+        emit NewDonation(
+            donationsCount,
+            msg.sender,
+            _amount,
+            _message,
+            currentProject
+        );
+    }
+
+    event NewDonation(
+        uint256 id,
+        address sender,
+        uint256 amount,
+        string message,
+        uint256 projectId
+    );
+
+    // TokenUri
     function tokenURI(uint256 tokenId)
         public
         view
@@ -132,19 +136,19 @@ contract DonationsToken is ERC721, Ownable {
                         bytes(
                             abi.encodePacked(
                                 '{"image":"',
-                                _image,
+                                projects[donations[tokenId].projectId],
                                 '", "name":"Supporter #',
                                 tokenId.toString(),
                                 '", "description":"',
                                 donations[tokenId].message,
-                                '", "external_url":"https://ethdon.xyz/#/',
-                                _title,
+                                '", "external_url":"https://ethdon.xyz/projects/',
+                                title,
                                 '", "attributes": [{"trait_type": "Donation","value":',
                                 donations[tokenId].amount.toString(), // Todo wei to ETH and maybe coins in the end?
                                 '},{"trait_type":"Message","value":"',
                                 donations[tokenId].message,
                                 '"},{"trait_type":"Original donator","value":"0x',
-                                toAsciiString(donations[tokenId].donator),
+                                toAsciiString(donations[tokenId].sender),
                                 '"}]',
                                 "}"
                             )
@@ -153,14 +157,6 @@ contract DonationsToken is ERC721, Ownable {
                 )
             );
     }
-
-    function contractURI() public view returns (string memory) {
-        return _styling;
-    }
-
-    event NewDonation(address indexed sender, uint256 amount, string message);
-    event Edit(uint256 goal, string styling, string image);
-    event End();
 
     function toAsciiString(address x) internal pure returns (string memory) {
         bytes memory s = new bytes(40);

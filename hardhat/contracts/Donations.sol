@@ -6,13 +6,10 @@ import "./DonationsToken.sol";
 
 contract Donations is Ownable {
     mapping(string => DonationsToken) public tokens;
-    uint256 public projectCount;
-    mapping(uint256 => string) public titles;
 
     function startProject(
         string memory title,
         address coin,
-        uint256 goal,
         string memory styling,
         string memory image
     ) public {
@@ -21,29 +18,15 @@ contract Donations is Ownable {
             "Title already exists"
         );
 
-        titles[projectCount] = title;
-        projectCount++;
-        tokens[title] = new DonationsToken(title, coin, goal, styling, image);
+        tokens[title] = new DonationsToken(title, coin, styling, image);
         tokens[title].transferOwnership(msg.sender);
-        emit NewProject(
-            projectCount,
-            address(tokens[title]),
-            title,
-            msg.sender,
-            goal,
-            styling,
-            image
-        );
-
-        projectCount++;
+        emit NewToken(title, coin, msg.sender, styling, image);
     }
 
-    event NewProject(
-        uint256 id,
-        address token,
+    event NewToken(
         string title,
+        address token,
         address owner,
-        uint256 goal,
         string styling,
         string image
     );
