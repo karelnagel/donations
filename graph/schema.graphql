@@ -1,0 +1,20 @@
+type Project @entity {
+  id: ID!
+  title: String!
+  token: Bytes! 
+  owner: Bytes! 
+  goal: BigInt! 
+  styling: String! 
+  image: String! 
+  active: Boolean!
+  balance:BigInt!
+  donations: [Donation!]! @relation
+}
+
+type Donation @entity {
+  id: ID!
+  project:Project!
+  amount: BigInt!
+  message: String!
+  sender: Bytes!
+}

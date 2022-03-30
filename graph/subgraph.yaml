@@ -1,0 +1,53 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+features:
+  - ipfsOnEthereumContracts
+dataSources:
+  - kind: ethereum
+    name: Donations
+    network: rinkeby
+    source:
+      address: "0xf7D4cFDA539369BF0610CCb359dD642789157A45"
+      abi: Donations
+      startBlock: 6175244
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - NewProject
+        - OwnershipTransferred
+      abis:
+        - name: Donations
+          file: ./abis/Donations.json
+      eventHandlers:
+        - event: NewProject(uint256,address,string,address,uint256,string,string)
+          handler: handleNewProject
+      file: ./src/mappings.ts
+
+templates:
+  - name: DonationsToken
+    kind: ethereum/contract
+    network: rinkeby
+    source:
+      abi: DonationsToken
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings.ts
+      entities:
+        - DonationsToken
+      abis:
+        - name: DonationsToken
+          file: ./abis/DonationsToken.json
+      eventHandlers:
+        - event: Edit(uint256,string,string)
+          handler: handleEdit
+        - event: End()
+          handler: handleEnd
+        - event: NewDonation(indexed address,uint256,string)
+          handler: handleDonation
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
