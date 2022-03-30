@@ -21,7 +21,9 @@ type Donation @entity {
 
 type Project @entity{
   id: ID!
+  order:Int!
   image:String!
   token:Token!
+  startTime: BigInt!
   donations: [Donation!]! @derivedFrom(field: "project")
 }

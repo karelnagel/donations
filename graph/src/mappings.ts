@@ -30,7 +30,9 @@ export function handleNewToken(event: NewToken): void {
 
   const project = new Project(getProjectId(tokenId, "0"));
   project.image = event.params.image;
+  project.order = 0;
   project.token = tokenId
+  project.startTime = event.block.timestamp
 
   project.save()
   token.save()
@@ -54,6 +56,7 @@ export function handleNewProject(event: NewProject): void {
   token.currentProject++;
   const project = new Project(getProjectId(token.id, token.currentProject.toString()))
   project.image = event.params.image;
+  project.order = token.currentProject;
   project.token = token.id;
 
   token.save()
