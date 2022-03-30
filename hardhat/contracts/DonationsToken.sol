@@ -45,6 +45,7 @@ contract DonationsToken is ERC721, Ownable {
         _image = image;
     }
 
+    // Todo remove
     function info()
         public
         view
@@ -90,6 +91,7 @@ contract DonationsToken is ERC721, Ownable {
         _goal = goal;
         _styling = styling;
         _image = image;
+        emit Edit(goal, styling, image);
     }
 
     function donate(uint256 amount, string memory message) public isActive {
@@ -112,6 +114,7 @@ contract DonationsToken is ERC721, Ownable {
     function end() public onlyOwner isActive {
         _active = false;
         cashOut();
+        emit End();
     }
 
     function tokenURI(uint256 tokenId)
@@ -156,6 +159,8 @@ contract DonationsToken is ERC721, Ownable {
     }
 
     event NewDonation(address indexed sender, uint256 amount, string message);
+    event Edit(uint256 goal, string styling, string image);
+    event End();
 
     function toAsciiString(address x) internal pure returns (string memory) {
         bytes memory s = new bytes(40);

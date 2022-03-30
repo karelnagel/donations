@@ -40,7 +40,15 @@ describe("Start project", function () {
       )
     )
       .to.emit(contract, "NewProject")
-      .withArgs("title", owner.address);
+      .withArgs(
+        "1",
+        "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be",
+        "title",
+        owner.address,
+        ethers.utils.parseEther("10"),
+        "uri",
+        "https://ethdon.xyz/icons/opensea.png"
+      );
   });
 
   it("title added to array", async function () {

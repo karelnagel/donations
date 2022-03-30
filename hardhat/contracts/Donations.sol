@@ -25,8 +25,26 @@ contract Donations is Ownable {
         projectCount++;
         tokens[title] = new DonationsToken(title, coin, goal, styling, image);
         tokens[title].transferOwnership(msg.sender);
-        emit NewProject(title, msg.sender);
+        emit NewProject(
+            projectCount,
+            address(tokens[title]),
+            title,
+            msg.sender,
+            goal,
+            styling,
+            image
+        );
+
+        projectCount++;
     }
 
-    event NewProject(string indexed title, address indexed owner);
+    event NewProject(
+        uint256 id,
+        address token,
+        string title,
+        address owner,
+        uint256 goal,
+        string styling,
+        string image
+    );
 }
