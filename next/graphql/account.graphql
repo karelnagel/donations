@@ -1,0 +1,13 @@
+query account($account: Bytes = "") {
+  donations(where: {sender: $account}, orderBy: time, orderDirection: desc) {
+    amount
+    message
+    sender
+    time
+  }
+  tokens(orderBy: time, orderDirection: desc, where: {owner: $account}) {
+    title
+    donated
+    active
+  }
+}

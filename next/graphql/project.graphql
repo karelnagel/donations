@@ -1,0 +1,14 @@
+query project($title: String = "") {
+  tokens(where: {title: $title}) {
+    coin
+    title
+    token
+    owner
+    currentProject
+    active
+    projects(first: 1, orderBy: time, orderDirection: desc) {
+      order
+      image
+    }
+  }
+}

@@ -1,0 +1,10 @@
+schema: https://api.studio.thegraph.com/query/24438/ethdon/v0.1.6
+documents: './graphql/*.graphql'
+generates:
+  graphql/generated.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      withHooks: true

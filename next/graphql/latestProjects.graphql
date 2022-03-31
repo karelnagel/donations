@@ -1,0 +1,12 @@
+query latestProjects($first: Int = 10) {
+  projects(orderBy: time, orderDirection: desc, first: $first) {
+    donated
+    order
+    token {
+      currentProject
+      title
+      owner
+      coin
+    }
+  }
+}

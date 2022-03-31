@@ -2,6 +2,7 @@ type Token @entity {
   id: ID!
   title: String!
   token: Bytes! 
+  coin: Bytes! 
   owner: Bytes! 
   contractURI: String! 
   currentProject: Int!
@@ -9,6 +10,7 @@ type Token @entity {
   active: Boolean!
   donated:BigInt!
   withdrawn:BigInt!
+  time:BigInt!
 }
 
 type Donation @entity {
@@ -17,6 +19,7 @@ type Donation @entity {
   message: String!
   sender: Bytes!
   project: Project!
+  time:BigInt!
 }
 
 type Project @entity{
@@ -24,6 +27,8 @@ type Project @entity{
   order:Int!
   image:String!
   token:Token!
-  startTime: BigInt!
+  time: BigInt!
+  donated:BigInt!
   donations: [Donation!]! @derivedFrom(field: "project")
 }
+

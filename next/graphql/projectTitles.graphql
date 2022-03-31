@@ -1,0 +1,5 @@
+query projectTitles {
+  tokens {
+    title
+  }
+}

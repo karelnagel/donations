@@ -9,11 +9,14 @@ import {
   ProjectQueryResult,
   Token,
   useProjectQuery,
-  useProjectSubQuery
+  useProjectSubQuery,
 } from "../../../graphql/generated";
 
-export default function Project({ token }: { token: Token }) {
-  const { data } = useProjectSubQuery({ variables: { title: token.title } });
+export default function Project() {
+  const { data: data2 } = useProjectQuery({ variables: { title: "karel" } });
+const token = data2?.tokens[0]
+  const { data } = useProjectSubQuery({ variables: { title: "karel" } });
+  if (!token) return <p>No token</p>;
   console.log(data);
 
   const name = token.title;
@@ -50,23 +53,3 @@ export default function Project({ token }: { token: Token }) {
     </div>
   );
 }
-
-export const getStaticPaths = async () => {
-  const result = (await client.query({ query: ProjectTitlesDocument })) as ProjectTitlesQueryResult;
-
-  const paths = result.data?.tokens.map((t) => ({ params: { title: t.title } }));
-  return {
-    paths,
-    fallback: false,
-  };
-};
-
-export const getStaticProps = async ({ params: { title } }: { params: { title: string } }): Promise<{ props: { token: Token } }> => {
-  const result = (await client.query({ query: ProjectDocument, variables: { title } })) as ProjectQueryResult;
-  const token = result.data?.tokens[0] as Token;
-  return {
-    props: {
-      token,
-    },
-  };
-};

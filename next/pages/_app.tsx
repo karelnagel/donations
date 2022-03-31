@@ -2,6 +2,8 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import React from "react";
 import Head from "next/head";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "./../apollo";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const name = "Ethereum donations";
@@ -30,7 +32,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
       </Head>
-      <Component {...pageProps} />
+      <ApolloProvider client={client}>
+        <Component {...pageProps} />
+      </ApolloProvider>
+      ,
     </>
   );
 }

@@ -21,18 +21,20 @@ export function handleNewToken(event: NewToken): void {
 
   token.title = event.params.title
   token.token = event.params.token;
+  token.coin = event.params.coin;
   token.owner = event.params.owner
   token.contractURI = event.params.contractURI
   token.active = true;
   token.donated = new BigInt(0);
   token.withdrawn = new BigInt(0);
   token.currentProject = 0
+  token.time = event.block.timestamp;
 
   const project = new Project(getProjectId(tokenId, "0"));
   project.image = event.params.image;
   project.order = 0;
   project.token = tokenId
-  project.startTime = event.block.timestamp
+  project.time = event.block.timestamp
 
   project.save()
   token.save()
@@ -58,6 +60,7 @@ export function handleNewProject(event: NewProject): void {
   project.image = event.params.image;
   project.order = token.currentProject;
   project.token = token.id;
+  project.time = event.block.timestamp;
 
   token.save()
   project.save()
@@ -85,15 +88,21 @@ export function handleDonation(event: NewDonation): void {
   const token = getToken(event.address.toHexString())
   if (!token) return
 
+  const project = getProject(getProjectId(token.id, event.params.projectId.toString()))
+  if (!project) return
+
   const donation = new Donation(event.transaction.hash.toHexString())
   donation.amount = event.params.amount
   donation.message = event.params.message
   donation.sender = event.params.sender
-  donation.project = getProjectId(token.id, event.params.projectId.toString())
+  donation.project = project.id
+  donation.time = event.block.timestamp
   donation.save()
 
+  project.donated = project.donated.plus(event.params.amount)
+  project.save()
+  
   token.donated = token.donated.plus(event.params.amount)
-
   token.save()
 }
 
@@ -109,11 +118,20 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
 function getToken(id: string): Token | null {
   const token = Token.load(id)
   if (!token) {
-    log.error("No project with {}", [id])
+    log.error("No token with {}", [id])
     return null;
   }
   return token;
 }
 function getProjectId(tokenId: string, projectId: string): string {
   return tokenId + "_" + projectId;
+}
+
+function getProject(id: string): Project | null {
+  const project = Project.load(id)
+  if (!project) {
+    log.error("No project with {}", [id])
+    return null;
+  }
+  return project;
 }
