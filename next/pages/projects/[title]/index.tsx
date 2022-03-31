@@ -58,16 +58,16 @@ export const getStaticPaths = async () => {
   return {
     paths,
     fallback: false,
-    revalidate: 60,
   };
 };
 
-export const getStaticProps = async ({ params: { title } }: { params: { title: string } }): Promise<{ props: { token: Token } }> => {
+export const getStaticProps = async ({ params: { title } }: { params: { title: string } })=> {
   const result = (await client.query({ query: ProjectDocument, variables: { title } })) as ProjectQueryResult;
   const token = result.data ? (result.data.tokens[0] as Token) : ({} as Token);
   return {
     props: {
       token,
     },
+    revalidate: 60,
   };
 };
