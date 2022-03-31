@@ -1,5 +1,3 @@
-import { ApolloQueryResult } from "@apollo/client";
-import Head from "next/head";
 import React from "react";
 import { client } from "../../../apollo";
 import {
@@ -8,66 +6,65 @@ import {
   ProjectDocument,
   ProjectQueryResult,
   Token,
-  useProjectQuery,
   useProjectSubQuery,
 } from "../../../graphql/generated";
+import { GetStaticProps, GetStaticPaths, NextPage } from "next";
+import { ParsedUrlQuery } from "querystring";
+import { CustomHead } from "../../../components/CustomHead";
+import Layout from "../../../components/Layout";
 
-export default function Project({ token }: { token: Token }) {
-  const { data } = useProjectSubQuery({ variables: { title: token.title } });
-  console.log(data);
-
-  const name = token.title;
-  const description = token.owner;
-  const url = "https://ethdon.xyz";
-  const image = token.projects[0].image;
-  return (
-    <div>
-      <Head>
-        <title>{token.title}</title>
-        <link rel="icon" href="/favicon.png" />
-        <meta name="description" content={description} />
-
-        <meta name="og:title" content={name} />
-        <meta name="og:url" content={url} />
-        <meta name="og:description" content={description} />
-        <meta name="og:image" content={image} />
-
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={name} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={image} />
-      </Head>
-      <h1>{token.title}</h1>
-      <h1>{token.coin}</h1>
-      <h1>{token.owner}</h1>
-      <h1>{token.token}</h1>
-      <h1>{token.currentProject}</h1>
-      <h1>{token.active ? "true" : "falcse"}</h1>
-      <h1>{token.projects[0].image}</h1>
-      <h1>{token.projects[0].order}</h1>
-
-      <h1>Donated: {data?.tokens[0].projects[0].donated}</h1>
-    </div>
-  );
+interface Params extends ParsedUrlQuery {
+  title: string;
 }
+interface TokenProps {
+  token: Token | null;
+  title: string;
+}
+const Project: NextPage<TokenProps> = ({ token, title }) => {
+  const { data } = useProjectSubQuery({ variables: { title } });
+  if (!token) return <h1>No token!</h1>;
 
-export const getStaticPaths = async () => {
+  return (
+    <>
+      <CustomHead name={token.title} description={token.owner} image={token.projects[0].image} />
+      <Layout>
+        <h1>{token.title}</h1>
+        <h1>{token.coin}</h1>
+        <h1>{token.owner}</h1>
+        <h1>{token.token}</h1>
+        <h1>{token.currentProject}</h1>
+        <h1>{token.active ? "true" : "falcse"}</h1>
+        <h1>{token.projects[0].image}</h1>
+        <h1>{token.projects[0].order}</h1>
+
+        <h1>Donated: {data?.tokens[0].projects[0].donated}</h1>
+      </Layout>
+    </>
+  );
+};
+
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const result = (await client.query({ query: ProjectTitlesDocument })) as ProjectTitlesQueryResult;
 
-  const paths = result.data ? result.data.tokens.map((t) => ({ params: { title: t.title } })) : [];
+  const paths = result.data?.tokens.map((t) => ({ params: { title: t.title } })) ?? [];
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 };
 
-export const getStaticProps = async ({ params: { title } }: { params: { title: string } })=> {
+export const getStaticProps: GetStaticProps<TokenProps, Params> = async (context) => {
+  const title = context.params?.title ?? "";
   const result = (await client.query({ query: ProjectDocument, variables: { title } })) as ProjectQueryResult;
-  const token = result.data ? (result.data.tokens[0] as Token) : ({} as Token);
+
+  const token = result.data ? (result.data.tokens[0] as Token) : null;
   return {
     props: {
       token,
+      title,
     },
     revalidate: 60,
   };
 };
+
+export default Project;

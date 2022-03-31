@@ -23,6 +23,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="og:url" content={url} />
         <meta name="og:description" content={description} />
         <meta name="og:image" content={image} />
+        <meta name="og:type" content="website"/>
 
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
