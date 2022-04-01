@@ -1,12 +1,14 @@
-query projectSub($title: String = "") {
-  tokens(where: {title: $title}) {
-    projects(first: 1, orderBy: time, orderDirection: desc) {
-      donations(first: 5, orderBy: time, orderDirection: desc) {
-        amount
-        message
-        sender
+query projectSub($id: ID = "") {
+  project(id: $id) {
+    donated
+    donationCount
+    tokens(first: 5, orderBy: time, orderDirection: desc) {
+      amount
+      message
+      owner {
+        id
       }
-      donated
+      time
     }
   }
 }

@@ -24,11 +24,11 @@ export default function Projects() {
 
 export function ProjectObject({ project }: { project: Project }) {
   return (
-    <Link href={`/projects/${project.token.title}`}>
+    <Link href={`/projects/${project.contract.id}`}>
       <a>
-        <h2>{project.token.title}</h2>
+        <h2>{project.contract.id}</h2>
         <p>{project.donated}</p>
-        <p>{project.token.coin}</p>
+        <p>{project.coin}</p>
       </a>
     </Link>
   );

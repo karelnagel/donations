@@ -7,6 +7,7 @@ import {
   ProjectQueryResult,
   Token,
   useProjectSubQuery,
+  Project,
 } from "../../../graphql/generated";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
@@ -16,28 +17,25 @@ import Layout from "../../../components/Layout";
 interface Params extends ParsedUrlQuery {
   title: string;
 }
-interface TokenProps {
-  token: Token | null;
+interface ProjectProps {
+  project: Project | null;
   title: string;
 }
-const Project: NextPage<TokenProps> = ({ token, title }) => {
-  const { data } = useProjectSubQuery({ variables: { title } });
-  if (!token) return <h1>No project found!</h1>;
-
+const Project: NextPage<ProjectProps> = ({ project, title }) => {
+  const { data } = useProjectSubQuery({ variables: { id:title+"_p0" } });
+  if (!project) return <h1>No project found!</h1>;
+console.log(data)
   return (
     <>
-      <CustomHead name={token.title} description={token.owner} image={token.projects[0].image} />
+      <CustomHead name={project.contract.id} description={project.owner.id} />
       <Layout>
-        <h1>{token.title}</h1>
-        <h1>{token.coin}</h1>
-        <h1>{token.owner}</h1>
-        <h1>{token.token}</h1>
-        <h1>{token.currentProject}</h1>
-        <h1>{token.active ? "true" : "falcse"}</h1>
-        <h1>{token.projects[0].image}</h1>
-        <h1>{token.projects[0].order}</h1>
+        <h1>{project.contract.id}</h1>
+        <h1>{project.coin}</h1>
+        <h1>{project.owner.id}</h1>
+        <h1>{project.contract.address}</h1>
+        <h1>{project.active ? "true" : "false"}</h1>
 
-        <h1>Donated: {data?.tokens[0].projects[0].donated}</h1>
+        <h1>Donated: {data?.project?.donated}</h1>
       </Layout>
     </>
   );
@@ -46,21 +44,21 @@ const Project: NextPage<TokenProps> = ({ token, title }) => {
 export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const result = (await client.query({ query: ProjectTitlesDocument })) as ProjectTitlesQueryResult;
 
-  const paths = result.data?.tokens.map((t) => ({ params: { title: t.title } })) ?? [];
+  const paths = result.data?.contracts.map((t) => ({ params: { title: t.id} })) ?? [];
   return {
     paths,
     fallback: true,
   };
 };
 
-export const getStaticProps: GetStaticProps<TokenProps, Params> = async (context) => {
+export const getStaticProps: GetStaticProps<ProjectProps, Params> = async (context) => {
   const title = context.params?.title ?? "";
-  const result = (await client.query({ query: ProjectDocument, variables: { title } })) as ProjectQueryResult;
+  const result = (await client.query({ query: ProjectDocument, variables: { id:title+"_p0" } })) as ProjectQueryResult;
 
-  const token = result.data ? (result.data.tokens[0] as Token) : null;
+  const project = result.data ? (result.data.project as Project) : null;
   return {
     props: {
-      token,
+      project,
       title,
     },
     revalidate: 60,

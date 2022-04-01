@@ -1,13 +1,13 @@
-query account($account: Bytes = "") {
-  donations(where: {sender: $account}, orderBy: time, orderDirection: desc) {
-    amount
-    message
-    sender
-    time
-  }
-  tokens(orderBy: time, orderDirection: desc, where: {owner: $account}) {
-    title
-    donated
-    active
+query account($id: ID = "", $first: Int = 10, $first1: Int = 10, $first2: Int = 10) {
+  account(id: $id) {
+    contracts(first: $first, orderBy: time, orderDirection: desc) {
+      id
+    }
+    projects(first: $first1, orderBy: time, orderDirection: desc) {
+      id
+    }
+    tokens(first: $first2, orderBy: time, orderDirection: desc) {
+      id
+    }
   }
 }

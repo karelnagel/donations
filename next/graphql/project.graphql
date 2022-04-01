@@ -1,14 +1,16 @@
-query project($title: String = "") {
-  tokens(where: {title: $title}) {
-    coin
-    title
-    token
-    owner
-    currentProject
+query project($id: ID = "") {
+  project(id: $id) {
     active
-    projects(first: 1, orderBy: time, orderDirection: desc) {
-      order
-      image
+    coin
+    time
+    id
+    owner {
+      id
+    }
+    contract {
+      owner {
+        id
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-schema: https://api.studio.thegraph.com/query/24438/ethdon/v0.1.6
+schema: https://api.studio.thegraph.com/query/24438/ethdon/v0.1.9
 documents: './graphql/*.graphql'
 generates:
   graphql/generated.ts:

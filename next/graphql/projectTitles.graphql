@@ -1,5 +1,8 @@
 query projectTitles {
-  tokens {
-    title
+  contracts {
+    id
+    projects {
+      count
+    }
   }
 }
