@@ -20,7 +20,7 @@ contract Factory is Ownable {
 
         tokens[_title] = new Donations(_title, _coin, _projectOwner);
         tokens[_title].transferOwnership(msg.sender);
-        emit NewToken(
+        emit NewContract(
             _title,
             address(tokens[_title]),
             msg.sender,
@@ -38,7 +38,7 @@ contract Factory is Ownable {
         emit SetURI(_uri);
     }
 
-    event NewToken(
+    event NewContract(
         string title,
         address token,
         address owner,

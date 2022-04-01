@@ -32,7 +32,7 @@ before("Start", async function () {
 describe("Start project", function () {
   it("emits an event", async function () {
     expect(await factory.newToken("title", usdc.address, acc2.address))
-      .to.emit(factory, "NewToken")
+      .to.emit(factory, "NewContract")
       .withArgs(
         "title",
         "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be",

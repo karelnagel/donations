@@ -1,137 +1,140 @@
-import { BigInt, log, ipfs, json, TypedMap, JSONValue } from "@graphprotocol/graph-ts"
+import { BigInt, log } from "@graphprotocol/graph-ts"
 import {
-  Donations,
-  NewToken
-} from "../generated/Donations/Donations"
+  NewContract, SetURI
+
+} from "../generated/Factory/Factory"
 
 import {
-  NewDonation,
   End,
   OwnershipTransferred,
-  CashOut,
-  SetContractURI,
-  NewProject
-} from "../generated/templates/DonationsToken/DonationsToken"
-import { Token, Donation, Project } from "../generated/schema"
-import { DonationsToken } from '../generated/templates'
+  NewProject,
+  NewToken
+} from "../generated/templates/Donations/Donations"
+import { Token, Project, Contract, Account, Title } from "../generated/schema"
+import { Donations } from '../generated/templates'
 
-export function handleNewToken(event: NewToken): void {
-  const tokenId = event.params.token.toHexString()
-  let token = new Token(tokenId)
+export function handleNewContract(event: NewContract): void {
+  const title = new Title(event.params.token.toHexString())
+  title.title = event.params.title;
+  title.save()
 
-  token.title = event.params.title
-  token.token = event.params.token;
-  token.coin = event.params.coin;
-  token.owner = event.params.owner
-  token.contractURI = event.params.contractURI
-  token.active = true;
-  token.donated = new BigInt(0);
-  token.withdrawn = new BigInt(0);
-  token.currentProject = 0
-  token.time = event.block.timestamp;
+  let contract = new Contract(event.params.title)
+  contract.address = event.params.token
+  contract.time = event.block.timestamp
+  contract.contractURI = "" // Todo get 
 
-  const project = new Project(getProjectId(tokenId, "0"));
-  project.image = event.params.image;
-  project.order = 0;
-  project.token = tokenId
-  project.time = event.block.timestamp
+  const owner = new Account(event.params.owner.toHexString())
+  contract.owner = owner.id
+  owner.save()
+
+  contract.save()
+
+  const project = new Project(getProjectId(event.params.title, "0"));
+  project.count = new BigInt(0);
+  project.donated = new BigInt(0);
+  project.coin = event.params.coin;
+  project.active = true;
+  project.contract = event.params.title;
+  project.time = event.block.timestamp;
+
+  const projectOwner = new Account(event.params.projectOwner.toHexString())
+  project.owner = projectOwner.id
+  owner.save()
 
   project.save()
-  token.save()
-  DonationsToken.create(event.params.token)
-  log.info("Project with id {} created! ", [event.params.token.toHexString()])
+
+  Donations.create(event.params.token)
 }
 
-export function handleSetContractURI(event: SetContractURI): void {
-  const token = getToken(event.address.toHexString())
-  if (!token) return
-
-  token.contractURI = event.params.contractURI
-
-  token.save()
+export function handleSetURI(event: SetURI): void {
+  // Todo
 }
 
 export function handleNewProject(event: NewProject): void {
-  const token = getToken(event.address.toHexString())
-  if (!token) return
+  const title = Title.load(event.address.toHexString())
+  if (!title) {
+    log.error("No title with {}", [event.address.toHexString()])
+    return;
+  }
 
-  token.currentProject++;
-  const project = new Project(getProjectId(token.id, token.currentProject.toString()))
-  project.image = event.params.image;
-  project.order = token.currentProject;
-  project.token = token.id;
+  const project = new Project(getProjectId(title.title, event.params.id.toString()))
+  project.count = event.params.id;
+  project.donated = new BigInt(0);
+  project.coin = event.params.coin;
+  project.active = true;
+  project.contract = title.title;
   project.time = event.block.timestamp;
 
-  token.save()
+  const owner = new Account(event.params.projectOwner.toHexString())
+  project.owner = owner.id
+  owner.save()
+
   project.save()
 }
 
-export function handleCashOut(event: CashOut): void {
-  const token = getToken(event.address.toHexString())
-  if (!token) return
 
-  token.withdrawn = token.withdrawn.plus(event.params.amount);
-
-  token.save()
-}
 export function handleEnd(event: End): void {
-  const token = getToken(event.address.toHexString())
-  if (!token) return
+  const title = Title.load(event.address.toHexString())
+  if (!title) {
+    log.error("No title with {}", [event.address.toHexString()])
+    return;
+  }
 
-  token.active = false;
+  const projectId = getProjectId(title.title, event.params.id.toString())
+  const project = Project.load(projectId)
+  if (!project) {
+    log.error("No project with {}", [projectId])
+    return;
+  }
+  project.active = false;
 
-  token.save()
+  project.save()
 }
 
 
-export function handleDonation(event: NewDonation): void {
-  const token = getToken(event.address.toHexString())
-  if (!token) return
+export function handleNewToken(event: NewToken): void {
+  const title = Title.load(event.address.toHexString())
+  if (!title) {
+    log.error("No title with {}", [event.address.toHexString()])
+    return;
+  }
 
-  const project = getProject(getProjectId(token.id, event.params.projectId.toString()))
-  if (!project) return
+  const tokenId = getTokenId(title.title, event.params.id.toString())
+  const token = new Token(tokenId)
 
-  const donation = new Donation(event.transaction.hash.toHexString())
-  donation.amount = event.params.amount
-  donation.message = event.params.message
-  donation.sender = event.params.sender
-  donation.project = project.id
-  donation.time = event.block.timestamp
-  donation.save()
+  token.amount = event.params.amount
+  token.message = event.params.message;
+  token.owner = event.params.owner.toHexString();
+  token.project = getProjectId(title.title, event.params.projectId.toString())
+  token.time = event.block.timestamp;
+  token.tokenURI = "" // Todo get
 
-  project.donated = project.donated.plus(event.params.amount)
-  project.save()
-  
-  token.donated = token.donated.plus(event.params.amount)
+  const owner = new Account(event.params.owner.toHexString())
+  token.owner = owner.id
+  owner.save()
+
   token.save()
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
-  const token = getToken(event.address.toHexString())
-  if (!token) return
-
-  token.owner = event.params.newOwner
-
-  token.save();
-}
-
-function getToken(id: string): Token | null {
-  const token = Token.load(id)
-  if (!token) {
-    log.error("No token with {}", [id])
-    return null;
+  const title = Title.load(event.address.toHexString())
+  if (!title) {
+    log.error("No title with {}", [event.address.toHexString()])
+    return;
   }
-  return token;
-}
-function getProjectId(tokenId: string, projectId: string): string {
-  return tokenId + "_" + projectId;
+
+  const contract = Contract.load(title.title)
+  if (!contract) {
+    log.error("No contract with {}", [title.title])
+    return;
+  }
+
+  const owner = new Account(event.params.newOwner.toHexString())
+  contract.owner = owner.id
+  owner.save()
+
+  contract.save()
 }
 
-function getProject(id: string): Project | null {
-  const project = Project.load(id)
-  if (!project) {
-    log.error("No project with {}", [id])
-    return null;
-  }
-  return project;
-}
+function getProjectId(title: string, projectId: string): string { return title + "_p" + projectId }
+function getTokenId(title: string, tokenId: string): string { return title + "_t" + tokenId }

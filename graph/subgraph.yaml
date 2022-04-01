@@ -1,57 +1,55 @@
 specVersion: 0.0.2
 schema:
   file: ./schema.graphql
-features:
-  - ipfsOnEthereumContracts
 dataSources:
   - kind: ethereum
-    name: Donations
+    name: Factory
     network: rinkeby
     source:
-      address: "0xf05D93E3d4086039d1830C1aAb0012be448CDb34"
-      abi: Donations
+      address: "0xdb7BbF64c65096F43f903b27bF42C02e56984f10"
+      abi: Factory
       startBlock: 10416997
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - NewProject
-        - OwnershipTransferred
+        - Contract
       abis:
-        - name: Donations
-          file: ./abis/Donations.json
+        - name: Factory
+          file: ./abis/Factory.json
       eventHandlers:
-        - event: NewToken(string,address,address,address,string,string)
-          handler: handleNewToken
+        - event: NewContract(string,address,address,address,address)
+          handler: handleNewContract
+        - event: SetURI(string)
+          handler: handleSetURI
       file: ./src/mappings.ts
 
 templates:
-  - name: DonationsToken
+  - name: Donations
     kind: ethereum/contract
     network: rinkeby
     source:
-      abi: DonationsToken
+      abi: Donations
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings.ts
       entities:
-        - DonationsToken
+        - Contract
+        - Project
+        - Token
+        - Account
       abis:
-        - name: DonationsToken
-          file: ./abis/DonationsToken.json
+        - name: Donations
+          file: ./abis/Donations.json
       eventHandlers:
-        - event: SetContractURI(string)
-          handler: handleSetContractURI
-        - event: NewProject(string)
+        - event: NewProject(uint256,address,address)
           handler: handleNewProject
-        - event: CashOut(uint256)
-          handler: handleCashOut
-        - event: End()
+        - event: NewToken(uint256,uint256,address,uint256,string)
+          handler: handleNewToken
+        - event: End(uint256)
           handler: handleEnd
-        - event: NewDonation(uint256,address,uint256,string,uint256)
-          handler: handleDonation
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
