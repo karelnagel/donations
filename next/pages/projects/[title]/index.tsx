@@ -22,7 +22,7 @@ interface TokenProps {
 }
 const Project: NextPage<TokenProps> = ({ token, title }) => {
   const { data } = useProjectSubQuery({ variables: { title } });
-  if (!token) return <h1>No token!</h1>;
+  if (!token) return <h1>No project found!</h1>;
 
   return (
     <>
