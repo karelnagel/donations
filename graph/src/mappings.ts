@@ -1,9 +1,5 @@
 import { BigInt, log } from "@graphprotocol/graph-ts"
-import {
-  NewContract, SetURI
-
-} from "../generated/Factory/Factory"
-
+import { NewContract, SetURI } from "../generated/Factory/Factory"
 import {
   End,
   OwnershipTransferred,
@@ -64,6 +60,7 @@ export function handleNewProject(event: NewProject): void {
   project.active = true;
   project.contract = title.title;
   project.time = event.block.timestamp;
+  project.donationCount = 0;
 
   const owner = new Account(event.params.projectOwner.toHexString())
   project.owner = owner.id
@@ -99,9 +96,18 @@ export function handleNewToken(event: NewToken): void {
     return;
   }
 
+  const projectId = getProjectId(title.title, event.params.projectId.toString())
+  const project = Project.load(projectId)
+  if (!project) {
+    log.error("No project with {}", [projectId])
+    return
+  }
+  project.donated = project.donated.plus(event.params.amount);
+  project.donationCount++;
+  project.save()
+
   const tokenId = getTokenId(title.title, event.params.id.toString())
   const token = new Token(tokenId)
-
   token.amount = event.params.amount
   token.message = event.params.message;
   token.owner = event.params.owner.toHexString();

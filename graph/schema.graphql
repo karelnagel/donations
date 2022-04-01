@@ -16,6 +16,7 @@ type Project @entity {
   id: ID! # title_p1
   count: BigInt!
   donated: BigInt!
+  donationCount: Int!
   coin: Bytes!
   active: Boolean!
   contract: Contract!
