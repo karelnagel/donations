@@ -2,201 +2,241 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { Donations, USDC, DonationsToken } from "../typechain";
+import { Factory, USDC, Token } from "../typechain";
 
-let contract: Donations;
-let token: DonationsToken;
+let factory: Factory;
+let token: Token;
 let usdc: USDC;
 
-let owner: SignerWithAddress;
-let investor: SignerWithAddress;
+let acc1: SignerWithAddress;
+let acc2: SignerWithAddress;
+let acc3: SignerWithAddress;
 
 const donation = ethers.utils.parseEther("100");
 
 before("Start", async function () {
   // Getting accounts
-  [owner, investor] = await ethers.getSigners();
+  [acc1, acc2, acc3] = await ethers.getSigners();
 
   // Deploy contract
-  const Contract = await ethers.getContractFactory("Donations");
-  contract = await Contract.deploy();
-  await contract.deployed();
+  const Contract = await ethers.getContractFactory("Factory");
+  factory = await Contract.deploy();
+  await factory.deployed();
 
   // Deploy usdc
   const USDC = await ethers.getContractFactory("USDC");
-  usdc = await USDC.connect(investor).deploy();
+  usdc = await USDC.connect(acc3).deploy();
   await usdc.deployed();
 });
 
 describe("Start project", function () {
   it("emits an event", async function () {
-    expect(await contract.startProject("title", usdc.address, "uri", "image 1"))
-      .to.emit(contract, "NewToken")
+    expect(await factory.newToken("title", usdc.address, acc2.address))
+      .to.emit(factory, "NewToken")
       .withArgs(
         "title",
         "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be",
-        "0x8464135c8F25Da09e49BC8782676a84730C318bC",
-        owner.address,
-        "uri",
-        "image 1"
+        acc1.address,
+        "0x663F3ad617193148711d28f5334eE4Ed07016602",
+        acc2.address
       );
   });
 
   it("has correct parameters", async function () {
-    const tokenAddress = await contract.tokens("title");
+    const tokenAddress = await factory.tokens("title");
 
-    const Token = await ethers.getContractFactory("DonationsToken");
+    const Token = await ethers.getContractFactory("Token");
     token = Token.attach(tokenAddress);
 
-    expect(await token.coin()).to.equal(usdc.address);
-    expect(await token.owner()).to.equal(owner.address);
     expect(await token.title()).to.equal("title");
-    expect(await token.donated()).to.equal(0);
-    expect(await token.contractURI()).to.equal("uri");
-    expect(await token.active()).to.equal(true);
-    expect(await token.donationsCount()).to.equal(0);
-    expect(await token.contractURI()).to.equal("uri");
+    expect(await token.owner()).to.equal(acc1.address);
+    expect(await token.tokenURI(1)).to.equal(
+      "https://ethdon.xyz/api/tokens/title/1"
+    );
+    expect(await token.contractURI()).to.equal(
+      "https://ethdon.xyz/api/tokens/title"
+    );
+
+    const project = await token.projects(1);
+    expect(project.coin).to.equal(usdc.address);
+    expect(project.donated).to.equal(0);
+    expect(project.active).to.equal(true);
+    expect(project.owner).to.equal(acc2.address);
   });
 
   it("can't create a new project with same title", async function () {
     await expect(
-      contract.startProject("title", usdc.address, "uri", "image 1")
+      factory.newToken("title", usdc.address, acc2.address)
     ).to.be.revertedWith("Title already exists");
   });
 });
 
-describe("Edit contract uri", function () {
+describe("Edit uri", function () {
   it("not owners can't edit", async function () {
     await expect(
-      token.connect(investor).setContractURI("contract uri 2")
+      factory.connect(acc2).setURI("https://facebook.com/")
     ).to.be.revertedWith("caller is not the owner");
   });
   it("parameters changed", async function () {
-    await token.setContractURI("contract uri 3");
-    expect(await token.contractURI()).to.equal("contract uri 3");
+    const uri = "https://twitter.com/";
+    await expect(factory.setURI(uri)).to.emit(factory, "SetURI").withArgs(uri);
+    expect(await factory.getURI()).to.equal(uri);
+    expect(await token.tokenURI(1)).to.equal(uri + "title/1");
+    expect(await token.contractURI()).to.equal(uri + "title");
   });
 });
 
-let userBalance: BigNumber;
-let tokenBalance: BigNumber;
-let donated: BigNumber;
-const Donate = (id: number, projectId: number, image: string) => {
+const Donate = (id: number, projectId: number) => {
   describe(`Donation #${id}`, function () {
+    let userBalance: BigNumber;
+    let tokenBalance: BigNumber;
+    let projectDonated: BigNumber;
+
     const message = `I like your project ${id}`;
     before(async function () {
-      userBalance = await usdc.balanceOf(investor.address);
+      userBalance = await usdc.balanceOf(acc3.address);
       tokenBalance = await usdc.balanceOf(token.address);
-      donated = await token.donated();
+      projectDonated = (await token.projects(projectId)).donated;
     });
 
     it("fails if amount == 0", async function () {
       await expect(
-        token.connect(investor).donate(0, message)
+        token.connect(acc3).donate(projectId, 0, message)
       ).to.be.revertedWith("Donation amount is 0");
     });
 
     it("fails if not enough coins", async function () {
-      await expect(token.donate(donation, message)).to.be.revertedWith(
-        "transfer amount exceeds balance"
-      );
+      await expect(
+        token.donate(projectId, donation, message)
+      ).to.be.revertedWith("transfer amount exceeds balance");
     });
 
-    it("emits event", async function () {
-      await usdc.connect(investor).approve(token.address, donation);
-      expect(await token.connect(investor).donate(donation, message))
+    it("successful donation", async function () {
+      await usdc.connect(acc3).approve(token.address, donation);
+      expect(await token.connect(acc3).donate(projectId, donation, message))
         .to.emit(token, "NewDonation")
         .withArgs(
           id.toString(),
-          investor.address,
+          projectId.toString(),
+          acc3.address,
           donation,
-          message,
-          projectId.toString()
+          message
         );
-    });
-    it("user has less money", async function () {
-      expect(await usdc.balanceOf(investor.address)).to.equal(
+
+      // donator has less money
+      expect(await usdc.balanceOf(acc3.address)).to.equal(
         userBalance.sub(donation)
       );
-    });
-    it("contract has more money ", async function () {
+
+      // contract has more money
       expect(await usdc.balanceOf(token.address)).to.equal(
         tokenBalance.add(donation)
       );
-    });
-    it("project balance is correct", async function () {
-      expect(await token.donated()).to.equal(donated.add(donation));
-    });
-    it("user has NFT ", async function () {
-      expect(await token.ownerOf(id)).to.equal(investor.address);
-    });
-    it("token has correct uri ", async function () {
-      const result = await token.tokenURI(id);
-      const json = atob(result.split(",")[1]);
-      const obj = JSON.parse(json);
 
-      const donationInfo = await token.donations(id);
+      // project donations correct
+      expect((await token.projects(projectId)).donated).to.equal(
+        projectDonated.add(donation)
+      );
 
-      expect(obj.image).to.equal(image);
-      expect(obj.name).to.equal(`Supporter #${id}`);
-      expect(obj.description).to.equal(message);
-      expect(obj.external_url).to.equal("https://ethdon.xyz/projects/title");
-      expect(obj.attributes[0].value.toString())
-        .to.equal(donationInfo.amount.toString())
-        .to.equal(donation.toString());
-      expect(obj.attributes[1].value)
-        .to.equal(donationInfo.message)
-        .to.equal(message);
-      expect(obj.attributes[2].value)
-        .to.equal(donationInfo.projectId)
-        .to.equal(projectId);
-      expect(obj.attributes[3].value).to.equal(investor.address.toLowerCase());
+      // donator has NFT
+      expect(await token.ownerOf(id)).to.equal(acc3.address);
     });
   });
 };
-Donate(1, 0, "image 1");
-Donate(2, 0, "image 1");
+Donate(1, 1);
 
 describe("New project", async function () {
   it("emits event", async function () {
-    expect(await token.newProject("new image"))
+    expect(await token.newProject(usdc.address, acc2.address))
       .to.emit(token, "NewProject")
-      .withArgs("new image");
+      .withArgs(2, usdc.address, acc2.address);
+  });
+  it("has correct params", async function () {
+    const project = await token.projects(2);
+    expect(project.donated).to.equal(0);
+    expect(project.owner).to.equal(acc2.address);
+    expect(project.coin).to.equal(usdc.address);
+    expect(project.active).to.equal(true);
   });
 });
 
-Donate(3, 1, "new image");
-Donate(4, 1, "new image");
+Donate(2, 2);
+Donate(3, 2);
+Donate(4, 1);
 
-describe("Cash out", async function () {
+describe("acc2 ending project 1", async function () {
+  const id = 1;
+  let userBalance: BigNumber;
+  let tokenBalance: BigNumber;
+
   before(async function () {
-    userBalance = await usdc.balanceOf(owner.address);
+    userBalance = await usdc.balanceOf(acc2.address);
     tokenBalance = await usdc.balanceOf(token.address);
   });
-  it("emits event ", async function () {
-    expect(await token.cashOut())
-      .to.emit(token, "CashOut")
-      .withArgs(tokenBalance);
-  });
-  it("owner has more money", async function () {
-    const balance = await usdc.balanceOf(owner.address);
-    expect(balance.toString()).to.equal(
-      userBalance.add(tokenBalance).toString()
-    );
-  });
-  it("contract has less money ", async function () {
-    const balance = await usdc.balanceOf(token.address);
-    expect(balance).to.equal(0);
-  });
-});
 
-describe("End", async function () {
-  before(async function () {
-    expect(await token.end()).to.emit(token, "End");
+  it("acc3 cant end", async function () {
+    expect(token.connect(acc3).end(id)).to.be.revertedWith("Not project owner");
+  });
+  it("success", async function () {
+    expect(await token.connect(acc2).end(id))
+      .to.emit(token, "End")
+      .withArgs(id);
+  });
+  it("cant end again", async function () {
+    expect(token.connect(acc1).end(id)).to.be.revertedWith(
+      "Project not active!"
+    );
   });
 
   it("can't donate anymore", async function () {
-    await expect(
-      token.connect(investor).donate(donation, "Hello")
-    ).to.be.revertedWith("Project not active!");
+    await expect(token.donate(id, donation, "Hello")).to.be.revertedWith(
+      "Project not active!"
+    );
+  });
+  it("acc2 got the money", async function () {
+    const moneySpent = donation.mul(2);
+    expect(await usdc.balanceOf(acc2.address)).to.equal(
+      userBalance.add(moneySpent)
+    );
+    expect(await usdc.balanceOf(token.address)).to.equal(tokenBalance.sub(moneySpent)
+    );
+  });
+});
+
+Donate(5, 2);
+
+describe("acc1 ending project 2", async function () {
+  const id = 2;
+  let userBalance: BigNumber;
+
+  before(async function () {
+    userBalance = await usdc.balanceOf(acc2.address);
+  });
+
+  it("acc3 cant end", async function () {
+    expect(token.connect(acc3).end(id)).to.be.revertedWith("Not project owner");
+  });
+  it("success", async function () {
+    expect(await token.connect(acc1).end(id))
+      .to.emit(token, "End")
+      .withArgs(id);
+  });
+  it("cant end again", async function () {
+    expect(token.connect(acc1).end(id)).to.be.revertedWith(
+      "Project not active!"
+    );
+  });
+
+  it("can't donate anymore", async function () {
+    await expect(token.donate(id, donation, "Hello")).to.be.revertedWith(
+      "Project not active!"
+    );
+  });
+  it("acc2 got the money", async function () {
+    const moneySpent = donation.mul(3);
+    expect(await usdc.balanceOf(acc2.address)).to.equal(
+      userBalance.add(moneySpent)
+    );
+    expect(await usdc.balanceOf(token.address)).to.equal(0);
   });
 });
