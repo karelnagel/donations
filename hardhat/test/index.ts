@@ -2,10 +2,10 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { Factory, USDC, Token } from "../typechain";
+import { Factory, USDC, Donations } from "../typechain";
 
 let factory: Factory;
-let token: Token;
+let token: Donations;
 let usdc: USDC;
 
 let acc1: SignerWithAddress;
@@ -45,7 +45,7 @@ describe("Start project", function () {
   it("has correct parameters", async function () {
     const tokenAddress = await factory.tokens("title");
 
-    const Token = await ethers.getContractFactory("Token");
+    const Token = await ethers.getContractFactory("Donations");
     token = Token.attach(tokenAddress);
 
     expect(await token.title()).to.equal("title");
@@ -114,7 +114,7 @@ const Donate = (id: number, projectId: number) => {
     it("successful donation", async function () {
       await usdc.connect(acc3).approve(token.address, donation);
       expect(await token.connect(acc3).donate(projectId, donation, message))
-        .to.emit(token, "NewDonation")
+        .to.emit(token, "NewToken")
         .withArgs(
           id.toString(),
           projectId.toString(),
