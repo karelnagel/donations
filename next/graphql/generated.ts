@@ -760,7 +760,7 @@ export type ContractQueryVariables = Exact<{
 }>;
 
 
-export type ContractQuery = { __typename?: 'Query', contract?: { __typename?: 'Contract', id: string, owner: { __typename?: 'Account', id: string }, projects: Array<{ __typename?: 'Project', donated: any, count: any, coin: any, active: boolean, contract: { __typename?: 'Contract', id: string }, owner: { __typename?: 'Account', id: string } }> } | null };
+export type ContractQuery = { __typename?: 'Query', contract?: { __typename?: 'Contract', id: string, address: any, owner: { __typename?: 'Account', id: string }, projects: Array<{ __typename?: 'Project', donated: any, count: any, coin: any, active: boolean, contract: { __typename?: 'Contract', id: string }, owner: { __typename?: 'Account', id: string } }> } | null };
 
 export type ContractListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -779,7 +779,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', count: any, active: boolean, coin: any, time: any, id: string, owner: { __typename?: 'Account', id: string }, contract: { __typename?: 'Contract', id: string, owner: { __typename?: 'Account', id: string } } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', count: any, active: boolean, coin: any, time: any, id: string, owner: { __typename?: 'Account', id: string }, contract: { __typename?: 'Contract', id: string, address: any, owner: { __typename?: 'Account', id: string } } } | null };
 
 export type ProjectListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -891,6 +891,7 @@ export const ContractDocument = gql`
     query contract($id: ID = "", $first: Int = 10) {
   contract(id: $id) {
     id
+    address
     owner {
       id
     }
@@ -1030,6 +1031,7 @@ export const ProjectDocument = gql`
     }
     contract {
       id
+      address
       owner {
         id
       }

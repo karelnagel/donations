@@ -25,9 +25,9 @@ export function handleNewContract(event: NewContract): void {
 
   contract.save()
 
-  const project = new Project(getProjectId(event.params.title, "0"));
-  project.count = new BigInt(0);
-  project.donated = new BigInt(0);
+  const project = new Project(getProjectId(event.params.title, "1"));
+  project.count = BigInt.fromString("1");
+  project.donated = BigInt.fromString("0")
   project.donationCount = 0;
   project.coin = event.params.coin;
   project.active = true;
@@ -56,7 +56,7 @@ export function handleNewProject(event: NewProject): void {
 
   const project = new Project(getProjectId(title.title, event.params.id.toString()))
   project.count = event.params.id;
-  project.donated = new BigInt(0);
+  project.donated = BigInt.fromString("0")
   project.coin = event.params.coin;
   project.active = true;
   project.contract = title.title;

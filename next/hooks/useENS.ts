@@ -8,12 +8,15 @@ export default function useENS(address: string | null | undefined) {
     useEffect(() => {
         (async ()=>{
             if (address) {
-                console.log(address)
                 const result = await getENS(address);
                 setName(result.name ?? "");
                 setAvatar(result.avatar ?? "");
             }
         })();
+        return ()=>{
+            setName("")
+            setAvatar("")
+        }
     }, [address]);
     return { name: name ? name : short(address), avatar }
 }

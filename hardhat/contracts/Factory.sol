@@ -9,23 +9,20 @@ contract Factory is Ownable {
     string uri = "https://ethdon.xyz/api/tokens/";
 
     function newToken(
-        string memory _title,
-        address _coin,
-        address _projectOwner
+        string memory title,
+        address coin,
+        address projectOwner
     ) public {
-        require(
-            tokens[_title] == Donations(address(0)),
-            "Title already exists"
-        );
+        require(tokens[title] == Donations(address(0)), "Title already exists");
 
-        tokens[_title] = new Donations(_title, _coin, _projectOwner);
-        tokens[_title].transferOwnership(msg.sender);
+        tokens[title] = new Donations(title, coin, projectOwner);
+        tokens[title].transferOwnership(msg.sender);
         emit NewContract(
-            _title,
-            address(tokens[_title]),
+            title,
+            address(tokens[title]),
             msg.sender,
-            _coin,
-            _projectOwner
+            coin,
+            projectOwner
         );
     }
 
@@ -33,7 +30,7 @@ contract Factory is Ownable {
         return uri;
     }
 
-    function setURI(string memory _uri) public  onlyOwner {
+    function setURI(string memory _uri) public onlyOwner {
         uri = _uri;
         emit SetURI(_uri);
     }

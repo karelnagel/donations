@@ -1,6 +1,7 @@
 query contract($id: ID = "", $first: Int = 10) {
   contract(id: $id) {
     id
+    address
     owner {
       id
     }

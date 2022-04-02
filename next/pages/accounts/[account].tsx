@@ -73,7 +73,7 @@ export const getStaticProps: GetStaticProps<AccountProps, Params> = async (conte
     props: {
       account,
     },
-    revalidate: 60,
+    revalidate: 10,
   };
 };
 

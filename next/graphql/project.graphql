@@ -10,6 +10,7 @@ query project($id: ID = "") {
     }
     contract {
       id
+      address
       owner {
         id
       }
