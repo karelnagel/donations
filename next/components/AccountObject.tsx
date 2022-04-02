@@ -1,14 +1,12 @@
-import Link from "next/link";
 import React from "react";
+import useENS from "../hooks/useENS";
 
 export function AccountObject({ account }: { account: string }) {
+  const { name } = useENS(account);
+
   return (
     <div className="box">
-      <Link href={`/accounts/${account}`}>
-        <a>
-          <h2>{account}</h2>
-        </a>
-      </Link>
+      <h2>{name}</h2>
     </div>
   );
 }

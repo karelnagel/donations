@@ -1,15 +1,20 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import React from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./../apollo";
+import { Context, User } from "../interfaces/context";
+import { JsonRpcProvider } from "@ethersproject/providers";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const name = "Ethereum donations";
   const description = "Ethereum donations for creators";
   const url = "https://ethdon.xyz";
   const image = `${url}/favicon.png`;
+
+  const [provider, setProvider] = useState<JsonRpcProvider>();
+  const [user, setUser] = useState<User>();
 
   return (
     <>
@@ -23,7 +28,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="og:url" content={url} />
         <meta name="og:description" content={description} />
         <meta name="og:image" content={image} />
-        <meta name="og:type" content="website"/>
+        <meta name="og:type" content="website" />
 
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -33,10 +38,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
       </Head>
-      <ApolloProvider client={client}>
-        <Component {...pageProps} />
-      </ApolloProvider>
-      ,
+
+      <Context.Provider value={{ provider, user, setUser, setProvider }}>
+        <ApolloProvider client={client}>
+          <Component {...pageProps} />
+        </ApolloProvider>
+      </Context.Provider>
     </>
   );
 }

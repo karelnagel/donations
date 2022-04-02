@@ -1,6 +1,5 @@
 import React from "react";
 import { client } from "../../apollo";
-import { ContractTitlesDocument, ContractTitlesQueryResult, ContractDocument, ContractQueryResult, Contract } from "../../../graphql/generated";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { CustomHead } from "../../components/CustomHead";

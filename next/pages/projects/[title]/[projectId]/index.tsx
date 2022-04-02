@@ -27,7 +27,6 @@ interface ProjectProps {
 const ProjectPage: NextPage<ProjectProps> = ({ project }) => {
   const { data } = useProjectSubQuery({ variables: { id: getProjectId(project?.contract.id!, project?.count) } });
   if (!project) return <h1>No project found!</h1>;
-  console.log(data);
   return (
     <>
       <CustomHead name={project.contract.id} description={project.owner.id} />
@@ -57,6 +56,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ project }) => {
             ))}
           </div>
         </div>
+        <button>End</button>
       </Layout>
     </>
   );
@@ -66,7 +66,6 @@ export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const result = (await client.query({ query: ProjectListDocument })) as ProjectListQueryResult;
 
   const paths = result.data?.projects.map((p) => ({ params: { title: p.contract.id, projectId: p.count } })) ?? [];
-  console.log(paths);
   return {
     paths,
     fallback: true,
@@ -79,7 +78,6 @@ export const getStaticProps: GetStaticProps<ProjectProps, Params> = async (conte
   const result = (await client.query({ query: ProjectDocument, variables: { id: getProjectId(title, projectId) } })) as ProjectQueryResult;
 
   const project = result.data ? (result.data.project as Project) : null;
-  console.log({ title, projectId, project });
   return {
     props: {
       project,

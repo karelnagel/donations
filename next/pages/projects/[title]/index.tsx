@@ -29,6 +29,14 @@ const ContractPage: NextPage<ContractProps> = ({ contract }) => {
             ))}
           </div>
         </div>
+        <div>
+          <h2>Start new project</h2>
+              <form action="">
+                <input type="text" placeholder="coin"/>
+                <input type="text" placeholder="project owner"/>
+                <button type="submit">Start project</button>
+              </form>
+        </div>
       </Layout>
     </>
   );
