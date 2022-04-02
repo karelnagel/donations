@@ -3,7 +3,7 @@ import Layout from "../components/Layout";
 import useContract from "../hooks/useContract";
 
 export default function New() {
-  const { newContract } = useContract();
+  const { newContract } = useContract({});
   const [title, setTitle] = useState("");
   const [coin, setCoin] = useState("");
   const [owner, setOwner] = useState("");

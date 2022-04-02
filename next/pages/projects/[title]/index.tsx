@@ -17,7 +17,7 @@ interface ContractProps {
 const ContractPage: NextPage<ContractProps> = ({ contract }) => {
   const [coin, setCoin] = useState("");
   const [owner, setOwner] = useState("");
-  const { newProject } = useContract(contract?.address);
+  const { newProject } = useContract({contractAddress:contract?.address});
   const newPro = async (e: any) => {
     e.preventDefault();
     await newProject(coin, owner);
