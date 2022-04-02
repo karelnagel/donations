@@ -103,6 +103,7 @@ export default function useContract({ contractAddress, projectId, coinAddress }:
       try {
         const result = await coin()!.approve(contractAddress, amount)
         await result.wait(1)
+        return
       }
       catch (e) {
         console.log(e)

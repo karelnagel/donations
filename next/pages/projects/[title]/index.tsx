@@ -7,17 +7,20 @@ import { CustomHead } from "../../../components/CustomHead";
 import Layout from "../../../components/Layout";
 import { ProjectObject } from "../../../components/ProjectObject";
 import useContract from "../../../hooks/useContract";
+import { getContractInfo } from "../../../lib/contractInfo";
+import { ContractInfo } from "../../../interfaces/api";
 
 interface Params extends ParsedUrlQuery {
   title: string;
 }
 interface ContractProps {
   contract: Contract | null;
+  contractInfo: ContractInfo | null;
 }
-const ContractPage: NextPage<ContractProps> = ({ contract }) => {
+const ContractPage: NextPage<ContractProps> = ({ contract, contractInfo }) => {
   const [coin, setCoin] = useState("");
   const [owner, setOwner] = useState("");
-  const { newProject } = useContract({contractAddress:contract?.address});
+  const { newProject } = useContract({ contractAddress: contract?.address });
   const newPro = async (e: any) => {
     e.preventDefault();
     await newProject(coin, owner);
@@ -30,6 +33,10 @@ const ContractPage: NextPage<ContractProps> = ({ contract }) => {
         <p>title: {contract.id}</p>
         <p>owner: {contract.owner.id}</p>
         <p>address: {contract.address}</p>
+        <p>name: {contractInfo?.name}</p>
+        <p>description: {contractInfo?.description}</p>
+        <p>link: {contractInfo?.external_link}</p>
+        <p>image: {contractInfo?.image}</p>
         <div>
           <h2>Latest projects by contract:</h2>
           <div>
@@ -68,10 +75,11 @@ export const getStaticProps: GetStaticProps<ContractProps, Params> = async (cont
   const result = (await client.query({ query: ContractDocument, variables: { id: title } })) as ContractQueryResult;
 
   const contract = result.data ? (result.data.contract as Contract) : null;
-  console.log(contract)
+  const contractInfo = await getContractInfo(title);
   return {
     props: {
       contract,
+      contractInfo,
     },
     revalidate: 10,
   };

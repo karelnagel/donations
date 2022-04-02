@@ -20,9 +20,9 @@ import { ContractObject } from "../../../../components/ContractObject";
 import useContract from "../../../../hooks/useContract";
 import { ethers } from "ethers";
 import useBalance from "../../../../hooks/useBalance";
-import { setMaxListeners } from "events";
-import { userInfo } from "os";
 import { Context } from "../../../../interfaces/context";
+import { ProjectInfo } from "../../../../interfaces/api";
+import { getProjectInfo } from "../../../../lib/projectInfo";
 
 interface Params extends ParsedUrlQuery {
   title: string;
@@ -30,8 +30,9 @@ interface Params extends ParsedUrlQuery {
 }
 interface ProjectProps {
   project: Project | null;
+  projectInfo: ProjectInfo | null;
 }
-const ProjectPage: NextPage<ProjectProps> = ({ project }) => {
+const ProjectPage: NextPage<ProjectProps> = ({ project, projectInfo }) => {
   const { data } = useProjectSubQuery({ variables: { id: getProjectId(project?.contract.id!, project?.count) } });
   const { user } = useContext(Context);
   const { donate, end, getAllowance, approve } = useContract({
@@ -88,6 +89,12 @@ const ProjectPage: NextPage<ProjectProps> = ({ project }) => {
         <p>coin: {project.coin}</p>
         <p>owner: {project.owner.id}</p>
         <p>address: {project.contract.address}</p>
+        <p>name: {projectInfo?.name}</p>
+        <p>description: {projectInfo?.description}</p>
+        <p>image: {projectInfo?.image}</p>
+        <p>external_url: {projectInfo?.external_url}</p>
+        <p>goal: {projectInfo?.goal}</p>
+        <p>socials: {projectInfo?.socials.join(", ")}</p>
         <p>{active ? "active" : "not active"}</p>
 
         <p>Donated: {project2 ? ethers.utils.formatEther(project2.donated) : "0"}</p>
@@ -135,11 +142,13 @@ export const getStaticProps: GetStaticProps<ProjectProps, Params> = async (conte
   const result = (await client.query({ query: ProjectDocument, variables: { id: getProjectId(title, projectId) } })) as ProjectQueryResult;
 
   const project = result.data ? (result.data.project as Project) : null;
+  const projectInfo = await getProjectInfo(title, projectId);
   return {
     props: {
       project,
       title,
       projectId,
+      projectInfo,
     },
     revalidate: 10,
   };
