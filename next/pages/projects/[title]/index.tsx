@@ -1,68 +1,60 @@
 import React from "react";
 import { client } from "../../../apollo";
-import {
-  ProjectTitlesQueryResult,
-  ProjectTitlesDocument,
-  ProjectDocument,
-  ProjectQueryResult,
-  Token,
-  useProjectSubQuery,
-  Project,
-} from "../../../graphql/generated";
+import { ContractDocument, ContractQueryResult, Contract, ContractListDocument, ContractListQueryResult } from "../../../graphql/generated";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { CustomHead } from "../../../components/CustomHead";
 import Layout from "../../../components/Layout";
+import { ProjectObject } from "../../../components/ProjectObject";
 
 interface Params extends ParsedUrlQuery {
   title: string;
 }
-interface ProjectProps {
-  project: Project | null;
-  title: string;
+interface ContractProps {
+  contract: Contract | null;
 }
-const Project: NextPage<ProjectProps> = ({ project, title }) => {
-  const { data } = useProjectSubQuery({ variables: { id:title+"_p0" } });
-  if (!project) return <h1>No project found!</h1>;
-console.log(data)
+const ContractPage: NextPage<ContractProps> = ({ contract }) => {
+  if (!contract) return <h1>No contract found!</h1>;
   return (
     <>
-      <CustomHead name={project.contract.id} description={project.owner.id} />
+      <CustomHead name={contract.id} description={contract.owner.id} />
       <Layout>
-        <h1>{project.contract.id}</h1>
-        <h1>{project.coin}</h1>
-        <h1>{project.owner.id}</h1>
-        <h1>{project.contract.address}</h1>
-        <h1>{project.active ? "true" : "false"}</h1>
-
-        <h1>Donated: {data?.project?.donated}</h1>
+        <h1>title: {contract.id}</h1>
+        <h1>owner: {contract.owner.id}</h1>
+        <div>
+          <h2>Latest projects by contract:</h2>
+          <div>
+            {contract.projects.map((p, i) => (
+              <ProjectObject project={p} key={i} />
+            ))}
+          </div>
+        </div>
       </Layout>
     </>
   );
 };
 
 export const getStaticPaths: GetStaticPaths<Params> = async () => {
-  const result = (await client.query({ query: ProjectTitlesDocument })) as ProjectTitlesQueryResult;
+  const result = (await client.query({ query: ContractListDocument })) as ContractListQueryResult;
 
-  const paths = result.data?.contracts.map((t) => ({ params: { title: t.id} })) ?? [];
+  const paths = result.data?.contracts.map((t) => ({ params: { title: t.id } })) ?? [];
   return {
     paths,
     fallback: true,
   };
 };
 
-export const getStaticProps: GetStaticProps<ProjectProps, Params> = async (context) => {
+export const getStaticProps: GetStaticProps<ContractProps, Params> = async (context) => {
   const title = context.params?.title ?? "";
-  const result = (await client.query({ query: ProjectDocument, variables: { id:title+"_p0" } })) as ProjectQueryResult;
+  const result = (await client.query({ query: ContractDocument, variables: { id: title } })) as ContractQueryResult;
 
-  const project = result.data ? (result.data.project as Project) : null;
+  const contract = result.data ? (result.data.contract as Contract) : null;
   return {
     props: {
-      project,
-      title,
+      contract,
     },
     revalidate: 60,
   };
 };
 
-export default Project;
+export default ContractPage;

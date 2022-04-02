@@ -1,0 +1,20 @@
+query contract($id: ID = "", $first: Int = 10) {
+  contract(id: $id) {
+    id
+    owner {
+      id
+    }
+    projects(first: $first, orderBy: time, orderDirection: desc) {
+      donated
+      count
+      coin
+      active
+      contract {
+        id
+      }
+      owner {
+        id
+      }
+    }
+  }
+}

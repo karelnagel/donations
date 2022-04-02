@@ -1,8 +1,10 @@
 query projectSub($id: ID = "") {
   project(id: $id) {
+    count
     donated
     donationCount
     tokens(first: 5, orderBy: time, orderDirection: desc) {
+      id
       amount
       message
       owner {

@@ -28,6 +28,7 @@ export function handleNewContract(event: NewContract): void {
   const project = new Project(getProjectId(event.params.title, "0"));
   project.count = new BigInt(0);
   project.donated = new BigInt(0);
+  project.donationCount = 0;
   project.coin = event.params.coin;
   project.active = true;
   project.contract = event.params.title;

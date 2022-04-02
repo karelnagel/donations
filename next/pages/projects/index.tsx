@@ -1,35 +1,40 @@
-import Link from "next/link";
+import { GetStaticProps, NextPage } from "next";
 import React from "react";
+import { client } from "../../apollo";
 import Layout from "../../components/Layout";
-import { useLatestProjectsQuery, Project } from "../../graphql/generated";
+import { ProjectObject } from "../../components/ProjectObject";
+import { Project, LatestProjectsDocument, LatestProjectsQueryResult } from "../../graphql/generated";
 
-export default function Projects() {
-  const { data } = useLatestProjectsQuery({ variables: { first: 5 } });
-  let idk: Project;
+interface ProjectProps {
+  projects: Project[] | null;
+}
+
+const ProjectsPage: NextPage<ProjectProps> = ({ projects }) => {
   return (
     <Layout>
       <main>
-        <h1>Projects</h1>
-        {data && (
+        <h1>Latest projects</h1>
+        {projects && (
           <div>
-            {data.projects.map((p, i) => (
-              <ProjectObject project={p as Project} key={i} />
+            {projects.map((p, i) => (
+              <ProjectObject project={p} key={i} />
             ))}
           </div>
         )}
       </main>
     </Layout>
   );
-}
+};
 
-export function ProjectObject({ project }: { project: Project }) {
-  return (
-    <Link href={`/projects/${project.contract.id}`}>
-      <a>
-        <h2>{project.contract.id}</h2>
-        <p>{project.donated}</p>
-        <p>{project.coin}</p>
-      </a>
-    </Link>
-  );
-}
+export const getStaticProps: GetStaticProps<ProjectProps> = async () => {
+  const result = (await client.query({ query: LatestProjectsDocument, variables: { first: 10 } })) as LatestProjectsQueryResult;
+  const projects = result.data ? result.data.projects.map((p) => p as Project) : null;
+  return {
+    props: {
+      projects,
+    },
+    revalidate: 60,
+  };
+};
+
+export default ProjectsPage;

@@ -1,5 +1,6 @@
 query project($id: ID = "") {
   project(id: $id) {
+    count
     active
     coin
     time
@@ -8,6 +9,7 @@ query project($id: ID = "") {
       id
     }
     contract {
+      id
       owner {
         id
       }
