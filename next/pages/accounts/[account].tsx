@@ -1,5 +1,5 @@
 import React from "react";
-import { client } from "../../apollo";
+import { client } from "../../idk/apollo";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { CustomHead } from "../../components/CustomHead";

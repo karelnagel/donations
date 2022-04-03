@@ -1,0 +1,13 @@
+query token($id: ID = "") {
+  token(id: $id) {
+    amount
+    owner {
+      id
+    }
+    message
+    time
+    project {
+      count
+    }
+  }
+}

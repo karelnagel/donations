@@ -1,6 +1,6 @@
 import { GetStaticProps, NextPage } from "next";
 import React from "react";
-import { client } from "../../apollo";
+import { client } from "../../idk/apollo";
 import Layout from "../../components/Layout";
 import { ProjectObject } from "../../components/ProjectObject";
 import { Project, LatestProjectsDocument, LatestProjectsQueryResult } from "../../graphql/generated";

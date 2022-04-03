@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import { client } from "../../../apollo";
+import React, { useContext } from "react";
+import { client } from "../../../idk/apollo";
 import { ContractDocument, ContractQueryResult, Contract, ContractListDocument, ContractListQueryResult } from "../../../graphql/generated";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { CustomHead } from "../../../components/CustomHead";
 import Layout from "../../../components/Layout";
 import { ProjectObject } from "../../../components/ProjectObject";
-import useContract from "../../../hooks/useContract";
-import { getContractInfo } from "../../../lib/contractInfo";
-import { ContractInfo } from "../../../interfaces/api";
+import { getContractInfo } from "../../../lib/firestore";
+import { ContractInfo } from "../../../interfaces/ContractInfo";
+import { userInfo } from "os";
+import { Context } from "../../../idk/context";
 
 interface Params extends ParsedUrlQuery {
   title: string;
@@ -18,13 +19,7 @@ interface ContractProps {
   contractInfo: ContractInfo | null;
 }
 const ContractPage: NextPage<ContractProps> = ({ contract, contractInfo }) => {
-  const [coin, setCoin] = useState("");
-  const [owner, setOwner] = useState("");
-  const { newProject } = useContract({ contractAddress: contract?.address });
-  const newPro = async (e: any) => {
-    e.preventDefault();
-    await newProject(coin, owner);
-  };
+  const { user } = useContext(Context);
   if (!contract) return <h1>No contract found!</h1>;
   return (
     <>
@@ -36,7 +31,13 @@ const ContractPage: NextPage<ContractProps> = ({ contract, contractInfo }) => {
         <p>name: {contractInfo?.name}</p>
         <p>description: {contractInfo?.description}</p>
         <p>link: {contractInfo?.external_link}</p>
-        <p>image: {contractInfo?.image}</p>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`http://localhost:3000/api/images/${contract.id}`} alt="" height={100} />
+        {user?.address.toLowerCase() === contract.owner.id.toLowerCase() && (
+          <a href={`/projects/${contract.id}/new`}>
+            <button>Start new project</button>
+          </a>
+        )}
         <div>
           <h2>Latest projects by contract:</h2>
           <div>
@@ -44,16 +45,6 @@ const ContractPage: NextPage<ContractProps> = ({ contract, contractInfo }) => {
               <ProjectObject project={p} key={i} />
             ))}
           </div>
-        </div>
-        <div>
-          <h2>Start new project</h2>
-          <form action="">
-            <input type="text" placeholder="coin" onChange={(e) => setCoin(e.currentTarget.value)} required />
-            <input type="text" placeholder="project owner" onChange={(e) => setOwner(e.currentTarget.value)} required />
-            <button type="submit" onClick={newPro}>
-              Start project
-            </button>
-          </form>
         </div>
       </Layout>
     </>

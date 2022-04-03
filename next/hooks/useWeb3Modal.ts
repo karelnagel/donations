@@ -3,11 +3,10 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Web3Modal from "web3modal";
 
-import { Context } from "../interfaces/context";
+import { Context } from "../idk/context";
 import { useContext } from "react";
 
-import ethers from "ethers";
-import { getENS } from "../functions/ethers";
+import { getENS } from "../lib/ethers";
 
 export default function useWeb3Modal() {
     const { provider, setProvider, setUser } = useContext(Context);
@@ -37,7 +36,8 @@ export default function useWeb3Modal() {
         const newProvider = new Web3Provider(await web3Modal!.connect());
         setProvider!(newProvider);
         const address = await newProvider.getSigner().getAddress()
-        setUser!({ address })
+        const {name,avatar} = await getENS(address);
+        setUser!({ address,name ,avatar })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [web3Modal]);
 

@@ -1,28 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
-import { client } from "../../../../apollo";
-import {
-  ProjectDocument,
-  ProjectQueryResult,
-  Token,
-  useProjectSubQuery,
-  Project,
-  ProjectListDocument,
-  ProjectListQueryResult,
-  Account,
-} from "../../../../graphql/generated";
+import React, { useState } from "react";
+import { client } from "../../../../idk/apollo";
+import { ProjectDocument, ProjectQueryResult, Token, Project, ProjectListDocument, ProjectListQueryResult } from "../../../../graphql/generated";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { CustomHead } from "../../../../components/CustomHead";
 import Layout from "../../../../components/Layout";
-import { getProjectId } from "../../../../helpers";
+import { getProjectId } from "../../../../idk/helpers";
 import { TokenObject } from "../../../../components/TokenObject";
 import { ContractObject } from "../../../../components/ContractObject";
 import useContract from "../../../../hooks/useContract";
 import { ethers } from "ethers";
 import useBalance from "../../../../hooks/useBalance";
-import { Context } from "../../../../interfaces/context";
-import { ProjectInfo } from "../../../../interfaces/api";
-import { getProjectInfo } from "../../../../lib/projectInfo";
+import { ProjectInfo } from "../../../../interfaces/ProjectInfo";
+import { getProjectInfo } from "../../../../lib/firestore";
 
 interface Params extends ParsedUrlQuery {
   title: string;
@@ -33,22 +23,15 @@ interface ProjectProps {
   projectInfo: ProjectInfo | null;
 }
 const ProjectPage: NextPage<ProjectProps> = ({ project, projectInfo }) => {
-  const { data } = useProjectSubQuery({ variables: { id: getProjectId(project?.contract.id!, project?.count) } });
-  const { user } = useContext(Context);
   const { donate, end, getAllowance, approve } = useContract({
     contractAddress: project?.contract.address,
     projectId: project?.count,
     coinAddress: project?.coin,
   });
-  const [project2, setProject2] = useState<Project>();
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
   const [active, setActive] = useState(project?.active!);
   const { balance } = useBalance(project?.coin);
-
-  useEffect(() => {
-    if (data) setProject2(data.project as Project);
-  }, [data]);
 
   const makeDonation = async (e: any) => {
     e.preventDefault();
@@ -64,16 +47,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ project, projectInfo }) => {
     }
     const error2 = await donate(amountInWei, message);
     if (error2) return console.log(error2);
-    //Todo update
-    setProject2((p) =>
-      p
-        ? {
-            ...p,
-            donated: amountInWei.add(p.donated),
-            donationCount: p.donationCount + 1,
-          }
-        : undefined
-    );
+    // Todo update make subscription
   };
   const endPro = async (e: any) => {
     e.preventDefault();
@@ -81,6 +55,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ project, projectInfo }) => {
     if (error) return console.log(error);
     setActive(false);
   };
+
   if (!project) return <h1>No project found!</h1>;
   return (
     <>
@@ -91,14 +66,15 @@ const ProjectPage: NextPage<ProjectProps> = ({ project, projectInfo }) => {
         <p>address: {project.contract.address}</p>
         <p>name: {projectInfo?.name}</p>
         <p>description: {projectInfo?.description}</p>
-        <p>image: {projectInfo?.image}</p>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`http://localhost:3000/api/images/${project.contract.id}/${project.count}`} alt="" height={100} />
         <p>external_url: {projectInfo?.external_url}</p>
         <p>goal: {projectInfo?.goal}</p>
-        <p>socials: {projectInfo?.socials.join(", ")}</p>
+        <p>twitter: {projectInfo?.socials.twitter}</p>
         <p>{active ? "active" : "not active"}</p>
 
-        <p>Donated: {project2 ? ethers.utils.formatEther(project2.donated) : "0"}</p>
-        <p>Donated count: {project2?.donationCount}</p>
+        <p>Donated: {ethers.utils.formatEther(project.donated)}</p>
+        <p>Donated count: {project.donationCount}</p>
         <p>Balance: {ethers.utils.formatEther(balance)} ERC20</p>
         <br />
         <ContractObject contract={project.contract} />
@@ -115,7 +91,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ project, projectInfo }) => {
         <div>
           <h2>Latest donations</h2>
           <div>
-            {project2?.tokens.map((t, i) => (
+            {project.tokens.map((t, i) => (
               <TokenObject key={i} token={t as Token} />
             ))}
           </div>

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Context } from "../interfaces/context";
+import { Context } from "../idk/context";
 import { ethers } from "ethers";
 
 const factoryAbi = [
@@ -49,7 +49,6 @@ export default function useContract({ contractAddress, projectId, coinAddress }:
   }
   async function newProject(coin: string, projectOwner: string) {
     try {
-      console.log({ coin, projectOwner })
       const result = await contract()!.newProject(coin, projectOwner);
       await result.wait(1)
       return

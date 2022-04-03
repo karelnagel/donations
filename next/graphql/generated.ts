@@ -779,19 +779,19 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', count: any, active: boolean, coin: any, time: any, id: string, owner: { __typename?: 'Account', id: string }, contract: { __typename?: 'Contract', id: string, address: any, owner: { __typename?: 'Account', id: string } } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', donated: any, donationCount: number, count: any, active: boolean, coin: any, time: any, id: string, owner: { __typename?: 'Account', id: string }, contract: { __typename?: 'Contract', id: string, address: any, owner: { __typename?: 'Account', id: string } }, tokens: Array<{ __typename?: 'Token', id: string, amount: any, message: string, time: any, owner: { __typename?: 'Account', id: string } }> } | null };
 
 export type ProjectListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ProjectListQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', count: any, contract: { __typename?: 'Contract', id: string } }> };
 
-export type ProjectSubQueryVariables = Exact<{
+export type TokenQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
 }>;
 
 
-export type ProjectSubQuery = { __typename?: 'Query', project?: { __typename?: 'Project', count: any, donated: any, donationCount: number, tokens: Array<{ __typename?: 'Token', id: string, amount: any, message: string, time: any, owner: { __typename?: 'Account', id: string } }> } | null };
+export type TokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', amount: any, message: string, time: any, owner: { __typename?: 'Account', id: string }, project: { __typename?: 'Project', count: any } } | null };
 
 
 export const AccountDocument = gql`
@@ -1021,6 +1021,8 @@ export type LatestProjectsQueryResult = Apollo.QueryResult<LatestProjectsQuery, 
 export const ProjectDocument = gql`
     query project($id: ID = "") {
   project(id: $id) {
+    donated
+    donationCount
     count
     active
     coin
@@ -1035,6 +1037,15 @@ export const ProjectDocument = gql`
       owner {
         id
       }
+    }
+    tokens(first: 5, orderBy: time, orderDirection: desc) {
+      id
+      amount
+      message
+      owner {
+        id
+      }
+      time
     }
   }
 }
@@ -1104,49 +1115,46 @@ export function useProjectListLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type ProjectListQueryHookResult = ReturnType<typeof useProjectListQuery>;
 export type ProjectListLazyQueryHookResult = ReturnType<typeof useProjectListLazyQuery>;
 export type ProjectListQueryResult = Apollo.QueryResult<ProjectListQuery, ProjectListQueryVariables>;
-export const ProjectSubDocument = gql`
-    query projectSub($id: ID = "") {
-  project(id: $id) {
-    count
-    donated
-    donationCount
-    tokens(first: 5, orderBy: time, orderDirection: desc) {
+export const TokenDocument = gql`
+    query token($id: ID = "") {
+  token(id: $id) {
+    amount
+    owner {
       id
-      amount
-      message
-      owner {
-        id
-      }
-      time
+    }
+    message
+    time
+    project {
+      count
     }
   }
 }
     `;
 
 /**
- * __useProjectSubQuery__
+ * __useTokenQuery__
  *
- * To run a query within a React component, call `useProjectSubQuery` and pass it any options that fit your needs.
- * When your component renders, `useProjectSubQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useProjectSubQuery({
+ * const { data, loading, error } = useTokenQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useProjectSubQuery(baseOptions?: Apollo.QueryHookOptions<ProjectSubQuery, ProjectSubQueryVariables>) {
+export function useTokenQuery(baseOptions?: Apollo.QueryHookOptions<TokenQuery, TokenQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProjectSubQuery, ProjectSubQueryVariables>(ProjectSubDocument, options);
+        return Apollo.useQuery<TokenQuery, TokenQueryVariables>(TokenDocument, options);
       }
-export function useProjectSubLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectSubQuery, ProjectSubQueryVariables>) {
+export function useTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TokenQuery, TokenQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProjectSubQuery, ProjectSubQueryVariables>(ProjectSubDocument, options);
+          return Apollo.useLazyQuery<TokenQuery, TokenQueryVariables>(TokenDocument, options);
         }
-export type ProjectSubQueryHookResult = ReturnType<typeof useProjectSubQuery>;
-export type ProjectSubLazyQueryHookResult = ReturnType<typeof useProjectSubLazyQuery>;
-export type ProjectSubQueryResult = Apollo.QueryResult<ProjectSubQuery, ProjectSubQueryVariables>;
+export type TokenQueryHookResult = ReturnType<typeof useTokenQuery>;
+export type TokenLazyQueryHookResult = ReturnType<typeof useTokenLazyQuery>;
+export type TokenQueryResult = Apollo.QueryResult<TokenQuery, TokenQueryVariables>;

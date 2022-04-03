@@ -1,5 +1,7 @@
 query project($id: ID = "") {
   project(id: $id) {
+    donated
+    donationCount
     count
     active
     coin
@@ -14,6 +16,15 @@ query project($id: ID = "") {
       owner {
         id
       }
+    }
+    tokens(first: 5, orderBy: time, orderDirection: desc) {
+      id
+      amount
+      message
+      owner {
+        id
+      }
+      time
     }
   }
 }

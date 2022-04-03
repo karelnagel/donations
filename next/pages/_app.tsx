@@ -3,8 +3,8 @@ import type { AppProps } from "next/app";
 import React, { useState } from "react";
 import Head from "next/head";
 import { ApolloProvider } from "@apollo/client";
-import { client } from "./../apollo";
-import { Context, User } from "../interfaces/context";
+import { client } from "../idk/apollo";
+import { Context, User } from "../idk/context";
 import { JsonRpcProvider } from "@ethersproject/providers";
 
 function MyApp({ Component, pageProps }: AppProps) {

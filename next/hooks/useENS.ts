@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getENS } from "../functions/ethers";
-import { short } from "../helpers";
+import { getENS } from "../lib/ethers";
+import { short } from "../idk/helpers";
 
 export default function useENS(address: string | null | undefined) {
     const [name, setName] = useState("");
