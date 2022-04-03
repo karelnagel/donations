@@ -8,7 +8,6 @@ import Layout from "../../../components/Layout";
 import { ProjectObject } from "../../../components/ProjectObject";
 import { getContractInfo } from "../../../lib/firestore";
 import { ContractInfo } from "../../../interfaces/ContractInfo";
-import { userInfo } from "os";
 import { Context } from "../../../idk/context";
 
 interface Params extends ParsedUrlQuery {
@@ -32,7 +31,7 @@ const ContractPage: NextPage<ContractProps> = ({ contract, contractInfo }) => {
         <p>description: {contractInfo?.description}</p>
         <p>link: {contractInfo?.external_link}</p>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`http://localhost:3000/api/images/${contract.id}`} alt="" height={100} />
+        <img src={`https://ethdon.xyz/api/images/${contract.id}`} alt="" height={100} />
         {user?.address.toLowerCase() === contract.owner.id.toLowerCase() && (
           <a href={`/projects/${contract.id}/new`}>
             <button>Start new project</button>

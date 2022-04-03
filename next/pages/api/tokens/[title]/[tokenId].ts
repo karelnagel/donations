@@ -20,7 +20,7 @@ export default async function tokenMeta(
     if (!project) return res.status(404).json({ error: "No file" })
     console.log(req.headers)
     const returnValue: TokenInfo = {
-        name: project.name,
+        name: `${project.name} #${tokenId}`,
         description: project.description,
         external_url: project.external_url,
         image: `https://${req.headers.host}/api/images/${title}/${token.data.token.project.count}`,

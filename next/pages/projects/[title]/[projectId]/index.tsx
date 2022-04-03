@@ -67,7 +67,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ project, projectInfo }) => {
         <p>name: {projectInfo?.name}</p>
         <p>description: {projectInfo?.description}</p>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`http://localhost:3000/api/images/${project.contract.id}/${project.count}`} alt="" height={100} />
+        <img src={`https://ethdon.xyz/api/images/${project.contract.id}/${project.count}`} alt="" height={100} />
         <p>external_url: {projectInfo?.external_url}</p>
         <p>goal: {projectInfo?.goal}</p>
         <p>twitter: {projectInfo?.socials.twitter}</p>
