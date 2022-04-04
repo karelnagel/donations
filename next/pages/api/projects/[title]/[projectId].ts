@@ -17,10 +17,11 @@ export default async function newProject(
         const address = verifySignature(ProjectInfoTypes, projectInfo, signature)
         if (!address) return res.status(400).json({ error: "signature is invalid" })
 
-        const result = await apolloRequest<ContractQueryResult>(ContractDocument, { id: title, first: 1 })
-        if (!result.data?.contract) return res.status(404).json({ error: "Contract not found " })
-        if (result.data.contract.owner.id.toLowerCase() !== address.toLowerCase()) return res.status(403).json({ error: "User isn't the owner of this contract" })
-
+        if (projectId !== "1") { // Todo add checking for start contract also
+            const result = await apolloRequest<ContractQueryResult>(ContractDocument, { id: title, first: 1 })
+            if (!result.data?.contract) return res.status(404).json({ error: "Contract not found " })
+            if (result.data.contract.owner.id.toLowerCase() !== address.toLowerCase()) return res.status(403).json({ error: "User isn't the owner of this contract" })
+        }
         const status = await postProjectInfo(title.toString(), projectId.toString(), projectInfo)
         if (!status) return res.status(400).json({ error: "error uploading data" })
         return res.status(200).json({ success: true })

@@ -2,7 +2,7 @@
 import { ethers } from 'ethers'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { TokenDocument, TokenQueryResult } from '../../../../graphql/generated'
-import { client } from '../../../../idk/apollo'
+import { apolloRequest } from '../../../../idk/apollo'
 import { getTokenId } from '../../../../idk/helpers'
 import { TokenInfo } from '../../../../interfaces/TokenInfo'
 import { getProjectInfo } from '../../../../lib/firestore'
@@ -13,7 +13,7 @@ export default async function tokenMeta(
 ) {
     const { title, tokenId } = req.query
 
-    const token = (await client.query({ query: TokenDocument, variables: { id: getTokenId(title.toString(), tokenId.toString()) } })) as TokenQueryResult;
+    const token = await apolloRequest<TokenQueryResult>(TokenDocument, { id: getTokenId(title.toString(), tokenId.toString()) });
     if (!token.data?.token) return res.status(404).json({ error: "no doantion" })
 
     const project = await getProjectInfo(title.toString(), token.data.token.project.count)
@@ -25,9 +25,10 @@ export default async function tokenMeta(
         external_url: project.external_url,
         image: `https://${req.headers.host}/api/images/${title}/${token.data.token.project.count}`,
         attributes: [
-            { trait_type: "message", value: token.data.token.message },
-            { trait_type: "original owner", value: token.data.token.owner.id },
-            { trait_type: "amount", value: ethers.utils.formatEther(token.data.token.amount) }
+            { trait_type: "Message", value: token.data.token.message },
+            { trait_type: "Original owner", value: token.data.token.owner.id },
+            { trait_type: "Amount", value: ethers.utils.formatEther(token.data.token.amount) },
+            { trait_type: "Project ID", value: token.data.token.project.count }
         ],
     }
     res.status(200).json(returnValue)
