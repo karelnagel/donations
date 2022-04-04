@@ -9,7 +9,7 @@ import {
 } from "../graphql/generated";
 import { defaultProjectInfo, ProjectInfo } from "../interfaces/ProjectInfo";
 import useSigning from "../hooks/useSigning";
-import useContract from "../hooks/useContract";
+import useChain from "../hooks/useChain";
 import { apolloRequest } from "../idk/apollo";
 import { getProjectInfo } from "../lib/firestore";
 
@@ -27,7 +27,7 @@ const EditPage = ({ title, projectId, type }: { title?: string; projectId?: stri
   const [owner, setOwner] = useState("");
   const fileInput = createRef<HTMLInputElement>();
   const [projectInfo, setProjectInfo] = useState<ProjectInfo>(defaultProjectInfo);
-  const { newProject, newContract } = useContract({ contractAddress: contract?.address });
+  const { newProject, newContract } = useChain({ contractAddress: contract?.address });
   const { uploadData } = useSigning();
 
   useEffect(() => {
@@ -73,6 +73,9 @@ const EditPage = ({ title, projectId, type }: { title?: string; projectId?: stri
     const file = fileInput.current?.files![0];
     if (type !== Type.EDIT_PROJECT && !file) return console.log("no image");
 
+    const result = uploadData(currentTitle, currentProjectId.toString(), projectInfo, file);
+    if (!result) return console.log("error uploading data");
+
     if (type === Type.NEW_PROJECT) {
       const error = await newProject(coin, owner);
       if (error) return console.log(error);
@@ -80,9 +83,6 @@ const EditPage = ({ title, projectId, type }: { title?: string; projectId?: stri
       const error = await newContract(currentTitle, coin, owner);
       if (error) return console.log(error);
     }
-
-    const result = uploadData(currentTitle, currentProjectId.toString(), projectInfo, file);
-    if (!result) return console.log("error uploading data");
 
     console.log("success");
   };

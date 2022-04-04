@@ -11,3 +11,5 @@ export const firebaseConfig = {
     appId: "1:180297846180:web:44b751724cbf0dbb210531",
     measurementId: "G-QQC9V6CBXE"
 };
+
+export const factoryAddress = process.env.NEXT_PUBLIC_FACTORY

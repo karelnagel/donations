@@ -14,6 +14,7 @@ export default async function tokenMeta(
     const { title, tokenId } = req.query
 
     const token = await apolloRequest<TokenQueryResult>(TokenDocument, { id: getTokenId(title.toString(), tokenId.toString()) });
+    console.log(token)
     if (!token.data?.token) return res.status(404).json({ error: "no doantion" })
 
     const project = await getProjectInfo(title.toString(), token.data.token.project.count)

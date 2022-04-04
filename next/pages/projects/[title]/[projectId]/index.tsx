@@ -5,29 +5,35 @@ import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { CustomHead } from "../../../../components/CustomHead";
 import Layout from "../../../../components/Layout";
-import { getProjectId } from "../../../../idk/helpers";
+import { getProjectId, getProjectImage } from "../../../../idk/helpers";
 import { TokenObject } from "../../../../components/TokenObject";
 import { ContractObject } from "../../../../components/ContractObject";
-import useContract from "../../../../hooks/useContract";
+import useChain from "../../../../hooks/useChain";
 import { ethers } from "ethers";
 import useBalance from "../../../../hooks/useBalance";
 import { ProjectInfo } from "../../../../interfaces/ProjectInfo";
 import { getProjectInfo } from "../../../../lib/firestore";
+import useProject from "../../../../hooks/useProject";
 
 interface Params extends ParsedUrlQuery {
   title: string;
   projectId: string;
 }
 interface ProjectProps {
-  project: Project | null;
+  initialProject: Project | null;
   projectInfo: ProjectInfo | null;
+  title: string;
+  projectId: string;
 }
-const ProjectPage: NextPage<ProjectProps> = ({ project, projectInfo }) => {
-  const { donate, end, getAllowance, approve } = useContract({
+const ProjectPage: NextPage<ProjectProps> = ({ initialProject, projectInfo, projectId, title }) => {
+  const project = useProject(title, projectId, initialProject);
+
+  const { donate, end, getAllowance, approve } = useChain({
     contractAddress: project?.contract.address,
     projectId: project?.count,
     coinAddress: project?.coin,
   });
+
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
   const [active, setActive] = useState(project?.active!);
@@ -67,7 +73,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ project, projectInfo }) => {
         <p>name: {projectInfo?.name}</p>
         <p>description: {projectInfo?.description}</p>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`https://ethdon.xyz/api/images/${project.contract.id}/${project.count}`} alt="" height={100} />
+        <img src={getProjectImage(title,projectId)} alt="" height={100} />
         <p>external_url: {projectInfo?.external_url}</p>
         <p>goal: {projectInfo?.goal}</p>
         <p>twitter: {projectInfo?.socials.twitter}</p>
@@ -121,7 +127,7 @@ export const getStaticProps: GetStaticProps<ProjectProps, Params> = async (conte
   const projectInfo = await getProjectInfo(title, projectId);
   return {
     props: {
-      project,
+      initialProject: project,
       title,
       projectId,
       projectInfo,

@@ -1,38 +1,40 @@
 import { useContext } from "react";
 import { Context } from "../idk/context";
 import { ethers } from "ethers";
+import { JsonRpcProvider } from "@ethersproject/providers";
+import { factoryAddress } from "../idk/settings";
 
-const factoryAbi = [
+export const factoryAbi = [
   "function newToken(string memory title,address coin,address projectOwner)",
 ];
 
-const contractAbi = [
+export const contractAbi = [
   "function newProject(address coin, address projectOwner)",
   "function end(uint256 id)",
   "function donate(uint256 id,uint256 amount,string memory message)",
+  "event NewToken(uint256 id,uint256 projectId,address owner,uint256 amount,string message)"
 ];
 
-const coinAbi = [
+export const coinAbi = [
   "function balanceOf(address owner) view returns (uint)",
   "function approve(address spender,uint256 amount)",
   "function allowance(address owner,address spender) view returns (uint)",
 ];
 
-const factoryAddress = process.env.NEXT_PUBLIC_FACTORY
-export default function useContract({ contractAddress, projectId, coinAddress }: { contractAddress?: string, projectId?: string, coinAddress?: string }) {
+export default function useChain({ contractAddress, projectId, coinAddress }: { contractAddress?: string, projectId?: string, coinAddress?: string }) {
   const { provider, user } = useContext(Context)
 
-  const factory = () => {
+  const factory = (pro?: JsonRpcProvider) => {
     if (!factoryAddress || !provider) return
-    return new ethers.Contract(factoryAddress, factoryAbi, provider?.getSigner())
+    return new ethers.Contract(factoryAddress, factoryAbi, pro ?? provider?.getSigner())
   }
-  const contract = () => {
+  const contract = (pro?: JsonRpcProvider) => {
     if (!contractAddress || !provider) return
-    return new ethers.Contract(contractAddress, contractAbi, provider?.getSigner())
+    return new ethers.Contract(contractAddress, contractAbi, pro ?? provider?.getSigner())
   }
-  const coin = () => {
+  const coin = (pro?: JsonRpcProvider) => {
     if (!coinAddress || !provider) return
-    return new ethers.Contract(coinAddress!, coinAbi, provider.getSigner())
+    return new ethers.Contract(coinAddress!, coinAbi, pro ?? provider.getSigner())
   }
 
   async function newContract(title: string, coin: string, projectOwner: string) {
