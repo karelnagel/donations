@@ -2,12 +2,10 @@ import React, { createRef, useState } from "react";
 import { useContractQuery } from "../../../graphql/generated";
 import { NextPage } from "next";
 import Layout from "../../../components/Layout";
-import { defaultProjectInfo, ProjectInfo, ProjectInfoTypes } from "../../../interfaces/ProjectInfo";
+import { defaultProjectInfo, ProjectInfo } from "../../../interfaces/ProjectInfo";
 import useSigning from "../../../hooks/useSigning";
-import axios from "axios";
 import { useRouter } from "next/router";
 import useContract from "../../../hooks/useContract";
-import { uploadImage } from "../../../lib/storage";
 
 const NewProject: NextPage = () => {
   const {
@@ -19,26 +17,20 @@ const NewProject: NextPage = () => {
   const fileInput = createRef<HTMLInputElement>();
   const [projectInfo, setProjectInfo] = useState<ProjectInfo>(defaultProjectInfo);
   const { newProject } = useContract({ contractAddress: data?.contract?.address });
-  const { sign } = useSigning();
+  const { uploadData } = useSigning();
 
   const newPro = async (e: any) => {
     e.preventDefault();
 
-    if (!data) return;
+    if (!data?.contract) return;
     if (!fileInput.current?.files![0]) return console.log("no image");
-
-    const imageResult = uploadImage(`images/${data.contract?.id}/${Number(data.contract?.projects[0].count) + 1}`, fileInput.current.files[0]); // Todo to api
-    if (!imageResult) return console.log("could not upload image");
-
-    const signature = await sign(ProjectInfoTypes, projectInfo);
-    if (!signature) return console.log("no signature");
-
-    const result = await axios.post(`/api/contracts/${data.contract!.id}/new/`, { projectInfo, signature });
-    console.log(result);
-    if (result.status !== 200) return console.log("error sending data");
 
     const error = await newProject(coin, owner);
     if (error) return console.log(error);
+
+    const result = uploadData(data.contract.id, data.contract.projects[0].count, projectInfo, fileInput.current.files[0]);
+    if (!result) return console.log("error uploading data");
+
     console.log("success");
   };
 

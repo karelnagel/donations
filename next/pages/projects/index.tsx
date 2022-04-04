@@ -1,6 +1,6 @@
 import { GetStaticProps, NextPage } from "next";
 import React from "react";
-import { client } from "../../idk/apollo";
+import { apolloRequest } from "../../idk/apollo";
 import Layout from "../../components/Layout";
 import { ProjectObject } from "../../components/ProjectObject";
 import { Project, LatestProjectsDocument, LatestProjectsQueryResult } from "../../graphql/generated";
@@ -27,7 +27,7 @@ const ProjectsPage: NextPage<ProjectProps> = ({ projects }) => {
 };
 
 export const getStaticProps: GetStaticProps<ProjectProps> = async () => {
-  const result = (await client.query({ query: LatestProjectsDocument, variables: { first: 10 } })) as LatestProjectsQueryResult;
+  const result = await apolloRequest<LatestProjectsQueryResult>(LatestProjectsDocument, { first: 10 });
   const projects = result.data ? result.data.projects.map((p) => p as Project) : null;
   return {
     props: {

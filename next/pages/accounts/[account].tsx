@@ -1,5 +1,5 @@
 import React from "react";
-import { client } from "../../idk/apollo";
+import { apolloRequest } from "../../idk/apollo";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { CustomHead } from "../../components/CustomHead";
@@ -52,7 +52,7 @@ const AccountPage: NextPage<AccountProps> = ({ account }) => {
 };
 
 export const getStaticPaths: GetStaticPaths<Params> = async () => {
-  const result = (await client.query({ query: AccountListDocument })) as AccountListQueryResult;
+  const result = await apolloRequest<AccountListQueryResult>(AccountListDocument);
 
   const paths = result.data?.accounts.map((a) => ({ params: { account: a.id } })) ?? [];
   return {
@@ -63,10 +63,7 @@ export const getStaticPaths: GetStaticPaths<Params> = async () => {
 
 export const getStaticProps: GetStaticProps<AccountProps, Params> = async (context) => {
   const accountId = context.params?.account ?? "";
-  const result = (await client.query({
-    query: AccountDocument,
-    variables: { id: accountId, firstC: 5, firstP: 5, firstT: 5 },
-  })) as AccountQueryResult;
+  const result = await apolloRequest<AccountQueryResult>(AccountDocument, { id: accountId, firstC: 5, firstP: 5, firstT: 5 });
 
   const account = result.data ? (result.data.account as Account) : null;
   return {

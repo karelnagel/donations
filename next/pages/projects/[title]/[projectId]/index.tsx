@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { client } from "../../../../idk/apollo";
+import { apolloRequest } from "../../../../idk/apollo";
 import { ProjectDocument, ProjectQueryResult, Token, Project, ProjectListDocument, ProjectListQueryResult } from "../../../../graphql/generated";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
@@ -103,7 +103,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ project, projectInfo }) => {
 };
 
 export const getStaticPaths: GetStaticPaths<Params> = async () => {
-  const result = (await client.query({ query: ProjectListDocument })) as ProjectListQueryResult;
+  const result = await apolloRequest<ProjectListQueryResult>(ProjectListDocument);
 
   const paths = result.data?.projects.map((p) => ({ params: { title: p.contract.id, projectId: p.count } })) ?? [];
   return {
@@ -115,7 +115,7 @@ export const getStaticPaths: GetStaticPaths<Params> = async () => {
 export const getStaticProps: GetStaticProps<ProjectProps, Params> = async (context) => {
   const title = context.params?.title ?? "";
   const projectId = context.params?.projectId ?? "";
-  const result = (await client.query({ query: ProjectDocument, variables: { id: getProjectId(title, projectId) } })) as ProjectQueryResult;
+  const result = await apolloRequest<ProjectQueryResult>(ProjectDocument, { id: getProjectId(title, projectId) });
 
   const project = result.data ? (result.data.project as Project) : null;
   const projectInfo = await getProjectInfo(title, projectId);
