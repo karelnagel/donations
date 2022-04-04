@@ -2,7 +2,7 @@ import { ProjectInfo } from "../interfaces/ProjectInfo"
 
 import { initializeApp } from "firebase/app";
 import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
-import { firebaseConfig } from "../idk/settings";
+import { firebaseConfig } from "../idk/config";
 
 
 const app = initializeApp(firebaseConfig);

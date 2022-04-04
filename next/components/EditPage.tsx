@@ -1,24 +1,35 @@
-import React, { createRef, useEffect, useState } from "react";
-import {
-  Contract,
-  ContractDocument,
-  ContractListDocument,
-  ContractListQueryResult,
-  ContractQueryResult,
-  useContractQuery,
-} from "../graphql/generated";
+import React, { createRef, useContext, useEffect, useState } from "react";
+import { Contract, ContractDocument, ContractListDocument, ContractListQueryResult, ContractQueryResult } from "../graphql/generated";
 import { defaultProjectInfo, ProjectInfo } from "../interfaces/ProjectInfo";
 import useSigning from "../hooks/useSigning";
 import useChain from "../hooks/useChain";
 import { apolloRequest } from "../idk/apollo";
 import { getProjectInfo } from "../lib/firestore";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Layout from "./Layout";
+import { MenuItem } from "@mui/material";
+import { coins } from "../idk/config";
+import { Context } from "../idk/context";
 
 export enum Type {
   NEW_CONTRACT,
   NEW_PROJECT,
   EDIT_PROJECT,
 }
-const EditPage = ({ title, projectId, type }: { title?: string; projectId?: string; type: Type }) => {
+const EditPage = ({
+  title,
+  projectId,
+  type,
+  topText,
+  buttonText,
+}: {
+  topText: string;
+  buttonText: string;
+  title?: string;
+  projectId?: string;
+  type: Type;
+}) => {
   const [currentTitle, setCurrentTitle] = useState("");
   const [currentProjectId, setCurrentProjectId] = useState<number>();
   const [titles, setTitles] = useState<string[]>();
@@ -29,11 +40,11 @@ const EditPage = ({ title, projectId, type }: { title?: string; projectId?: stri
   const [projectInfo, setProjectInfo] = useState<ProjectInfo>(defaultProjectInfo);
   const { newProject, newContract } = useChain({ contractAddress: contract?.address });
   const { uploadData } = useSigning();
+  const { user } = useContext(Context);
 
   useEffect(() => {
     const effect = async () => {
       if (type === Type.NEW_CONTRACT) {
-        console.log("asdfasdfasdfasdfasdf");
         // get all the titles and check names
         const contractQuery = await apolloRequest<ContractListQueryResult>(ContractListDocument);
         const contractTitles = contractQuery.data?.contracts.map((c) => c.id);
@@ -51,7 +62,6 @@ const EditPage = ({ title, projectId, type }: { title?: string; projectId?: stri
           }
         }
       } else if (type === Type.EDIT_PROJECT) {
-        console.log("asdasd");
         //get ProjectInfo and fill all the inputs with the data
         if (title && projectId) {
           const proInfo = await getProjectInfo(title, projectId);
@@ -77,10 +87,10 @@ const EditPage = ({ title, projectId, type }: { title?: string; projectId?: stri
     if (!result) return console.log("error uploading data");
 
     if (type === Type.NEW_PROJECT) {
-      const error = await newProject(coin, owner);
+      const error = await newProject(coin, owner ?? user?.address);
       if (error) return console.log(error);
     } else if (type === Type.NEW_CONTRACT) {
-      const error = await newContract(currentTitle, coin, owner);
+      const error = await newContract(currentTitle, coin, owner ?? user?.address);
       if (error) return console.log(error);
     }
 
@@ -88,49 +98,99 @@ const EditPage = ({ title, projectId, type }: { title?: string; projectId?: stri
   };
 
   return (
-    <form action="">
-      {type === Type.NEW_CONTRACT && (
-        <>
-          {titles?.includes(currentTitle) && <p>Title already exists</p>}
-          <input type="text" placeholder="title" onChange={(e) => setCurrentTitle(e.target.value)} required />
-        </>
-      )}
-      {type !== Type.EDIT_PROJECT && (
-        <>
-          <input type="text" placeholder="coin" onChange={(e) => setCoin(e.target.value)} required />
-          <input type="text" placeholder="project owner" onChange={(e) => setOwner(e.target.value)} required />
-        </>
-      )}
-      <br />
-
-      <input type="file" ref={fileInput} />
-      <input type="text" placeholder="name" value={projectInfo.name} onChange={(e) => setProjectInfo((p) => ({ ...p, name: e.target.value }))} />
-      <input
-        type="text"
-        placeholder="description"
-        value={projectInfo.description}
-        onChange={(e) => setProjectInfo((p) => ({ ...p, description: e.target.value }))}
-      />
-      <input type="number" placeholder="goal" value={projectInfo.goal} onChange={(e) => setProjectInfo((p) => ({ ...p, goal: e.target.value }))} />
-      <input
-        type="text"
-        placeholder="url"
-        value={projectInfo.external_url}
-        onChange={(e) => setProjectInfo((p) => ({ ...p, external_url: e.target.value }))}
-      />
-      <br />
-
-      <input
-        type="text"
-        placeholder="twitter"
-        onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, twitter: e.target.value } }))}
-      />
-      <br />
-
-      <button type="submit" onClick={newPro}>
-        Start project
-      </button>
-    </form>
+    <Layout>
+      <div className="max-w-screen-md m-auto text-center">
+        <h2 className="m-10 text-xl uppercase font-bold">{topText}</h2>
+        <form>
+          <div className="flex-col flex  px-2 space-y-2 text-left">
+            {type === Type.NEW_CONTRACT && (
+              <TextField
+                type="text"
+                label="Project title"
+                error={titles?.includes(currentTitle)}
+                helperText={titles?.includes(currentTitle) ? "Title already exists, try another one!" : null}
+                onChange={(e) => setCurrentTitle(e.target.value)}
+                required
+              />
+            )}
+            {type !== Type.EDIT_PROJECT && (
+              <>
+                <TextField
+                  id="select"
+                  label="Which ERC20 coin you want to use?"
+                  value={coin}
+                  select
+                  onChange={(e) => setCoin(e.target.value)}
+                  required
+                >
+                  {coins.map((c, i) => (
+                    <MenuItem key={i} value={c.address}>
+                      {c.coin}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField type="text" label="Project owner (leave empty if its you)" onChange={(e) => setOwner(e.target.value)} />
+              </>
+            )}
+            <input type="file" ref={fileInput} className="" />
+            <TextField
+              type="text"
+              label="Project name"
+              value={projectInfo.name}
+              onChange={(e) => setProjectInfo((p) => ({ ...p, name: e.target.value }))}
+            />
+            <TextField
+              type="text"
+              label="Project description"
+              value={projectInfo.description}
+              onChange={(e) => setProjectInfo((p) => ({ ...p, description: e.target.value }))}
+            />
+            <TextField
+              type="number"
+              label="Project goal"
+              value={projectInfo.goal}
+              onChange={(e) => setProjectInfo((p) => ({ ...p, goal: e.target.value }))}
+            />
+            <TextField
+              type="text"
+              label="URL to your page "
+              value={projectInfo.external_url}
+              onChange={(e) => setProjectInfo((p) => ({ ...p, external_url: e.target.value }))}
+            />
+            <div className="flex space-x-2">
+              <TextField
+                type="text"
+                label="Twitter"
+                value={projectInfo.socials.twitter}
+                onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, twitter: e.target.value } }))}
+              />{" "}
+              <TextField
+                type="text"
+                label="Instagram"
+                value={projectInfo.socials.instagram}
+                onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, instagram: e.target.value } }))}
+              />{" "}
+              <TextField
+                type="text"
+                label="Youtube"
+                value={projectInfo.socials.youtube}
+                onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, youtube: e.target.value } }))}
+              />{" "}
+              <TextField
+                type="text"
+                label="Opensea"
+                value={projectInfo.socials.opensea}
+                onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, opensea: e.target.value } }))}
+              />
+            </div>
+          </div>
+          <br />
+          <Button type="submit" onClick={newPro} variant="outlined">
+            {buttonText}
+          </Button>
+        </form>
+      </div>
+    </Layout>
   );
 };
 

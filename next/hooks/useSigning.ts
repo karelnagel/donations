@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Context } from "../idk/context";
-import { domain } from "../idk/settings";
+import { domain } from "../idk/config";
 import { ProjectInfo, ProjectInfoTypes } from "../interfaces/ProjectInfo";
 import { uploadImage } from "../lib/storage";
 import axios from "axios";

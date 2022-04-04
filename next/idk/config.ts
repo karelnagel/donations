@@ -13,3 +13,7 @@ export const firebaseConfig = {
 };
 
 export const factoryAddress = process.env.NEXT_PUBLIC_FACTORY
+
+export const coins =[
+    {coin:"DAI", address:"0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735"}
+]

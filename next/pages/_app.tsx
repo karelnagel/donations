@@ -6,6 +6,8 @@ import { ApolloProvider } from "@apollo/client";
 import { client } from "../idk/apollo";
 import { Context, User } from "../idk/context";
 import { JsonRpcProvider } from "@ethersproject/providers";
+import { ThemeProvider } from '@mui/material/styles';
+import { theme } from "../idk/theme";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const name = "Ethereum donations";
@@ -37,11 +39,15 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="twitter:title" content={name} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
+        {/* <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" /> */}
+        {/* <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" /> */}
       </Head>
 
       <Context.Provider value={{ provider, user, setUser, setProvider }}>
         <ApolloProvider client={client}>
+        <ThemeProvider theme={theme}>
           <Component {...pageProps} />
+          </ThemeProvider>
         </ApolloProvider>
       </Context.Provider>
     </>

@@ -1,6 +1,6 @@
 import { getStorage, ref, uploadBytes,getDownloadURL } from "firebase/storage";
 import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "../idk/settings";
+import { firebaseConfig } from "../idk/config";
 
 
 const app = initializeApp(firebaseConfig);

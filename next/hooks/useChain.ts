@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Context } from "../idk/context";
 import { ethers } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { factoryAddress } from "../idk/settings";
+import { factoryAddress } from "../idk/config";
 
 export const factoryAbi = [
   "function newToken(string memory title,address coin,address projectOwner)",

@@ -1,5 +1,5 @@
 import { ethers } from "ethers/";
-import { domain } from "../idk/settings";
+import { domain } from "../idk/config";
 
 export async function getENS(address: string, provider?: ethers.providers.BaseProvider) {
     if (!provider) provider = new ethers.providers.InfuraProvider(process.env.NEXT_PUBLIC_NETWORK, process.env.NEXT_PUBLIC_INFURA_ID)
