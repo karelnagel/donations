@@ -47,10 +47,9 @@ const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initi
   const [active, setActive] = useState(project?.active!);
   const { balance } = useBalance(project?.coin);
 
-  const donationOptions = ["5", "10", "15", balance];
+  const donationOptions = ["5", "10", "15", ethers.utils.formatEther(balance)];
   const donationPercent =
     project?.donated && projectInfo?.goal ? (Number(ethers.utils.formatEther(project?.donated)) / Number(projectInfo?.goal)) * 100 : 0;
-  console.log(donationPercent);
   const coin = coins.find((c) => sameAddr(c.address, project?.coin))?.coin ?? "ERC20";
 
   const makeDonation = async (e: any) => {
@@ -178,8 +177,6 @@ const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initi
           ) : (
             <p className="my-10 uppercase font-bold text-lg">Connect your wallet to make a donation</p>
           )}
-          <div>
-          </div>
         </div>
       </Layout>
     </>
