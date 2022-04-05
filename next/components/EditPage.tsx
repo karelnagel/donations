@@ -11,6 +11,7 @@ import Layout from "./Layout";
 import { MenuItem } from "@mui/material";
 import { coins } from "../idk/config";
 import { Context } from "../idk/context";
+import { useRouter } from "next/router";
 
 export enum Type {
   NEW_CONTRACT,
@@ -41,7 +42,7 @@ const EditPage = ({
   const { newProject, newContract } = useChain({ contractAddress: contract?.address });
   const { uploadData } = useSigning();
   const { user } = useContext(Context);
-
+  const router = useRouter();
   useEffect(() => {
     const effect = async () => {
       if (type === Type.NEW_CONTRACT) {
@@ -95,6 +96,7 @@ const EditPage = ({
     }
 
     console.log("success");
+    router.push(`/projects/${currentTitle}/${currentProjectId}`);
   };
 
   return (
@@ -163,30 +165,35 @@ const EditPage = ({
                 label="Twitter"
                 value={projectInfo.socials.twitter}
                 onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, twitter: e.target.value } }))}
-              />{" "}
+              />
               <TextField
                 type="text"
                 label="Instagram"
                 value={projectInfo.socials.instagram}
                 onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, instagram: e.target.value } }))}
-              />{" "}
+              />
               <TextField
                 type="text"
                 label="Youtube"
                 value={projectInfo.socials.youtube}
                 onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, youtube: e.target.value } }))}
-              />{" "}
+              />
               <TextField
                 type="text"
-                label="Opensea"
-                value={projectInfo.socials.opensea}
-                onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, opensea: e.target.value } }))}
+                label="Facebook"
+                value={projectInfo.socials.facebook}
+                onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, facebook: e.target.value } }))}
               />
             </div>
           </div>
           <br />
-          <Button type="submit" onClick={newPro} variant="outlined">
+          <Button type="submit" onClick={newPro} variant="contained">
             {buttonText}
+          </Button>
+          <br />
+          <br />
+          <Button onClick={router.back} variant="outlined">
+            Back
           </Button>
         </form>
       </div>

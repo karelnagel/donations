@@ -4,11 +4,11 @@ export interface ProjectInfo {
     description: string;
     external_url: string;
     goal: string;
-    socials: { instagram: string, twitter: string, youtube: string, opensea: string }
+    socials: { instagram: string, twitter: string, youtube: string, facebook: string }
 }
 export const defaultProjectInfo: ProjectInfo = {
     name: "", description: "", external_url: "", goal: '',
-    socials: { instagram: "", twitter: "", youtube: "", opensea: '' }
+    socials: { instagram: "", twitter: "", youtube: "", facebook: '' }
 }
 
 export const ProjectInfoTypes = {
@@ -16,7 +16,7 @@ export const ProjectInfoTypes = {
         { name: "twitter", type: "string" },
         { name: "instagram", type: "string" },
         { name: "youtube", type: "string" },
-        { name: "opensea", type: "string" }
+        { name: "facebook", type: "string" }
     ],
     Project: [
         { name: 'name', type: 'string' },

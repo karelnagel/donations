@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 html,
 body {
   padding: 0;
@@ -24,4 +23,12 @@ a {
   border-radius: 10px;
   padding: 10px;
   color: white;
+}
+
+button.MuiButton-contained{
+  @apply bg-primary !important;
+}
+
+svg.MuiSvgIcon-root{
+  @apply text-primary hover:text-primaryDark hover:scale-125 duration-300
 }

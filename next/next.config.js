@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['www.aljazeera.com'],
+    domains: ['ethdon.xyz','localhost'],
   },
 }
 

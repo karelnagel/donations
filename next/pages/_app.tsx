@@ -7,7 +7,7 @@ import { client } from "../idk/apollo";
 import { Context, User } from "../idk/context";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { ThemeProvider } from '@mui/material/styles';
-import { theme } from "../idk/theme";
+import { materialTheme } from "../idk/materialTheme";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const name = "Ethereum donations";
@@ -45,7 +45,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
       <Context.Provider value={{ provider, user, setUser, setProvider }}>
         <ApolloProvider client={client}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={materialTheme}>
           <Component {...pageProps} />
           </ThemeProvider>
         </ApolloProvider>

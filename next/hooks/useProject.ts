@@ -5,18 +5,25 @@ import { BigNumber, Contract, ethers, utils } from "ethers";
 import { apolloRequest } from "../idk/apollo";
 import { getProjectId } from "../idk/helpers";
 import { contractAbi } from "./useChain";
+import { ProjectInfo } from "../interfaces/ProjectInfo";
+import { getProjectInfo } from "../lib/firestore";
 
-export default function useProject(title: string, projectId: string, initialProject?: Project | null) {
+export default function useProject(title: string, projectId: string, initialProject?: Project | null, initialProjectInfo?: ProjectInfo | null) {
     const [project, setProject] = useState(initialProject);
+    const [projectInfo, setProjectInfo] = useState(initialProjectInfo);
     const { provider: userProvider } = useContext(Context);
 
 
     useEffect(() => {
         async function effect() {
-            const result = await apolloRequest<ProjectQueryResult>(ProjectDocument, { id: getProjectId(title, projectId) })
-            console.log(result)
-            const pro = result.data?.project
-            if (pro) setProject(pro as Project)
+            if (projectId && title) {
+                const result = await apolloRequest<ProjectQueryResult>(ProjectDocument, { id: getProjectId(title, projectId) })
+                const pro = result.data?.project
+                if (pro) setProject(pro as Project)
+
+                const info = await getProjectInfo(title, projectId)
+                if (info) setProjectInfo(info)
+            }
         }
         effect()
     }, [projectId, title])
@@ -49,5 +56,5 @@ export default function useProject(title: string, projectId: string, initialProj
         }
     }, [project?.contract.address, projectId, userProvider]);
 
-    return project
+    return { project, projectInfo }
 }

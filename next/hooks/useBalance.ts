@@ -5,13 +5,13 @@ import { Context } from "../idk/context";
 
 export default function useBalance(coinAddress?: string) {
     const { user } = useContext(Context)
-    const [balance, setBalance] = useState(ethers.BigNumber.from(0));
+    const [balance, setBalance] = useState("0");
     const { getBalance } = useChain({ coinAddress })
     useEffect(() => {
         (async () => {
             if (coinAddress) {
                 const result = await getBalance();
-                setBalance(result);
+                setBalance(ethers.utils.formatEther(result));
             }
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
