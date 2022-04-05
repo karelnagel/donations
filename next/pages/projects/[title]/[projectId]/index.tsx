@@ -5,7 +5,7 @@ import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { CustomHead } from "../../../../components/CustomHead";
 import Layout from "../../../../components/Layout";
-import { getProjectId, getProjectImage, sameAddr } from "../../../../idk/helpers";
+import { coinName, getProjectId, getProjectImage, sameAddr } from "../../../../idk/helpers";
 import useChain from "../../../../hooks/useChain";
 import { ethers } from "ethers";
 import useBalance from "../../../../hooks/useBalance";
@@ -21,8 +21,9 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkIcon from "@mui/icons-material/Link";
 import { useRouter } from "next/router";
-import { coins } from "../../../../idk/config";
 import { Context } from "../../../../idk/context";
+import { ProgresssBar } from "../../../../components/ProgressBar";
+import { NewDonation } from "../../../../components/NexDonation";
 
 interface Params extends ParsedUrlQuery {
   title: string;
@@ -32,10 +33,10 @@ interface ProjectProps {
   initialProject: Project | null;
   initialProjectInfo: ProjectInfo | null;
 }
-const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initialProjectInfo }) => {
+const ProjectPage: NextPage<ProjectProps |undefined> = ({ initialProject, initialProjectInfo }) => {
   const router = useRouter();
   const { title, projectId } = router.query as { title: string; projectId: string };
-  const { project, projectInfo } = useProject(title!, projectId, initialProject, initialProjectInfo);
+  const { project, projectInfo, newDonation } = useProject(title!, projectId, initialProject!, initialProjectInfo!);
   const { user } = useContext(Context);
   const { donate, end, getAllowance, approve } = useChain({
     contractAddress: project?.contract.address,
@@ -48,9 +49,6 @@ const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initi
   const { balance } = useBalance(project?.coin);
 
   const donationOptions = ["5", "10", "15", ethers.utils.formatEther(balance)];
-  const donationPercent =
-    project?.donated && projectInfo?.goal ? (Number(ethers.utils.formatEther(project?.donated)) / Number(projectInfo?.goal)) * 100 : 0;
-  const coin = coins.find((c) => sameAddr(c.address, project?.coin))?.coin ?? "ERC20";
 
   const makeDonation = async (e: any) => {
     e.preventDefault();
@@ -78,8 +76,11 @@ const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initi
   if (!project || !projectInfo) return <h1>Loading...</h1>;
   return (
     <>
-      <CustomHead name={projectInfo.name} description={projectInfo.description} />
+      <CustomHead name={projectInfo.name} description={projectInfo.description} image={getProjectImage(title, projectId)} />
       <Layout>
+        <div className="fixed bottom-5 left-5 ">
+          <NewDonation donation={newDonation} />
+        </div>
         <div className="max-w-screen-md mx-auto text-center">
           <h1 className="mt-20 mb-10 text-2xl uppercase font-bold">{projectInfo?.name}</h1>
           <div className="md:flex  justify-between mb-20 shadow-lg p-4 rounded-lg">
@@ -89,10 +90,10 @@ const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initi
             <div className="md:text-right flex flex-col justify-between md:ml-4 md:w-[60%]">
               <div>
                 <p className="my-2">{projectInfo?.description}</p>
-                <p className="my-2">
-                  {"Money goes to: "}
+                <span className="flex justify-end items-center space-x-2">
+                  <p className="my-2">Money goes to:</p>
                   <AccountObject account={project.owner.id} />
-                </p>
+                </span>
               </div>
 
               <div className=" flex space-x-4 md:justify-end justify-center">
@@ -124,12 +125,8 @@ const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initi
               </div>
             </div>
           </div>
-          <p className="font-bold mb-1">
-            Collected {ethers.utils.formatEther(project.donated)} / {projectInfo.goal} {coin} with {project.donationCount} donation
-          </p>
-          <div className="max-w-sm border-primary border-2 h-8 m-auto rounded-lg overflow-hidden shadow-lg">
-            <div className={`bg-primary h-full`} style={{ width: `${donationPercent}%` }}></div>
-          </div>
+
+          <ProgresssBar project={project} projectInfo={projectInfo} />
           <br />
           {user ? (
             <div className="mb-20">
@@ -142,7 +139,7 @@ const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initi
                   id="filled-start-adornment"
                   value={amount}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">{coin}</InputAdornment>,
+                    endAdornment: <InputAdornment position="end">{coinName(project.coin)}</InputAdornment>,
                   }}
                   onChange={(e) => setAmount(e.currentTarget.value)}
                   required
@@ -199,7 +196,7 @@ export const getStaticProps: GetStaticProps<ProjectProps, Params> = async (conte
   const result = await apolloRequest<ProjectQueryResult>(ProjectDocument, { id: getProjectId(title, projectId) });
 
   const project = result.data ? (result.data.project as Project) : null;
-  const projectInfo = await getProjectInfo(title, projectId);
+  const projectInfo = (await getProjectInfo(title, projectId)) ?? null;
   return {
     props: {
       initialProject: project,

@@ -3,11 +3,11 @@ import React from "react";
 import Footer from "./Footer";
 const Header = dynamic(() => import("./Header"));
 
-export default function Layout({ children }: { children: any }) {
+export default function Layout({ children,className }: { children: any,className?:string }) {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="">{children}</div>
+      <main className={className}>{children}</main>
       <Footer />
     </div>
   );

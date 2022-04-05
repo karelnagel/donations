@@ -39,6 +39,7 @@ export default function useChain({ contractAddress, projectId, coinAddress }: { 
 
   async function newContract(title: string, coin: string, projectOwner: string) {
     try {
+      console.log(title, coin, projectOwner)
       const result = await factory()!.newToken(title, coin, projectOwner);
       await result.wait(1);
       return

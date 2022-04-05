@@ -1,14 +1,12 @@
-query account($id: ID = "", $firstC: Int = 5, $firstP: Int = 5, $firstT: Int = 5) {
+query account($id: ID = "", $firstP: Int = 5, $firstT: Int = 5) {
   account(id: $id) {
     id
-    contracts(first: $firstC, orderBy: time, orderDirection: desc) {
-      id
-      owner {
-        id
-      }
-    }
     projects(first: $firstP, orderBy: time, orderDirection: desc) {
       id
+      count
+      donated
+      donationCount
+      coin
       owner {
         id
       }
@@ -18,8 +16,13 @@ query account($id: ID = "", $firstC: Int = 5, $firstP: Int = 5, $firstT: Int = 5
     }
     tokens(first: $firstT, orderBy: time, orderDirection: desc) {
       id
+      message
+      amount
       owner {
         id
+      }
+      project {
+        coin
       }
     }
   }

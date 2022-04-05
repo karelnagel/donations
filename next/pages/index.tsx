@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 import Button from "@mui/material/Button";
 const Home: NextPage = () => {
   return (
-    <Layout>
+    <Layout className="flex flex-col items-center space-y-4 m-10">
       <h4>
         <Button variant="contained" href={"/projects"}>
           Latest projects

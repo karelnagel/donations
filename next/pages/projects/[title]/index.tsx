@@ -1,40 +1,45 @@
 import React, { useContext } from "react";
 import { apolloRequest } from "../../../idk/apollo";
-import { ContractDocument, ContractQueryResult, Contract, ContractListDocument, ContractListQueryResult } from "../../../graphql/generated";
+import { ContractDocument, ContractQueryResult, Contract, ContractListDocument, ContractListQueryResult, Project } from "../../../graphql/generated";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { CustomHead } from "../../../components/CustomHead";
 import Layout from "../../../components/Layout";
 import { ProjectObject } from "../../../components/ProjectObject";
 import { Context } from "../../../idk/context";
+import { AccountObject } from "../../../components/AccountObject";
+import { sameAddr } from "../../../idk/helpers";
+import { Button } from "@mui/material";
+import { getProjectInfo } from "../../../lib/firestore";
+import { ProjectInfo } from "../../../interfaces/ProjectInfo";
 
 interface Params extends ParsedUrlQuery {
   title: string;
 }
 interface ContractProps {
   contract: Contract | null;
+  projects: { project: Project | null; projectInfo: ProjectInfo | null }[] | null;
 }
-const ContractPage: NextPage<ContractProps> = ({ contract }) => {
+const ContractPage: NextPage<ContractProps> = ({ contract, projects }) => {
   const { user } = useContext(Context);
   if (!contract) return <h1>No contract found!</h1>;
   return (
     <>
       <CustomHead name={contract.id} description={contract.owner.id} />
       <Layout>
-        <p>title: {contract.id}</p>
-        <p>owner: {contract.owner.id}</p>
-        <p>address: {contract.address}</p>
-        {user?.address.toLowerCase() === contract.owner.id.toLowerCase() && (
-          <a href={`/projects/${contract.id}/new`}>
-            <button>Start new project</button>
-          </a>
-        )}
-        <div>
-          <h2>Latest projects by contract:</h2>
-          <div>
-            {contract.projects.map((p, i) => (
-              <ProjectObject project={p} key={i} />
-            ))}
+        <div className="max-w-screen-md mx-auto text-center flex flex-col items-center space-y-2">
+          <p className="font-bold text-lg my-10 uppercase">{contract.id}</p>
+          <span className="flex items-center space-x-2 justify-center">
+            Owner:
+            <AccountObject account={contract.owner.id} />
+          </span>
+
+          <Button>etherscan</Button>
+          <Button>opensea</Button>
+          {sameAddr(user?.address, contract.owner.id) && <Button href={`${contract.id}/new`}>Start new project </Button>}
+          <h2 className="">Latest projects:</h2>
+          <div className="flex flex-col space-y-2">
+            {projects && projects.map((p, i) => <ProjectObject key={i} project={p.project!} projectInfo={p.projectInfo!} />)}
           </div>
         </div>
       </Layout>
@@ -57,9 +62,18 @@ export const getStaticProps: GetStaticProps<ContractProps, Params> = async (cont
   const result = await apolloRequest<ContractQueryResult>(ContractDocument, { id: title });
 
   const contract = result.data ? (result.data.contract as Contract) : null;
+  const projects = contract
+    ? await Promise.all(
+        contract?.projects.map(async (p) => {
+          const info = await getProjectInfo(p.contract.id, p.count);
+          return { project: p as Project, projectInfo: info ?? null };
+        })
+      )
+    : null;
   return {
     props: {
       contract,
+      projects,
     },
     revalidate: 10,
   };

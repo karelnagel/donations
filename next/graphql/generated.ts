@@ -741,13 +741,12 @@ export enum _SubgraphErrorPolicy_ {
 
 export type AccountQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
-  firstC?: InputMaybe<Scalars['Int']>;
   firstP?: InputMaybe<Scalars['Int']>;
   firstT?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type AccountQuery = { __typename?: 'Query', account?: { __typename?: 'Account', id: string, contracts: Array<{ __typename?: 'Contract', id: string, owner: { __typename?: 'Account', id: string } }>, projects: Array<{ __typename?: 'Project', id: string, owner: { __typename?: 'Account', id: string }, contract: { __typename?: 'Contract', id: string } }>, tokens: Array<{ __typename?: 'Token', id: string, owner: { __typename?: 'Account', id: string } }> } | null };
+export type AccountQuery = { __typename?: 'Query', account?: { __typename?: 'Account', id: string, projects: Array<{ __typename?: 'Project', id: string, count: any, donated: any, donationCount: number, coin: any, owner: { __typename?: 'Account', id: string }, contract: { __typename?: 'Contract', id: string } }>, tokens: Array<{ __typename?: 'Token', id: string, message: string, amount: any, owner: { __typename?: 'Account', id: string }, project: { __typename?: 'Project', coin: any } }> } | null };
 
 export type AccountListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -795,17 +794,15 @@ export type TokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token',
 
 
 export const AccountDocument = gql`
-    query account($id: ID = "", $firstC: Int = 5, $firstP: Int = 5, $firstT: Int = 5) {
+    query account($id: ID = "", $firstP: Int = 5, $firstT: Int = 5) {
   account(id: $id) {
     id
-    contracts(first: $firstC, orderBy: time, orderDirection: desc) {
-      id
-      owner {
-        id
-      }
-    }
     projects(first: $firstP, orderBy: time, orderDirection: desc) {
       id
+      count
+      donated
+      donationCount
+      coin
       owner {
         id
       }
@@ -815,8 +812,13 @@ export const AccountDocument = gql`
     }
     tokens(first: $firstT, orderBy: time, orderDirection: desc) {
       id
+      message
+      amount
       owner {
         id
+      }
+      project {
+        coin
       }
     }
   }
@@ -836,7 +838,6 @@ export const AccountDocument = gql`
  * const { data, loading, error } = useAccountQuery({
  *   variables: {
  *      id: // value for 'id'
- *      firstC: // value for 'firstC'
  *      firstP: // value for 'firstP'
  *      firstT: // value for 'firstT'
  *   },

@@ -84,14 +84,14 @@ const EditPage = ({
     const file = fileInput.current?.files![0];
     if (type !== Type.EDIT_PROJECT && !file) return console.log("no image");
 
-    const result = uploadData(currentTitle, currentProjectId.toString(), projectInfo, file);
+    const result = await uploadData(currentTitle, currentProjectId.toString(), projectInfo, file);
     if (!result) return console.log("error uploading data");
-
+    const projectOwner = owner ? owner : user?.address!;
     if (type === Type.NEW_PROJECT) {
-      const error = await newProject(coin, owner ?? user?.address);
+      const error = await newProject(coin, projectOwner);
       if (error) return console.log(error);
     } else if (type === Type.NEW_CONTRACT) {
-      const error = await newContract(currentTitle, coin, owner ?? user?.address);
+      const error = await newContract(currentTitle, coin, projectOwner);
       if (error) return console.log(error);
     }
 
@@ -103,7 +103,7 @@ const EditPage = ({
     <Layout>
       <div className="max-w-screen-md m-auto text-center">
         <h2 className="m-10 text-xl uppercase font-bold">{topText}</h2>
-        <form>
+        {!user ? <p>Connect wallet to edit project</p>:<form>
           <div className="flex-col flex  px-2 space-y-2 text-left">
             {type === Type.NEW_CONTRACT && (
               <TextField
@@ -195,7 +195,7 @@ const EditPage = ({
           <Button onClick={router.back} variant="outlined">
             Back
           </Button>
-        </form>
+        </form>}
       </div>
     </Layout>
   );

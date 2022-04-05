@@ -10,6 +10,7 @@ module.exports = {
       colors: {
         primary: colors.red[500],
         primaryDark:colors.red[700],
+        secondary:colors.blue[300],
         white: colors.white,
         black:colors.black
       }
