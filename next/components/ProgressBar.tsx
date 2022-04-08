@@ -9,7 +9,7 @@ export function ProgresssBar({ project, projectInfo }: { project?: Project; proj
 
   return project && projectInfo ? (
     <div>
-      <p className="font-bold mb-1">
+      <p className="font-bold mb-1 text-center">
         Collected {ethers.utils.formatEther(project.donated)} / {projectInfo.goal} {coinName(project.coin)} with {project.donationCount} donation
       </p>
       <div className="max-w-sm border-primary border-2 h-8 mx-2 md:mx-auto rounded-lg overflow-hidden shadow-lg">

@@ -24,6 +24,8 @@ import { useRouter } from "next/router";
 import { Context } from "../../../../idk/context";
 import { ProgresssBar } from "../../../../components/ProgressBar";
 import { NewDonation } from "../../../../components/NexDonation";
+import { ContractObject } from "../../../../components/ContractObject";
+import Link from "next/link";
 
 interface Params extends ParsedUrlQuery {
   title: string;
@@ -33,11 +35,11 @@ interface ProjectProps {
   initialProject: Project | null;
   initialProjectInfo: ProjectInfo | null;
 }
-const ProjectPage: NextPage<ProjectProps |undefined> = ({ initialProject, initialProjectInfo }) => {
+const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initialProjectInfo }) => {
   const router = useRouter();
   const { title, projectId } = router.query as { title: string; projectId: string };
   const { project, projectInfo, newDonation } = useProject(title!, projectId, initialProject!, initialProjectInfo!);
-  const { user } = useContext(Context);
+  const { user, setSnack, load } = useContext(Context);
   const { donate, end, getAllowance, approve } = useChain({
     contractAddress: project?.contract.address,
     projectId: project?.count,
@@ -48,29 +50,36 @@ const ProjectPage: NextPage<ProjectProps |undefined> = ({ initialProject, initia
   const [active, setActive] = useState(project?.active!);
   const { balance } = useBalance(project?.coin);
 
-  const donationOptions = ["5", "10", "15", ethers.utils.formatEther(balance)];
+  const donationOptions = [...projectInfo?.donationOptions!, ethers.utils.formatEther(balance)];
 
   const makeDonation = async (e: any) => {
     e.preventDefault();
-    const amountInWei = ethers.utils.parseEther(amount);
+    load!(async () => {
+      const amountInWei = ethers.utils.parseEther(amount);
 
-    const allowance = await getAllowance();
-    if (amountInWei.gt(balance)) {
-      console.log("balance lower than amount");
-    }
-    if (amountInWei.gt(allowance)) {
-      const error = await approve(amountInWei);
-      if (error) return console.log(error);
-    }
-    const error2 = await donate(amountInWei, message);
-    if (error2) return console.log(error2);
-    // Todo update make subscription
+      const allowance = await getAllowance();
+      if (amountInWei.gt(balance)) {
+        return setSnack!("Balance too low");
+      }
+      if (amountInWei.gt(allowance)) {
+        const error = await approve(amountInWei);
+        if (error) return setSnack!(error);
+      }
+      const error2 = await donate(amountInWei, message);
+      if (error2) return setSnack!(error2);
+      setSnack!("Donation was successful", "success");
+    }, "Making donation! \n\nThis will take 2 transactions: \n1. for approving spending the coins  \n2. for donating. \n\nPlease continue to your wallet!");
   };
+
   const endPro = async (e: any) => {
     e.preventDefault();
-    const error = await end();
-    if (error) return console.log(error);
-    setActive(false);
+    load!(async () => {
+      const error = await end();
+      if (error) return setSnack!(error);
+
+      setSnack!("Ended project successfully!", "success");
+      setActive(false);
+    }, "Ending project! Please continue to your wallet!");
   };
 
   if (!project || !projectInfo) return <h1>Loading...</h1>;
@@ -94,6 +103,7 @@ const ProjectPage: NextPage<ProjectProps |undefined> = ({ initialProject, initia
                   <p className="my-2">Money goes to:</p>
                   <AccountObject account={project.owner.id} />
                 </span>
+                <ContractObject title={project.contract.id} />
               </div>
 
               <div className=" flex space-x-4 md:justify-end justify-center">
@@ -128,15 +138,17 @@ const ProjectPage: NextPage<ProjectProps |undefined> = ({ initialProject, initia
 
           <ProgresssBar project={project} projectInfo={projectInfo} />
           <br />
-          {user ? (
+          {user && active ? (
             <div className="mb-20">
               <h2 className="my-6 text-lg font-bold">Make a donation to {projectInfo.name}</h2>
-              <form action="" className="flex-col flex max-w-xs mx-auto space-y-2">
+              <form onSubmit={makeDonation} className="flex-col flex max-w-xs mx-auto space-y-2">
                 <TextField type="text" label="Your message" onChange={(e) => setMessage(e.currentTarget.value)} required />
                 <TextField
                   type="number"
                   label="How much you want to donate?"
                   id="filled-start-adornment"
+                  error={amount ? ethers.utils.parseEther(amount).gt(balance) : false}
+                  helperText={amount && ethers.utils.parseEther(amount).gt(balance) ? "Balance too low" : ""}
                   value={amount}
                   InputProps={{
                     endAdornment: <InputAdornment position="end">{coinName(project.coin)}</InputAdornment>,
@@ -154,7 +166,7 @@ const ProjectPage: NextPage<ProjectProps |undefined> = ({ initialProject, initia
                     />
                   ))}
                 </div>
-                <Button type="submit" onClick={makeDonation} variant="contained">
+                <Button type="submit" variant="contained">
                   Donate
                 </Button>
               </form>
@@ -165,14 +177,25 @@ const ProjectPage: NextPage<ProjectProps |undefined> = ({ initialProject, initia
                     End
                   </Button>
                   <span> </span>
-                  <Button variant="outlined" href={`${projectId}/edit`}>
-                    Edit
+                  <Link href={`/projects/${title}/${projectId}/edit`} passHref>
+                    <Button variant="outlined">Edit</Button>
+                  </Link>
+                  <br />
+                  <br />
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_URL}${router.asPath}/stream`);
+                      setSnack!("Stream link copied to clipboard!", "success");
+                    }}
+                  >
+                    Copy stream link
                   </Button>
                 </>
               )}
             </div>
           ) : (
-            <p className="my-10 uppercase font-bold text-lg">Connect your wallet to make a donation</p>
+            <p className="my-10 uppercase font-bold text-lg">{user ? "Connect your wallet to make a donation" : "Project is not active"}</p>
           )}
         </div>
       </Layout>
