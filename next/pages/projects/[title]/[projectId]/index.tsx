@@ -188,7 +188,7 @@ const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initi
                       navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_URL}${router.asPath}/stream`);
                       setSnack!("Stream link copied to clipboard!", "success");
                     }}
-                  >
+                  > 
                     Copy stream link
                   </Button>
                 </>
