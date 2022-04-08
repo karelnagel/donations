@@ -50,7 +50,7 @@ const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initi
   const [active, setActive] = useState(project?.active!);
   const { balance } = useBalance(project?.coin);
 
-  const donationOptions = [...projectInfo?.donationOptions!, ethers.utils.formatEther(balance)];
+  const donationOptions = projectInfo?.donationOptions ?[...projectInfo.donationOptions, ethers.utils.formatEther(balance)]: null;
 
   const makeDonation = async (e: any) => {
     e.preventDefault();
@@ -157,7 +157,7 @@ const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initi
                   required
                 />
                 <div className="w-full flex justify-between pb-4">
-                  {donationOptions.map((o, i) => (
+                  {donationOptions && donationOptions.map((o, i) => (
                     <Chip
                       key={i}
                       label={donationOptions.length - 1 === i ? "MAX" : o}
@@ -219,7 +219,7 @@ export const getStaticProps: GetStaticProps<ProjectProps, Params> = async (conte
   const result = await apolloRequest<ProjectQueryResult>(ProjectDocument, { id: getProjectId(title, projectId) });
 
   const project = result.data ? (result.data.project as Project) : null;
-  const projectInfo = (await getProjectInfo(title, projectId)) ?? null;
+  let projectInfo = (await getProjectInfo(title, projectId)) ?? null;
   return {
     props: {
       initialProject: project,
