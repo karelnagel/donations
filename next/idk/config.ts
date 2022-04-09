@@ -14,6 +14,22 @@ export const firebaseConfig = {
 
 export const factoryAddress = process.env.NEXT_PUBLIC_FACTORY
 
-export const coins =[
-    {coin:"DAI", address:"0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735"}
+export const coins = [
+    { coin: "DAI", address: "0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735" }
 ]
+
+export const networks = [
+    {
+        name: "rinkeby",
+        factory: process.env.NEXT_PUBLIC_FACTORY,
+        coins: [
+            { coin: "DAI", address: "0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735" }
+        ]
+    }
+]
+
+export const links = {
+    twitter: "https://twitter.com/karelETH",
+    etherscan: `https://etherscan.io/${process.env.NEXT_PUBLIC_FACTORY}`,
+    github: "https://github.com/karelnagel/donations"
+}

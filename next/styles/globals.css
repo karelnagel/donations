@@ -32,3 +32,9 @@ button.MuiButton-contained{
 svg.MuiSvgIcon-root{
   @apply text-primary hover:text-primaryDark hover:scale-125 duration-300
 }
+h2{
+  @apply uppercase font-bold text-lg mb-4
+}
+section{
+  @apply my-24
+}
