@@ -1,3 +1,5 @@
+import { discord, github, twitter } from "./images";
+
 export const domain = {
     name: 'Ethereum Donations',
 };
@@ -28,8 +30,8 @@ export const networks = [
     }
 ]
 
-export const links = {
-    twitter: "https://twitter.com/karelETH",
-    etherscan: `https://etherscan.io/${process.env.NEXT_PUBLIC_FACTORY}`,
-    github: "https://github.com/karelnagel/donations"
-}
+export const links = [
+    { link: "https://discord.gg/gAK73yAjJ6", image: discord },
+    { link: "https://twitter.com/karelETH", image: twitter },
+    { link: "https://github.com/karelnagel/donations", image: github },
+]

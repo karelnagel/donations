@@ -25,16 +25,22 @@ a {
   color: white;
 }
 
-button.MuiButton-contained{
+button.MuiButton-contained {
   @apply bg-primary !important;
 }
 
-svg.MuiSvgIcon-root{
-  @apply text-primary hover:text-primaryDark hover:scale-125 duration-300
+svg.MuiSvgIcon-root {
+  @apply text-primary hover:text-primaryDark hover:scale-125 duration-300;
 }
-h2{
-  @apply uppercase font-bold text-lg mb-4
+h2 {
+  @apply uppercase font-bold text-lg mb-4 text-center;
 }
-section{
-  @apply my-24
+section {
+  @apply py-20 shadow-md px-2 md:shadow-none;
+}
+ul {
+  @apply list-disc ml-6;
+}
+.home-image {
+  @apply relative h-60 w-80 rounded-lg shadow-lg overflow-hidden mx-auto mt-4;
 }

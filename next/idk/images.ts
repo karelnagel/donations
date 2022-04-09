@@ -9,6 +9,7 @@ import Crypto from "./../public/crypto.jpeg";
 import NFT from "./../public/nft.jpeg";
 import Streamer from "./../public/streamer.jpeg";
 import Favicon from "./../public/favicon.png";
+import Discord from "./../public/icons/discord.png";
 
 export const twitter = Twitter
 export const etherscan = Etherscan
@@ -21,3 +22,4 @@ export const crypto = Crypto
 export const nft = NFT
 export const streamer = Streamer
 export const favicon = Favicon
+export const discord = Discord

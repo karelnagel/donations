@@ -23,7 +23,7 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
     <Layout className="flex flex-col items-center space-y-4 ">
       <div className="relative w-full">
         <div className="z-10 absolute text-white flex flex-col justify-center items-center w-full h-full">
-          <h1 className="uppercase font-bold text-3xl mb-14">Crypto donations with NFTs for streamers</h1>
+          <h1 className="uppercase font-bold md:text-3xl mb-14 text-center text-xl">Crypto donations with NFTs for streamers</h1>
           <Link href={"/new"} passHref>
             <Button variant="contained" size="large">
               Start your project
@@ -36,7 +36,7 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
       </div>
       <div className="max-w-screen-md m-auto">
         <section id="about">
-          <p className=" text-center text-lg my-20">
+          <p className=" text-center text-lg">
             A platform for streamers to accept crypto donations, it is decentralized, open source and with no commissions, so you can be sure all the
             money goes to you. With every donation comes NFT for the donator, that can be later used for accessing private groups, meetings and other
             benefits that the creator decides to add.
@@ -45,21 +45,21 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
         <section id="why-crypto" className="md:flex justify-between items-center">
           <div>
             <h2>Why crypto?</h2>
-            <ul className="list-disc">
+            <ul>
               <li>Easier to donate</li>
               <li>Smaller and more transparent fees</li>
               <li>Decentralized</li>
               <li>Crypto people are usually more generous</li>
             </ul>
           </div>
-          <div className="relative h-60 w-80 rounded-lg shadow-lg overflow-hidden">
+          <div className="home-image">
             <Image src={crypto} alt="" layout="fill" className="object-cover"></Image>
           </div>
         </section>
         <section id="why-nfts" className="md:flex flex-row-reverse justify-between items-center">
           <div className="flex-1">
             <h2 className="uppercase font-bold text-lg">Why NFTs?</h2>
-            <ul className="list-disc">
+            <ul>
               <li>So streamers can give back to their supporters</li>
               <li>Supporters can show that they cared about someone or some cause early</li>
               <li>If fans know that they can get something in return they might be more generous</li>
@@ -67,7 +67,7 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
               <li>If resold on market, then creator gets a percent of the sale</li>
             </ul>
           </div>
-          <div className="relative h-60 w-80 md:mr-10 rounded-lg overflow-hidden shadow-lg">
+          <div className="home-image">
             <Image src={nft} alt="" layout="fill" className="object-cover"></Image>
           </div>
         </section>

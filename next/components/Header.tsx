@@ -11,9 +11,9 @@ export default function Header() {
   return (
       <header className="w-full shadow-md hover:bg-gray-50 duration-300">
         <div className="flex justify-between max-w-screen-lg items-center m-auto p-2 ">
-          <h2 className="font-bold text-2xl text-primary text hover:text-primaryDark duration-300">
+          <h3 className="font-bold text-2xl text-primary text hover:text-primaryDark duration-300">
             <Link href={"/"}>Donations</Link>
-          </h2>
+          </h3>
           <div className="bg-primary flex px-1 items-center rounded-3xl hover:bg-primaryDark shadow-xl duration-300 text-white font-bold h-12 cursor-pointer">
             <div className="mx-4" onClick={() => (user ? logoutOfWeb3Modal() : loadWeb3Modal())}>
               {user ? user.name ?? short(user.address) : "Connect Wallet"}

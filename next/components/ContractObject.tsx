@@ -10,7 +10,7 @@ export function ContractObject({ title }: { title: string }) {
         <div className="flex justify-end my-2 hover:text-primaryDark duration-300">
           <p className="uppercase font-bold">{title}</p>
           <div className="relative h-6 w-6">
-            <Image alt={title} src={Ethereum} layout="fill" />
+            <Image alt={title} src={Ethereum} layout="fill" className=" " />
           </div>
         </div>
       </a>
