@@ -94,7 +94,7 @@ const ProjectPage: NextPage<ProjectProps | undefined> = ({ initialProject, initi
           <h1 className="mt-20 mb-10 text-2xl uppercase font-bold">{projectInfo?.name}</h1>
           <div className="md:flex  justify-between mb-20 shadow-lg p-4 rounded-lg">
             <div className="min-w-60 w-60 h-60 relative object-cover rounded-3xl overflow-hidden m-auto">
-              <Image src={getProjectImage(title, projectId)} alt="" layout="fill" />
+              <Image src={getProjectImage(title, projectId)} alt="" layout="fill" className="object-cover"/>
             </div>
             <div className="md:text-right flex flex-col justify-between md:ml-4 md:w-[60%]">
               <div>

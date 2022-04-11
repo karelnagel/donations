@@ -12,6 +12,7 @@ import { sameAddr } from "../../../idk/helpers";
 import { Button } from "@mui/material";
 import { getProjectInfo } from "../../../lib/firestore";
 import { ProjectInfo } from "../../../interfaces/ProjectInfo";
+import Link from "next/link";
 
 interface Params extends ParsedUrlQuery {
   title: string;
@@ -36,7 +37,11 @@ const ContractPage: NextPage<ContractProps> = ({ contract, projects }) => {
 
           <Button>etherscan</Button>
           <Button>opensea</Button>
-          {sameAddr(user?.address, contract.owner.id) && <Button href={`${contract.id}/new`}>Start new project </Button>}
+          {sameAddr(user?.address, contract.owner.id) && (
+            <Link href={`/collections/${contract.id}/new`} passHref>
+              <Button>Start new project </Button>
+            </Link>
+          )}
           <h2 className="">Latest projects:</h2>
           <div className="flex flex-col space-y-2">
             {projects && projects.map((p, i) => <ProjectObject key={i} project={p.project!} projectInfo={p.projectInfo!} />)}

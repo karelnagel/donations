@@ -800,7 +800,7 @@ export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Pro
 export type ProjectListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProjectListQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', count: any, contract: { __typename?: 'Contract', id: string } }> };
+export type ProjectListQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', count: any, contract: { __typename?: 'Contract', id: string, lastProject: number } }> };
 
 export type TokenQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
@@ -1153,6 +1153,7 @@ export const ProjectListDocument = gql`
     count
     contract {
       id
+      lastProject
     }
   }
 }

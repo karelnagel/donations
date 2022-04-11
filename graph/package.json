@@ -4,7 +4,8 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph codegen && graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ ethdon",
+    "deploy-studio": "graph deploy --node https://api.studio.thegraph.com/deploy/ ethdon",
+    "deploy": "graph deploy --product hosted-service karelnagel/ethdon",
     "create-local": "graph create --node http://localhost:8020/ ethdon",
     "remove-local": "graph remove --node http://localhost:8020/ ethdon",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 ethdon"
