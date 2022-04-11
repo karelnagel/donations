@@ -3,6 +3,7 @@ query projectList {
     count
     contract {
       id
+      lastProject
     }
   }
 }

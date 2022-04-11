@@ -92,6 +92,7 @@ export type Contract = {
   address: Scalars['Bytes'];
   contractURI?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  lastProject: Scalars['Int'];
   owner: Account;
   projects: Array<Project>;
   time: Scalars['BigInt'];
@@ -141,6 +142,14 @@ export type Contract_Filter = {
   id_lte?: InputMaybe<Scalars['ID']>;
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  lastProject?: InputMaybe<Scalars['Int']>;
+  lastProject_gt?: InputMaybe<Scalars['Int']>;
+  lastProject_gte?: InputMaybe<Scalars['Int']>;
+  lastProject_in?: InputMaybe<Array<Scalars['Int']>>;
+  lastProject_lt?: InputMaybe<Scalars['Int']>;
+  lastProject_lte?: InputMaybe<Scalars['Int']>;
+  lastProject_not?: InputMaybe<Scalars['Int']>;
+  lastProject_not_in?: InputMaybe<Array<Scalars['Int']>>;
   owner?: InputMaybe<Scalars['String']>;
   owner_contains?: InputMaybe<Scalars['String']>;
   owner_contains_nocase?: InputMaybe<Scalars['String']>;
@@ -175,6 +184,7 @@ export enum Contract_OrderBy {
   Address = 'address',
   ContractUri = 'contractURI',
   Id = 'id',
+  LastProject = 'lastProject',
   Owner = 'owner',
   Projects = 'projects',
   Time = 'time'

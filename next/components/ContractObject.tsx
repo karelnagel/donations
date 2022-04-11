@@ -5,7 +5,7 @@ import Ethereum from "./../public/icons/ethereum.svg";
 
 export function ContractObject({ title }: { title: string }) {
   return (
-    <Link href={`/projects/${title}`}>
+    <Link href={`/collections/${title}`}>
       <a>
         <div className="flex justify-end my-2 hover:text-primaryDark duration-300">
           <p className="uppercase font-bold">{title}</p>

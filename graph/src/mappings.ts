@@ -18,6 +18,7 @@ export function handleNewContract(event: NewContract): void {
   contract.address = event.params.token
   contract.time = event.block.timestamp
   contract.contractURI = "" // Todo get 
+  contract.lastProject = 1
 
   const owner = new Account(event.params.owner.toHexString())
   contract.owner = owner.id
@@ -53,6 +54,14 @@ export function handleNewProject(event: NewProject): void {
     log.error("No title with {}", [event.address.toHexString()])
     return;
   }
+
+  const contract = Contract.load(title.title);
+  if (!contract) {
+    log.error("No contract with {}", [title.title])
+    return;
+  }
+  contract.lastProject++;
+  contract.save()
 
   const project = new Project(getProjectId(title.title, event.params.id.toString()))
   project.count = event.params.id;
