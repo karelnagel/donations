@@ -1,0 +1,18 @@
+query accountTokens($owner: String = "") {
+  tokens(where: { owner_contains_nocase: $owner }, orderBy: time, orderDirection: desc) {
+    id
+    message
+    amount
+    owner {
+      id
+    }
+    project {
+      coin
+      count
+      contract {
+        id
+      }
+    }
+    time
+  }
+}

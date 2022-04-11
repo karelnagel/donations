@@ -739,19 +739,26 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny'
 }
 
-export type AccountQueryVariables = Exact<{
-  id?: InputMaybe<Scalars['ID']>;
-  firstP?: InputMaybe<Scalars['Int']>;
-  firstT?: InputMaybe<Scalars['Int']>;
+export type AccountContractsQueryVariables = Exact<{
+  owner?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type AccountQuery = { __typename?: 'Query', account?: { __typename?: 'Account', id: string, projects: Array<{ __typename?: 'Project', id: string, count: any, donated: any, donationCount: number, coin: any, owner: { __typename?: 'Account', id: string }, contract: { __typename?: 'Contract', id: string } }>, tokens: Array<{ __typename?: 'Token', id: string, message: string, amount: any, owner: { __typename?: 'Account', id: string }, project: { __typename?: 'Project', coin: any } }> } | null };
+export type AccountContractsQuery = { __typename?: 'Query', contracts: Array<{ __typename?: 'Contract', id: string, address: any, time: any, owner: { __typename?: 'Account', id: string } }> };
 
-export type AccountListQueryVariables = Exact<{ [key: string]: never; }>;
+export type AccountProjectsQueryVariables = Exact<{
+  owner?: InputMaybe<Scalars['String']>;
+}>;
 
 
-export type AccountListQuery = { __typename?: 'Query', accounts: Array<{ __typename?: 'Account', id: string }> };
+export type AccountProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: string, count: any, donated: any, donationCount: number, coin: any, time: any, owner: { __typename?: 'Account', id: string }, contract: { __typename?: 'Contract', id: string } }> };
+
+export type AccountTokensQueryVariables = Exact<{
+  owner?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type AccountTokensQuery = { __typename?: 'Query', tokens: Array<{ __typename?: 'Token', id: string, message: string, amount: any, time: any, owner: { __typename?: 'Account', id: string }, project: { __typename?: 'Project', coin: any, count: any, contract: { __typename?: 'Contract', id: string } } }> };
 
 export type ContractQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
@@ -793,101 +800,152 @@ export type TokenQueryVariables = Exact<{
 export type TokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', amount: any, message: string, time: any, owner: { __typename?: 'Account', id: string }, project: { __typename?: 'Project', count: any } } | null };
 
 
-export const AccountDocument = gql`
-    query account($id: ID = "", $firstP: Int = 5, $firstT: Int = 5) {
-  account(id: $id) {
+export const AccountContractsDocument = gql`
+    query accountContracts($owner: String = "") {
+  contracts(
+    where: {owner_contains_nocase: $owner}
+    orderBy: time
+    orderDirection: desc
+  ) {
     id
-    projects(first: $firstP, orderBy: time, orderDirection: desc) {
+    address
+    time
+    owner {
       id
-      count
-      donated
-      donationCount
-      coin
-      owner {
-        id
+    }
+  }
+}
+    `;
+
+/**
+ * __useAccountContractsQuery__
+ *
+ * To run a query within a React component, call `useAccountContractsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountContractsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountContractsQuery({
+ *   variables: {
+ *      owner: // value for 'owner'
+ *   },
+ * });
+ */
+export function useAccountContractsQuery(baseOptions?: Apollo.QueryHookOptions<AccountContractsQuery, AccountContractsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountContractsQuery, AccountContractsQueryVariables>(AccountContractsDocument, options);
       }
+export function useAccountContractsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountContractsQuery, AccountContractsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountContractsQuery, AccountContractsQueryVariables>(AccountContractsDocument, options);
+        }
+export type AccountContractsQueryHookResult = ReturnType<typeof useAccountContractsQuery>;
+export type AccountContractsLazyQueryHookResult = ReturnType<typeof useAccountContractsLazyQuery>;
+export type AccountContractsQueryResult = Apollo.QueryResult<AccountContractsQuery, AccountContractsQueryVariables>;
+export const AccountProjectsDocument = gql`
+    query accountProjects($owner: String = "") {
+  projects(
+    where: {owner_contains_nocase: $owner}
+    orderBy: time
+    orderDirection: desc
+  ) {
+    id
+    count
+    donated
+    donationCount
+    coin
+    owner {
+      id
+    }
+    contract {
+      id
+    }
+    time
+  }
+}
+    `;
+
+/**
+ * __useAccountProjectsQuery__
+ *
+ * To run a query within a React component, call `useAccountProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountProjectsQuery({
+ *   variables: {
+ *      owner: // value for 'owner'
+ *   },
+ * });
+ */
+export function useAccountProjectsQuery(baseOptions?: Apollo.QueryHookOptions<AccountProjectsQuery, AccountProjectsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountProjectsQuery, AccountProjectsQueryVariables>(AccountProjectsDocument, options);
+      }
+export function useAccountProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountProjectsQuery, AccountProjectsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountProjectsQuery, AccountProjectsQueryVariables>(AccountProjectsDocument, options);
+        }
+export type AccountProjectsQueryHookResult = ReturnType<typeof useAccountProjectsQuery>;
+export type AccountProjectsLazyQueryHookResult = ReturnType<typeof useAccountProjectsLazyQuery>;
+export type AccountProjectsQueryResult = Apollo.QueryResult<AccountProjectsQuery, AccountProjectsQueryVariables>;
+export const AccountTokensDocument = gql`
+    query accountTokens($owner: String = "") {
+  tokens(
+    where: {owner_contains_nocase: $owner}
+    orderBy: time
+    orderDirection: desc
+  ) {
+    id
+    message
+    amount
+    owner {
+      id
+    }
+    project {
+      coin
+      count
       contract {
         id
       }
     }
-    tokens(first: $firstT, orderBy: time, orderDirection: desc) {
-      id
-      message
-      amount
-      owner {
-        id
-      }
-      project {
-        coin
-      }
-    }
+    time
   }
 }
     `;
 
 /**
- * __useAccountQuery__
+ * __useAccountTokensQuery__
  *
- * To run a query within a React component, call `useAccountQuery` and pass it any options that fit your needs.
- * When your component renders, `useAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAccountTokensQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountTokensQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAccountQuery({
+ * const { data, loading, error } = useAccountTokensQuery({
  *   variables: {
- *      id: // value for 'id'
- *      firstP: // value for 'firstP'
- *      firstT: // value for 'firstT'
+ *      owner: // value for 'owner'
  *   },
  * });
  */
-export function useAccountQuery(baseOptions?: Apollo.QueryHookOptions<AccountQuery, AccountQueryVariables>) {
+export function useAccountTokensQuery(baseOptions?: Apollo.QueryHookOptions<AccountTokensQuery, AccountTokensQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AccountQuery, AccountQueryVariables>(AccountDocument, options);
+        return Apollo.useQuery<AccountTokensQuery, AccountTokensQueryVariables>(AccountTokensDocument, options);
       }
-export function useAccountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountQuery, AccountQueryVariables>) {
+export function useAccountTokensLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountTokensQuery, AccountTokensQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AccountQuery, AccountQueryVariables>(AccountDocument, options);
+          return Apollo.useLazyQuery<AccountTokensQuery, AccountTokensQueryVariables>(AccountTokensDocument, options);
         }
-export type AccountQueryHookResult = ReturnType<typeof useAccountQuery>;
-export type AccountLazyQueryHookResult = ReturnType<typeof useAccountLazyQuery>;
-export type AccountQueryResult = Apollo.QueryResult<AccountQuery, AccountQueryVariables>;
-export const AccountListDocument = gql`
-    query AccountList {
-  accounts {
-    id
-  }
-}
-    `;
-
-/**
- * __useAccountListQuery__
- *
- * To run a query within a React component, call `useAccountListQuery` and pass it any options that fit your needs.
- * When your component renders, `useAccountListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAccountListQuery({
- *   variables: {
- *   },
- * });
- */
-export function useAccountListQuery(baseOptions?: Apollo.QueryHookOptions<AccountListQuery, AccountListQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AccountListQuery, AccountListQueryVariables>(AccountListDocument, options);
-      }
-export function useAccountListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountListQuery, AccountListQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AccountListQuery, AccountListQueryVariables>(AccountListDocument, options);
-        }
-export type AccountListQueryHookResult = ReturnType<typeof useAccountListQuery>;
-export type AccountListLazyQueryHookResult = ReturnType<typeof useAccountListLazyQuery>;
-export type AccountListQueryResult = Apollo.QueryResult<AccountListQuery, AccountListQueryVariables>;
+export type AccountTokensQueryHookResult = ReturnType<typeof useAccountTokensQuery>;
+export type AccountTokensLazyQueryHookResult = ReturnType<typeof useAccountTokensLazyQuery>;
+export type AccountTokensQueryResult = Apollo.QueryResult<AccountTokensQuery, AccountTokensQueryVariables>;
 export const ContractDocument = gql`
     query contract($id: ID = "", $first: Int = 10) {
   contract(id: $id) {

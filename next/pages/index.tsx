@@ -72,14 +72,14 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
           </div>
         </section>
         <section id="projects" className="text-center">
-          <h2 className="text-center mb-10">Latest projects</h2>
-          <div className="flex flex-col  space-y-4 max-w-screen-sm mx-auto">
+          <h2 className="text-center">Latest projects</h2>
+          <div className="flex flex-col  space-y-4 max-w-screen-sm mx-auto my-10">
             {projects.map((p, i) => (
               <ProjectObject project={p.project} projectInfo={p.projectInfo} key={i} />
             ))}
           </div>
           <Link href={"/projects"} passHref>
-            <Button variant="contained" className="my-10">
+            <Button variant="contained" className="">
               Latest projects
             </Button>
           </Link>

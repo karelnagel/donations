@@ -12,7 +12,7 @@ export function ProjectObject({ project, projectInfo }: { project?: Project; pro
 
   return project && projectInfo ? (
     <div
-      className="shadow-stone-900 shadow-md p-4 rounded-lg cursor-pointer"
+      className="shadow-lg p-4 rounded-lg cursor-pointer"
       onClick={() => router.push(`/projects/${project.contract.id}/${project.count}`)}
     >
       <div className="flex justify-between">

@@ -1,0 +1,16 @@
+query accountProjects($owner: String = "") {
+  projects(where: { owner_contains_nocase: $owner }, orderBy: time, orderDirection: desc) {
+    id
+    count
+    donated
+    donationCount
+    coin
+    owner {
+      id
+    }
+    contract {
+      id
+    }
+    time
+  }
+}
