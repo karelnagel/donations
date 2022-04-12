@@ -44,7 +44,7 @@ export function getProject(title: string, id: BigInt): Project {
         project.name = ""
         project.description = ""
         project.image = ""
-        project.goal = ""
+        project.goal = "0"
         project.url = ""
         project.socials = []
         project.donationOptions = []

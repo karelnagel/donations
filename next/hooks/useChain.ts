@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Context } from "../idk/context";
 import { ethers } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { factoryAddress } from "../idk/config";
+import { network } from "../config";
 
 export const factoryAbi = [
   "function newCollection(string memory title,address projectCoin,address projectOwner,string memory projectIpfs)",
@@ -26,8 +26,8 @@ export default function useChain({ contractAddress, projectId, coinAddress }: { 
   const { provider, user } = useContext(Context)
 
   const factory = (pro?: JsonRpcProvider) => {
-    if (!factoryAddress || !provider) return
-    return new ethers.Contract(factoryAddress, factoryAbi, pro ?? provider?.getSigner())
+    if (!network.factory || !provider) return
+    return new ethers.Contract(network.factory, factoryAbi, pro ?? provider?.getSigner())
   }
   const contract = (pro?: JsonRpcProvider) => {
     if (!contractAddress || !provider) return
@@ -40,7 +40,6 @@ export default function useChain({ contractAddress, projectId, coinAddress }: { 
 
   async function newCollection(title: string, coin: string, projectOwner: string, ipfs: string) {
     try {
-      console.log("this one here",title, coin, projectOwner)
       const result = await factory()!.newCollection(title, coin, projectOwner, ipfs);
       await result.wait(1);
       return

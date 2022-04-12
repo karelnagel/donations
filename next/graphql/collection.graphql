@@ -9,6 +9,10 @@ query collection($id: ID = "", $first: Int = 10) {
       index
       coin
       active
+      name
+      description
+      image
+      goal
       collection {
         id
       }

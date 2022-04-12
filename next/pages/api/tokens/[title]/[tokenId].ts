@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { DonationDocument, DonationQueryResult } from '../../../../graphql/generated'
 import { apolloRequest } from '../../../../idk/apollo'
-import { getTokenId } from '../../../../idk/helpers'
+import { getImage, getTokenId } from '../../../../idk/helpers'
 import { TokenInfo } from '../../../../interfaces/TokenInfo'
 
 export default async function tokenMeta(
@@ -21,7 +21,7 @@ export default async function tokenMeta(
         name: `${donation.project.name} #${tokenId}`,
         description: donation.project.description,
         external_url: donation.project.url,
-        image: donation.project.image,
+        image: getImage(donation.project.image),
         attributes: [
             { trait_type: "Message", value: donation.message },
             { trait_type: "Original owner", value: donation.owner },

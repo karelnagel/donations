@@ -7,6 +7,7 @@ import { Context } from "../idk/context";
 import { useContext } from "react";
 
 import { getENS } from "../lib/ethers";
+import { network } from "../config";
 
 export default function useWeb3Modal() {
     const { provider, setProvider, setUser } = useContext(Context);
@@ -15,7 +16,7 @@ export default function useWeb3Modal() {
 
     useEffect(() => {
         setWeb3Modal(new Web3Modal({
-            network: process.env.NEXT_PUBLIC_NETWORK,
+            network: network.name,
             cacheProvider: true,
             providerOptions: {
                 walletconnect: {

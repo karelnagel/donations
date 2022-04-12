@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { ProjectDocument, ProjectQueryResult } from '../../../../graphql/generated'
 import { apolloRequest } from '../../../../idk/apollo'
-import { getProjectId } from '../../../../idk/helpers'
+import { getImage, getProjectId } from '../../../../idk/helpers'
 
 export default async function contractMeta(
   req: NextApiRequest,
@@ -20,7 +20,7 @@ export default async function contractMeta(
     external_link: project.url,
     seller_fee_basis_points: 10,
     fee_recipient: project.collection.owner,
-    image: project.image
+    image: getImage(project.image)
   }
   res.status(200).json(returnvalue)
 }

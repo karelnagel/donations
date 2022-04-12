@@ -5,7 +5,7 @@ import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { CustomHead } from "../../../../components/CustomHead";
 import Layout from "../../../../components/Layout";
-import { coinName, getProjectId, sameAddr } from "../../../../idk/helpers";
+import { coinName, getImage, getProjectId, sameAddr, toCoin } from "../../../../idk/helpers";
 import useChain from "../../../../hooks/useChain";
 import { ethers } from "ethers";
 import useBalance from "../../../../hooks/useBalance";
@@ -48,7 +48,12 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
   const [active, setActive] = useState(project?.active!);
   const { balance } = useBalance(project?.coin);
 
-  const donationOptions = project?.donationOptions ? [...project.donationOptions, ethers.utils.formatEther(balance)] : null;
+  const donationOptions = [
+    toCoin(project?.donationOptions[0] ?? "0"),
+    toCoin(project?.donationOptions[1] ?? "0"),
+    toCoin(project?.donationOptions[2] ?? "0"),
+    toCoin(balance.toString()),
+  ];
 
   const makeDonation = async (e: any) => {
     e.preventDefault();
@@ -83,7 +88,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
   if (!project) return <h1>Loading...</h1>;
   return (
     <>
-      <CustomHead name={project.name} description={project.description} image={project.image} />
+      <CustomHead name={project.name} description={project.description} image={getImage(project.image)} />
       <Layout>
         <div className="fixed bottom-5 left-5 ">
           <NewDonation donation={newDonation} />
@@ -92,7 +97,17 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
           <h1 className="mt-20 mb-10 text-2xl uppercase font-bold">{project.name}</h1>
           <div className="md:flex  justify-between mb-20 shadow-lg p-4 rounded-lg">
             <div className="min-w-60 w-60 h-60 relative object-cover rounded-3xl overflow-hidden m-auto">
-              {project.image &&<Image src={project.image} alt="" layout="fill" className="object-cover" />}
+              {project.image && (
+                <Image
+                  placeholder="blur"
+                  blurDataURL="/favicon.png"
+                  priority
+                  src={getImage(project.image)}
+                  alt=""
+                  layout="fill"
+                  className="object-cover"
+                />
+              )}
             </div>
             <div className="md:text-right flex flex-col justify-between md:ml-4 md:w-[60%]">
               <div>
@@ -155,15 +170,9 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
                   required
                 />
                 <div className="w-full flex justify-between pb-4">
-                  {donationOptions &&
-                    donationOptions.map((o, i) => (
-                      <Chip
-                        key={i}
-                        label={donationOptions.length - 1 === i ? "MAX" : o}
-                        onClick={() => setAmount(o)}
-                        variant={amount === o ? "filled" : "outlined"}
-                      />
-                    ))}
+                  {donationOptions.map((o, i) => (
+                    <Chip key={i} label={i === 3 ? "MAX" : o} onClick={() => setAmount(o)} variant={amount === o ? "filled" : "outlined"} />
+                  ))}
                 </div>
                 <Button type="submit" variant="contained">
                   Donate

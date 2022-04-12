@@ -6,6 +6,10 @@ query accountProjects($owner: String = "") {
     donationCount
     coin
     owner 
+    name
+    description
+    image
+    goal
     collection {
       id
     }

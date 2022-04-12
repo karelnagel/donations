@@ -27,7 +27,7 @@ type Project @entity {
   goal: String!
   url: String!
   socials: [String!]!
-  donationOptions: [BigInt!]!
+  donationOptions: [String!]!
 
   collection: Collection!
   donations: [Donation!]! @derivedFrom(field: "project")

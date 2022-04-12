@@ -1,4 +1,4 @@
-import { BigInt, Bytes, log } from "@graphprotocol/graph-ts"
+import { BigInt, Bytes } from "@graphprotocol/graph-ts"
 import { NewCollection, SetURI } from "../generated/Factory/Factory"
 import {
   End,
@@ -11,6 +11,7 @@ import {
 import { Title } from "../generated/schema"
 import { Collection as CollectionTemplate } from '../generated/templates'
 import { getCollection, getDonation, getProject, getProjectId, getTitle } from "./helpers"
+import { getIpfs } from "./ipfs"
 
 function newProject(title: string, coin: Bytes, timestamp: BigInt, owner: string, ipfs: string): void {
   const collection = getCollection(title)
@@ -22,12 +23,11 @@ function newProject(title: string, coin: Bytes, timestamp: BigInt, owner: string
   project.coin = coin;
   project.time = timestamp;
   project.owner = owner;
-  project.ipfs = ipfs;
-
-  //Todo get from ipfs
-
   project.save()
+
+  getIpfs(title, big, ipfs)
 }
+
 
 export function handleNewCollection(event: NewCollection): void {
   const title = new Title(event.params.collection.toHexString())
@@ -100,13 +100,9 @@ export function handleSetIPFS(event: SetIPFS): void {
   const title = getTitle(event.address.toHexString())
   if (!title) return;
 
-  const project = getProject(title.collection, event.params.id)
-  project.ipfs = event.params.ipfs;
-
-  // Todo get ipfs
-
-  project.save()
+  getIpfs(title.collection, event.params.id, event.params.ipfs)
 }
+
 export function handleTransfer(event: Transfer): void {
   const title = getTitle(event.address.toHexString())
   if (!title) return;

@@ -255,7 +255,7 @@ export type Project = {
   description: Scalars['String'];
   donated: Scalars['BigInt'];
   donationCount: Scalars['Int'];
-  donationOptions: Array<Scalars['BigInt']>;
+  donationOptions: Array<Scalars['String']>;
   donations: Array<Donation>;
   goal: Scalars['String'];
   id: Scalars['ID'];
@@ -347,12 +347,12 @@ export type Project_Filter = {
   donationCount_lte?: InputMaybe<Scalars['Int']>;
   donationCount_not?: InputMaybe<Scalars['Int']>;
   donationCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  donationOptions?: InputMaybe<Array<Scalars['BigInt']>>;
-  donationOptions_contains?: InputMaybe<Array<Scalars['BigInt']>>;
-  donationOptions_contains_nocase?: InputMaybe<Array<Scalars['BigInt']>>;
-  donationOptions_not?: InputMaybe<Array<Scalars['BigInt']>>;
-  donationOptions_not_contains?: InputMaybe<Array<Scalars['BigInt']>>;
-  donationOptions_not_contains_nocase?: InputMaybe<Array<Scalars['BigInt']>>;
+  donationOptions?: InputMaybe<Array<Scalars['String']>>;
+  donationOptions_contains?: InputMaybe<Array<Scalars['String']>>;
+  donationOptions_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+  donationOptions_not?: InputMaybe<Array<Scalars['String']>>;
+  donationOptions_not_contains?: InputMaybe<Array<Scalars['String']>>;
+  donationOptions_not_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
   goal?: InputMaybe<Scalars['String']>;
   goal_contains?: InputMaybe<Scalars['String']>;
   goal_contains_nocase?: InputMaybe<Scalars['String']>;
@@ -803,7 +803,7 @@ export type AccountProjectsQueryVariables = Exact<{
 }>;
 
 
-export type AccountProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: string, index: any, donated: any, donationCount: number, coin: any, owner: string, time: any, collection: { __typename?: 'Collection', id: string } }> };
+export type AccountProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: string, index: any, donated: any, donationCount: number, coin: any, owner: string, name: string, description: string, image: string, goal: string, time: any, collection: { __typename?: 'Collection', id: string } }> };
 
 export type CollectionQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
@@ -811,7 +811,7 @@ export type CollectionQueryVariables = Exact<{
 }>;
 
 
-export type CollectionQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, address: any, owner: string, projectsCount: number, projects: Array<{ __typename?: 'Project', donated: any, index: any, coin: any, active: boolean, owner: string, collection: { __typename?: 'Collection', id: string } }> } | null };
+export type CollectionQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, address: any, owner: string, projectsCount: number, projects: Array<{ __typename?: 'Project', donated: any, index: any, coin: any, active: boolean, name: string, description: string, image: string, goal: string, owner: string, collection: { __typename?: 'Collection', id: string } }> } | null };
 
 export type CollectionListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -823,21 +823,21 @@ export type DonationQueryVariables = Exact<{
 }>;
 
 
-export type DonationQuery = { __typename?: 'Query', donation?: { __typename?: 'Donation', amount: any, owner: string, message: string, time: any, project: { __typename?: 'Project', index: any, name: string, description: string, url: string, image: string, socials: Array<string>, donationOptions: Array<any>, goal: string } } | null };
+export type DonationQuery = { __typename?: 'Query', donation?: { __typename?: 'Donation', amount: any, owner: string, message: string, time: any, project: { __typename?: 'Project', index: any, name: string, description: string, url: string, image: string, socials: Array<string>, donationOptions: Array<string>, goal: string } } | null };
 
 export type LatestProjectsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type LatestProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', donated: any, time: any, index: any, coin: any, active: boolean, owner: string, collection: { __typename?: 'Collection', id: string } }> };
+export type LatestProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', donated: any, time: any, index: any, coin: any, active: boolean, name: string, description: string, image: string, goal: string, owner: string, collection: { __typename?: 'Collection', id: string } }> };
 
 export type ProjectQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', donated: any, donationCount: number, index: any, active: boolean, coin: any, time: any, id: string, owner: string, name: string, description: string, image: string, url: string, goal: string, socials: Array<string>, donationOptions: Array<any>, collection: { __typename?: 'Collection', id: string, address: any, owner: string } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', donated: any, donationCount: number, index: any, active: boolean, coin: any, time: any, id: string, owner: string, name: string, description: string, image: string, url: string, goal: string, socials: Array<string>, donationOptions: Array<string>, collection: { __typename?: 'Collection', id: string, address: any, owner: string } } | null };
 
 export type ProjectListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -950,6 +950,10 @@ export const AccountProjectsDocument = gql`
     donationCount
     coin
     owner
+    name
+    description
+    image
+    goal
     collection {
       id
     }
@@ -997,6 +1001,10 @@ export const CollectionDocument = gql`
       index
       coin
       active
+      name
+      description
+      image
+      goal
       collection {
         id
       }
@@ -1124,6 +1132,10 @@ export const LatestProjectsDocument = gql`
     index
     coin
     active
+    name
+    description
+    image
+    goal
     collection {
       id
     }

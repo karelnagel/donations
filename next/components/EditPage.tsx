@@ -4,12 +4,12 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Layout from "./Layout";
 import { MenuItem } from "@mui/material";
-import { coins } from "../idk/config";
 import { Context } from "../idk/context";
 import { useRouter } from "next/router";
-import { getProjectId, sameAddr } from "../idk/helpers";
+import { getProjectId, sameAddr, toCoin, toWei } from "../idk/helpers";
 import { Project, useCollectionLazyQuery, useCollectionListLazyQuery, useProjectLazyQuery } from "../graphql/generated";
 import { ipfsUpload } from "../lib/ipfs";
+import { network } from "../config";
 
 export enum Type {
   NEW_CONTRACT,
@@ -64,7 +64,13 @@ const EditPage = ({
 
   useEffect(() => {
     const pro = savedProject.data?.project;
-    if (pro) setProject({ ...(pro as Project), donationOptions: pro.donationOptions ?? ["5", "10", "15"], socials: pro.socials ?? ["", "", "", ""] });
+
+    if (pro)
+      setProject({
+        ...(pro as Project),
+        donationOptions: [pro.donationOptions[0] ?? "0", pro.donationOptions[1] ?? "0", pro.donationOptions[2] ?? "0"],
+        socials: [pro.socials[0] ?? "", pro.socials[1] ?? "", pro.socials[2] ?? "", pro.socials[3] ?? ""],
+      });
   }, [savedProject.data?.project]);
 
   const newPro = async (e: any) => {
@@ -125,7 +131,7 @@ const EditPage = ({
                   required
                   value={project.coin}
                 >
-                  {coins.map((c, i) => (
+                  {network.coins.map((c, i) => (
                     <MenuItem key={i} value={c.address}>
                       {c.coin}
                     </MenuItem>
@@ -150,8 +156,8 @@ const EditPage = ({
             <TextField
               type="number"
               label="Project goal"
-              value={project.goal}
-              onChange={(e) => setProject((p) => ({ ...p, goal: e.target.value }))}
+              value={toCoin(project.goal)}
+              onChange={(e) => setProject((p) => ({ ...p, goal: toWei(e.target.value) }))}
             />
             <TextField
               type="text"
@@ -166,7 +172,7 @@ const EditPage = ({
                   <TextField
                     key={i}
                     type="text"
-                    label={`Social link ${i + 1}`}
+                    label={i == 0 ? "Youtube" : i == 1 ? "Facebook" : i == 2 ? "Twitter" : "Instagram"}
                     value={s}
                     onChange={(e) => setProject((p) => ({ ...p, socials: [...p.socials.map((s2, i2) => (i2 === i ? e.target.value : s2))] }))}
                   />
@@ -180,10 +186,10 @@ const EditPage = ({
                     key={i}
                     type="number"
                     label={`Option ${i + 1}`}
-                    value={d}
+                    value={toCoin(d)}
                     required
                     onChange={(e) =>
-                      setProject((p) => ({ ...p, donationOptions: [...p.donationOptions.map((d2, i2) => (i2 === i ? e.target.value : d2))] }))
+                      setProject((p) => ({ ...p, donationOptions: [...p.donationOptions.map((d2, i2) => (i2 === i ? toWei(e.target.value) : d2))] }))
                     }
                   />
                 ))}

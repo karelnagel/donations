@@ -5,6 +5,7 @@ import { BigNumber, Contract, ethers } from "ethers";
 import { apolloRequest } from "../idk/apollo";
 import { getProjectId } from "../idk/helpers";
 import { contractAbi } from "./useChain";
+import { network } from "../config";
 
 export default function useProject(title?: string, projectId?: string, initialProject?: Project) {
     const [project, setProject] = useState(initialProject);
@@ -25,7 +26,7 @@ export default function useProject(title?: string, projectId?: string, initialPr
 
     useEffect(() => {
         if (project?.collection.address && projectId && title) {
-            const provider = userProvider ?? new ethers.providers.InfuraProvider(process.env.NEXT_PUBLIC_NETWORK, process.env.NEXT_PUBLIC_INFURA_ID)
+            const provider = userProvider ?? new ethers.providers.InfuraProvider(network.name, process.env.NEXT_PUBLIC_INFURA_ID)
 
             const contract = new Contract(project.collection.address, contractAbi, provider)
             const filter = contract.filters.NewDonation();
