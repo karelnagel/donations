@@ -21,6 +21,7 @@ interface ProjectProps {
 const Home: NextPage<ProjectProps> = ({ projects }) => {
   return (
     <Layout className="flex flex-col items-center space-y-4 ">
+      develop
       <div className="relative w-full">
         <div className="z-10 absolute text-white flex flex-col justify-center items-center w-full h-full">
           <h1 className="uppercase font-bold md:text-3xl mb-14 text-center text-xl">Crypto donations with NFTs for streamers</h1>
