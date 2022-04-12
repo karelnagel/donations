@@ -2,45 +2,77 @@
 pragma solidity ^0.8.2;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./Donations.sol";
+import "./Collection.sol";
 
 contract Factory is Ownable {
-    mapping(string => Donations) public tokens;
-    string uri = "https://ethdon.xyz/api/tokens/";
+    using Strings for uint256;
 
-    function newToken(
+    mapping(string => address) public collections;
+    string private _uri;
+
+    constructor(string memory uri) {
+        _uri = uri;
+        emit SetURI(uri);
+    }
+
+    function newCollection(
         string memory title,
-        address coin,
-        address projectOwner
+        address projectCoin,
+        address projectOwner,
+        string memory projectIpfs
     ) public {
-        require(tokens[title] == Donations(address(0)), "Title already exists");
+        require(collections[title] == address(0), "Title already exists");
 
-        tokens[title] = new Donations(title, coin, projectOwner);
-        tokens[title].transferOwnership(msg.sender);
-        emit NewContract(
+        Collection collection = new Collection(
             title,
-            address(tokens[title]),
+            projectCoin,
+            projectOwner,
+            projectIpfs
+        );
+        collection.transferOwnership(msg.sender);
+        collections[title] = address(collection);
+
+        emit NewCollection(
+            title,
+            collections[title],
             msg.sender,
-            coin,
-            projectOwner
+            projectCoin,
+            projectOwner,
+            projectIpfs
         );
     }
 
-    function getURI() public view virtual returns (string memory) {
-        return uri;
-    }
-
-    function setURI(string memory _uri) public onlyOwner {
-        uri = _uri;
-        emit SetURI(_uri);
-    }
-
-    event NewContract(
+    event NewCollection(
         string title,
-        address token,
+        address collection,
         address owner,
-        address coin,
-        address projectOwner
+        address projectCoin,
+        address projectOwner,
+        string projectIpfs
     );
+
+    function getContractURI(string memory title)
+        public
+        view
+        virtual
+        returns (string memory)
+    {
+        return string(abi.encodePacked(_uri, title));
+    }
+
+    function getTokenURI(string memory title, uint256 tokenId)
+        public
+        view
+        virtual
+        returns (string memory)
+    {
+        return string(abi.encodePacked(_uri, title, "/", tokenId.toString()));
+    }
+
+    function setURI(string memory uri) public onlyOwner {
+        _uri = uri;
+        emit SetURI(uri);
+    }
+
     event SetURI(string uri);
 }

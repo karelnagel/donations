@@ -6,50 +6,53 @@ dataSources:
     name: Factory
     network: rinkeby
     source:
-      address: "0x67C96E5231a3C278835136FF2114FAa70C871631"
+      address: "0x2282C2D11917b157e6a75B1dA3F58D8264c6Dc87"
       abi: Factory
-      startBlock: 10416997
+      startBlock: 10490847
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Contract
+        - Collection
       abis:
         - name: Factory
-          file: ./abis/Factory.json
+          file: ./abis/contracts/factory.sol/Factory.json
       eventHandlers:
-        - event: NewContract(string,address,address,address,address)
-          handler: handleNewContract
+        - event: NewCollection(string,address,address,address,address,string)
+          handler: handleNewCollection
         - event: SetURI(string)
           handler: handleSetURI
       file: ./src/mappings.ts
 
 templates:
-  - name: Donations
-    kind: ethereum/contract
+  - name: Collection
+    kind: ethereum
     network: rinkeby
     source:
-      abi: Donations
+      abi: Collection
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings.ts
       entities:
-        - Contract
+        - Collection
         - Project
-        - Token
-        - Account
+        - Donation
       abis:
-        - name: Donations
-          file: ./abis/Donations.json
+        - name: Collection
+          file: ./abis/contracts/Collection.sol/Collection.json
       eventHandlers:
-        - event: NewProject(uint256,address,address)
+        - event: NewProject(uint256,address,address,string)
           handler: handleNewProject
-        - event: NewToken(uint256,uint256,address,uint256,string)
-          handler: handleNewToken
+        - event: NewDonation(uint256,uint256,address,uint256,string)
+          handler: handleNewDonation
         - event: End(uint256)
           handler: handleEnd
+        - event: SetIPFS(uint256,string)
+          handler: handleSetIPFS
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
