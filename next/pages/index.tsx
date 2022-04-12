@@ -60,7 +60,7 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
           <div className="flex-1">
             <h2 className="uppercase font-bold text-lg">Why NFTs?</h2>
             <ul>
-              <li>So streamers can give back to their supporters</li>
+              <li>Streamers can give back to their supporters</li>
               <li>Supporters can show that they cared about someone or some cause early</li>
               <li>If fans know that they can get something in return they might be more generous</li>
               <li>Crypto people are usually more generous</li>
