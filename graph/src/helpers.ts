@@ -40,6 +40,15 @@ export function getProject(title: string, id: BigInt): Project {
         project.donationCount = 0;
         project.owner = "";
         project.ipfs = ""
+
+        project.name = ""
+        project.description = ""
+        project.image = ""
+        project.goal = ""
+        project.url = ""
+        project.socials = []
+        project.donationOptions = []
+
         project.save()
     }
     return project

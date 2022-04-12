@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { links } from "../idk/config";
-import { etherscan, github, twitter } from "../idk/images";
 
 export default function Footer() {
   return (

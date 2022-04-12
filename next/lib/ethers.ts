@@ -1,5 +1,4 @@
 import { ethers } from "ethers/";
-import { domain } from "../idk/config";
 
 export async function getENS(address: string, provider?: ethers.providers.BaseProvider) {
     if (!provider) provider = new ethers.providers.InfuraProvider(process.env.NEXT_PUBLIC_NETWORK, process.env.NEXT_PUBLIC_INFURA_ID)
@@ -13,7 +12,4 @@ export async function getENS(address: string, provider?: ethers.providers.BasePr
         console.log(e)
     }
     return {}
-}
-export function verifySignature(type: {}, data: {}, signature: string) {
-    return ethers.utils.verifyTypedData(domain, type, data, signature)
 }

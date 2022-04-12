@@ -3,8 +3,8 @@ import React, { useContext } from "react";
 import { short } from "../idk/helpers";
 import useWeb3Modal from "../hooks/useWeb3Modal";
 import { Context } from "../idk/context";
-import { Avatar, Divider, IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
-import { Logout, PersonAdd, Settings } from "@mui/icons-material";
+import { Divider, ListItemIcon, Menu, MenuItem } from "@mui/material";
+import { Logout } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 
 export default function Header() {

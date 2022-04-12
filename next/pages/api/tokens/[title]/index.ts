@@ -1,28 +1,26 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { ContractDocument, ContractQueryResult } from '../../../../graphql/generated';
+import { ProjectDocument, ProjectQueryResult } from '../../../../graphql/generated'
 import { apolloRequest } from '../../../../idk/apollo'
-import { getProjectInfo } from '../../../../lib/firestore'
+import { getProjectId } from '../../../../idk/helpers'
 
 export default async function contractMeta(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { title } = req.query
+  const { title } = req.query as { title: string }
 
-  const contract = await apolloRequest<ContractQueryResult>(ContractDocument, { id: title })
-  if (!contract.data?.contract) return res.status(404).json({ error: " no contract" })
-
-  const project = await getProjectInfo(title.toString(), "1")
-  if (!project) return res.status(404).json({ error: "No file" })
+  const projectRequest = await apolloRequest<ProjectQueryResult>(ProjectDocument, { id: getProjectId(title, "1") })
+  const project = projectRequest.data?.project;
+  if (!project) return res.status(404).json({ error: " no contract" })
 
   const returnvalue = {
     name: project.name,
     description: project.description,
-    external_link: project.external_url,
+    external_link: project.url,
     seller_fee_basis_points: 10,
-    fee_recipient: contract.data.contract.owner.id,
-    image: `https://${req.headers.host}/api/images/${title}/1`,
+    fee_recipient: project.collection.owner,
+    image: project.image
   }
   res.status(200).json(returnvalue)
 }

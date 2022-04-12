@@ -1,10 +1,5 @@
 import React, { createRef, useContext, useEffect, useState } from "react";
-import { Contract, ContractDocument, ContractListDocument, ContractListQueryResult, ContractQueryResult } from "../graphql/generated";
-import { defaultProjectInfo, ProjectInfo } from "../interfaces/ProjectInfo";
-import useSigning from "../hooks/useSigning";
 import useChain from "../hooks/useChain";
-import { apolloRequest } from "../idk/apollo";
-import { getProjectInfo } from "../lib/firestore";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Layout from "./Layout";
@@ -12,7 +7,9 @@ import { MenuItem } from "@mui/material";
 import { coins } from "../idk/config";
 import { Context } from "../idk/context";
 import { useRouter } from "next/router";
-import { sameAddr } from "../idk/helpers";
+import { getProjectId, sameAddr } from "../idk/helpers";
+import { Project, useCollectionLazyQuery, useCollectionListLazyQuery, useProjectLazyQuery } from "../graphql/generated";
+import { ipfsUpload } from "../lib/ipfs";
 
 export enum Type {
   NEW_CONTRACT,
@@ -32,79 +29,76 @@ const EditPage = ({
   projectId?: string;
   type: Type;
 }) => {
-  const [currentTitle, setCurrentTitle] = useState("");
-  const [currentProjectId, setCurrentProjectId] = useState<number>();
-  const [titles, setTitles] = useState<string[]>();
-  const [contract, setContract] = useState<Contract>();
-  const [coin, setCoin] = useState("");
-  const [owner, setOwner] = useState("");
-  const fileInput = createRef<HTMLInputElement>();
-  const [projectInfo, setProjectInfo] = useState<ProjectInfo>(defaultProjectInfo);
-  const { newProject, newContract } = useChain({ contractAddress: contract?.address });
-  const { uploadData } = useSigning();
-  const { user, setSnack, load } = useContext(Context);
   const router = useRouter();
 
+  const fileInput = createRef<HTMLInputElement>();
+  const [getTitles, titles] = useCollectionListLazyQuery();
+  const [getCollection, collection] = useCollectionLazyQuery({ variables: { id: title } });
+  const [getSavedProject, savedProject] = useProjectLazyQuery({ variables: { id: getProjectId(title!, projectId!) } });
+  const [project, setProject] = useState<Project>({
+    coin: "select",
+    name: "",
+    description: "",
+    owner: "",
+    goal: "",
+    url: "",
+    socials: ["", "", "", ""],
+    donationOptions: ["", "", ""],
+  } as Project);
+  const [newTitle, setNewTitle] = useState("");
+
+  const { newProject, newCollection, setIPFS } = useChain({ contractAddress: collection.data?.collection?.address });
+  const { user, setSnack, load } = useContext(Context);
+
   useEffect(() => {
-    const effect = async () => {
-      if (type === Type.NEW_CONTRACT) {
-        // get all the titles and check names
-        const contractQuery = await apolloRequest<ContractListQueryResult>(ContractListDocument);
-        const contractTitles = contractQuery.data?.contracts.map((c) => c.id);
-        setTitles(contractTitles);
-        setCurrentProjectId(1);
-      } else {
-        if (title) {
-          const contractQuery = await apolloRequest<ContractQueryResult>(ContractDocument, { id: title });
-          const contr = contractQuery.data?.contract;
-          if (contr) {
-            setContract(contr as Contract);
-            setCurrentTitle(title);
+    if (type === Type.NEW_CONTRACT) {
+      getTitles();
+    } else if (title) {
+      getCollection();
 
-            if (type === Type.NEW_PROJECT) {
-              // projectId++
-              setCurrentProjectId(Number(contr.projects[0].count) + 1);
-            } else if (type === Type.EDIT_PROJECT) {
-              //get ProjectInfo and fill all the inputs with the data
-              if (title && projectId) {
-                const proInfo = await getProjectInfo(title, projectId);
-
-                if (proInfo) setProjectInfo({ ...proInfo, donationOptions: proInfo.donationOptions ?? ["5", "10", "15"] });
-                setCurrentProjectId(Number(projectId));
-              }
-            }
-          }
-        }
+      if (type === Type.EDIT_PROJECT && projectId) {
+        getSavedProject();
       }
-    };
-    effect();
-  }, [projectId, title, type]);
+    }
+  }, [type, title, projectId, getCollection, getSavedProject, getTitles]);
+
+  useEffect(() => {
+    const pro = savedProject.data?.project;
+    if (pro) setProject({ ...(pro as Project), donationOptions: pro.donationOptions ?? ["5", "10", "15"], socials: pro.socials ?? ["", "", "", ""] });
+  }, [savedProject.data?.project]);
+
   const newPro = async (e: any) => {
     e.preventDefault();
     load!(async () => {
-      if (!currentProjectId || !currentTitle) return setSnack!("no data");
-      if (titles?.includes(currentTitle)) return setSnack!("title exists ");
+      if (!user) return setSnack!("User not logged in");
+      if (titles.data?.collections.find((c) => c.id === newTitle)) return setSnack!("title exists ");
+      if (collection.data?.collection && !sameAddr(collection.data?.collection?.owner, user?.address)) return setSnack!("Not collection owner ");
+
       const file = fileInput.current?.files![0];
       if (type !== Type.EDIT_PROJECT && !file) return setSnack!("no image");
 
-      const result = await uploadData(currentTitle, currentProjectId.toString(), projectInfo, file);
-      if (!result) return setSnack!("error uploading data");
-      const projectOwner = owner ? owner : user?.address!;
-      if (type === Type.NEW_PROJECT) {
-        const error = await newProject(coin, projectOwner);
+      const ipfsHash = await ipfsUpload(project, file);
+      if (!ipfsHash) return setSnack!("error uploading to ipfs");
+
+      const projectOwner = project.owner ? project.owner : user.address;
+      if (type === Type.NEW_CONTRACT) {
+        const error = await newCollection(newTitle, project.coin, projectOwner, ipfsHash);
         if (error) return setSnack!(error);
-      } else if (type === Type.NEW_CONTRACT) {
-        const error = await newContract(currentTitle, coin, projectOwner);
+      } else if (type === Type.NEW_PROJECT) {
+        const error = await newProject(project.coin, projectOwner, ipfsHash);
+        if (error) return setSnack!(error);
+      } else if (type === Type.EDIT_PROJECT) {
+        const error = await setIPFS(Number(projectId!), ipfsHash);
         if (error) return setSnack!(error);
       }
 
       setSnack!("Success", "success");
+      router.push(`/projects/${title ?? newTitle}/${projectId ?? (collection.data?.collection?.projectsCount ?? 0) + 1}`);
     }, "Editing project! \nPlease continue to your wallet  ");
-    router.push(`/projects/${currentTitle}/${currentProjectId}`);
   };
 
   if (!user) return <Layout>Connect wallet to edit project</Layout>;
-  else if (contract && !sameAddr(contract.owner.id, user.address)) return <Layout>Not owner</Layout>;
+  else if (collection.data?.collection && !sameAddr(collection.data.collection.owner, user.address)) return <Layout>Not owner</Layout>;
   return (
     <Layout>
       <div className="max-w-screen-md m-auto text-center">
@@ -115,9 +109,9 @@ const EditPage = ({
               <TextField
                 type="text"
                 label="Project title"
-                error={titles?.includes(currentTitle)}
-                helperText={titles?.includes(currentTitle) ? "Title already exists, try another one!" : null}
-                onChange={(e) => setCurrentTitle(e.target.value)}
+                error={!!titles.data?.collections.find((c) => c.id === newTitle)}
+                helperText={!!titles.data?.collections.find((c) => c.id === newTitle) ? "Title already exists, try another one!" : null}
+                onChange={(e) => setNewTitle(e.target.value)}
                 required
               />
             )}
@@ -126,10 +120,10 @@ const EditPage = ({
                 <TextField
                   id="select"
                   label="Which ERC20 coin you want to use?"
-                  value={coin}
                   select
-                  onChange={(e) => setCoin(e.target.value)}
+                  onChange={(e) => setProject((p) => ({ ...p, coin: e.target.value }))}
                   required
+                  value={project.coin}
                 >
                   {coins.map((c, i) => (
                     <MenuItem key={i} value={c.address}>
@@ -137,65 +131,51 @@ const EditPage = ({
                     </MenuItem>
                   ))}
                 </TextField>
-                <TextField type="text" label="Project owner (leave empty if its you)" onChange={(e) => setOwner(e.target.value)} />
+                <TextField
+                  type="text"
+                  label="Project owner (leave empty if its you)"
+                  value={project.owner}
+                  onChange={(e) => setProject((p) => ({ ...p, owner: e.target.value }))}
+                />
               </>
             )}
             <input type="file" ref={fileInput} className="" />
-            <TextField
-              type="text"
-              label="Project name"
-              value={projectInfo.name}
-              onChange={(e) => setProjectInfo((p) => ({ ...p, name: e.target.value }))}
-            />
+            <TextField type="text" label="Project name" value={project.name} onChange={(e) => setProject((p) => ({ ...p, name: e.target.value }))} />
             <TextField
               type="text"
               label="Project description"
-              value={projectInfo.description}
-              onChange={(e) => setProjectInfo((p) => ({ ...p, description: e.target.value }))}
+              value={project.description}
+              onChange={(e) => setProject((p) => ({ ...p, description: e.target.value }))}
             />
             <TextField
               type="number"
               label="Project goal"
-              value={projectInfo.goal}
-              onChange={(e) => setProjectInfo((p) => ({ ...p, goal: e.target.value }))}
+              value={project.goal}
+              onChange={(e) => setProject((p) => ({ ...p, goal: e.target.value }))}
             />
             <TextField
               type="text"
               label="URL to your page "
-              value={projectInfo.external_url}
-              onChange={(e) => setProjectInfo((p) => ({ ...p, external_url: e.target.value }))}
+              value={project.url}
+              onChange={(e) => setProject((p) => ({ ...p, url: e.target.value }))}
             />
             <p>Social media links</p>
-            <div className="flex space-x-2">
-              <TextField
-                type="text"
-                label="Twitter"
-                value={projectInfo.socials.twitter}
-                onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, twitter: e.target.value } }))}
-              />
-              <TextField
-                type="text"
-                label="Instagram"
-                value={projectInfo.socials.instagram}
-                onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, instagram: e.target.value } }))}
-              />
-              <TextField
-                type="text"
-                label="Youtube"
-                value={projectInfo.socials.youtube}
-                onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, youtube: e.target.value } }))}
-              />
-              <TextField
-                type="text"
-                label="Facebook"
-                value={projectInfo.socials.facebook}
-                onChange={(e) => setProjectInfo((p) => ({ ...p, socials: { ...p.socials, facebook: e.target.value } }))}
-              />
+            <div className="flex space-x-2 justify-between">
+              {project.socials &&
+                project.socials.map((s, i) => (
+                  <TextField
+                    key={i}
+                    type="text"
+                    label={`Social link ${i + 1}`}
+                    value={s}
+                    onChange={(e) => setProject((p) => ({ ...p, socials: [...p.socials.map((s2, i2) => (i2 === i ? e.target.value : s2))] }))}
+                  />
+                ))}
             </div>
             <p>Donation options</p>
             <div className="flex space-x-2 justify-between">
-              {projectInfo.donationOptions &&
-                projectInfo.donationOptions.map((d, i) => (
+              {project.donationOptions &&
+                project.donationOptions.map((d, i) => (
                   <TextField
                     key={i}
                     type="number"
@@ -203,7 +183,7 @@ const EditPage = ({
                     value={d}
                     required
                     onChange={(e) =>
-                      setProjectInfo((p) => ({ ...p, donationOptions: [...p.donationOptions.map((d2, i2) => (i2 === i ? e.target.value : d2))] }))
+                      setProject((p) => ({ ...p, donationOptions: [...p.donationOptions.map((d2, i2) => (i2 === i ? e.target.value : d2))] }))
                     }
                   />
                 ))}

@@ -1,0 +1,18 @@
+query donation($id: ID = "") {
+  donation(id: $id) {
+    amount
+    owner 
+    message
+    time
+    project {
+      index
+      name
+      description
+      url
+      image
+      socials
+      donationOptions
+      goal
+    }
+  }
+}

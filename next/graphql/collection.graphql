@@ -1,0 +1,18 @@
+query collection($id: ID = "", $first: Int = 10) {
+  collection(id: $id) {
+    id
+    address
+    owner
+    projectsCount
+    projects(first: $first, orderBy: time, orderDirection: desc) {
+      donated
+      index
+      coin
+      active
+      collection {
+        id
+      }
+      owner
+    }
+  }
+}

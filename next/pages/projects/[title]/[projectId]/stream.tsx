@@ -6,7 +6,7 @@ import useProject from "../../../../hooks/useProject";
 export default function Stream() {
   const { title, projectId } = useRouter().query;
 
-  const { project, projectInfo, newDonation } = useProject(title?.toString(), projectId?.toString());
+  const { project, newDonation } = useProject(title?.toString(), projectId?.toString());
 
   return (
     <div className="flex flex-col items-center text-white">
@@ -14,7 +14,7 @@ export default function Stream() {
         <NewDonation donation={newDonation} />
       </div>
       <div className="">
-        <ProgresssBar project={project} projectInfo={projectInfo} />
+        <ProgresssBar project={project}/>
       </div>
     </div>
   );

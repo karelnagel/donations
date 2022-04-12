@@ -13,9 +13,6 @@ export function short(address: string | null | undefined) {
   return `${address.substr(0, 5)}...${address.substr(address.length - 5)}`;
 }
 
-export function getProjectImage(title: string, projectId: string) {
-  return `${process.env.NEXT_PUBLIC_URL}/api/images/${title}/${projectId}`;
-}
 
 export const toCoin = (wei: string) => {
   console.log(wei);

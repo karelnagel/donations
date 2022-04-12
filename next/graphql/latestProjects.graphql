@@ -2,14 +2,12 @@ query latestProjects($first: Int = 10) {
   projects(first: $first, orderBy: time, orderDirection: desc) {
     donated
     time
-    count
+    index
     coin
     active
-    contract {
+    collection {
       id
     }
-    owner {
-      id
-    }
+    owner
   }
 }

@@ -21,13 +21,13 @@ type Project @entity {
   active: Boolean!
   ipfs: String!
 
-  name: String
-  description: String
-  image: String
-  goal: String
-  url: String
-  socials: [String!]
-  donationOptions: [BigInt!]
+  name: String!
+  description: String!
+  image: String!
+  goal: String!
+  url: String!
+  socials: [String!]!
+  donationOptions: [BigInt!]!
 
   collection: Collection!
   donations: [Donation!]! @derivedFrom(field: "project")
