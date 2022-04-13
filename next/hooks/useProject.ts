@@ -1,17 +1,15 @@
 import { useContext, useEffect, useState } from "react";
-import { Account, Project, ProjectDocument, ProjectQueryResult, Token } from "../graphql/generated";
+import { Donation, Project, ProjectDocument, ProjectQueryResult } from "../graphql/generated";
 import { Context } from "../idk/context";
 import { BigNumber, Contract, ethers } from "ethers";
 import { apolloRequest } from "../idk/apollo";
 import { getProjectId } from "../idk/helpers";
 import { contractAbi } from "./useChain";
-import { ProjectInfo } from "../interfaces/ProjectInfo";
-import { getProjectInfo } from "../lib/firestore";
+import { network } from "../config";
 
-export default function useProject(title?: string, projectId?: string, initialProject?: Project , initialProjectInfo?: ProjectInfo ) {
+export default function useProject(title?: string, projectId?: string, initialProject?: Project) {
     const [project, setProject] = useState(initialProject);
-    const [projectInfo, setProjectInfo] = useState(initialProjectInfo);
-    const [newDonation, setNewDonation] = useState<Token>();
+    const [newDonation, setNewDonation] = useState<Donation>();
     const { provider: userProvider } = useContext(Context);
 
 
@@ -21,26 +19,24 @@ export default function useProject(title?: string, projectId?: string, initialPr
                 const result = await apolloRequest<ProjectQueryResult>(ProjectDocument, { id: getProjectId(title, projectId) })
                 const pro = result.data?.project
                 if (pro) setProject(pro as Project)
-
-                const info = await getProjectInfo(title, projectId)
-                if (info) setProjectInfo(info)
             }
         }
         effect()
     }, [projectId, title])
 
     useEffect(() => {
-        if (project?.contract.address && projectId && title) {
-            const provider = userProvider ?? new ethers.providers.InfuraProvider(process.env.NEXT_PUBLIC_NETWORK, process.env.NEXT_PUBLIC_INFURA_ID)
+        if (project?.collection.address && projectId && title) {
+            const provider = userProvider ?? new ethers.providers.InfuraProvider(network.name, process.env.NEXT_PUBLIC_INFURA_ID)
 
-            const contract = new Contract(project.contract.address, contractAbi, provider)
-            const filter = contract.filters.NewToken();
+            const contract = new Contract(project.collection.address, contractAbi, provider)
+            const filter = contract.filters.NewDonation();
             contract.on(filter, (id: BigNumber, proId: BigNumber, owner: string, amount: BigNumber, message: string) => {
                 console.log(owner, amount, message, id, proId);
-                const newToken: Token = {
+                const newToken: Donation = {
                     amount: amount.toString(),
                     message,
-                    owner: { id: owner } as Account,
+                    owner,
+                    originalOwner: owner,
                     time: new Date(),
                     project: { coin: project.coin } as Project,
                     id: ""
@@ -50,7 +46,6 @@ export default function useProject(title?: string, projectId?: string, initialPr
                     ...p,
                     donated: BigNumber.from(p.donated).add(amount).toString(),
                     donationCount: p.donationCount + 1,
-                    tokens: [newToken as Token, ...p.tokens]
                 }) : p)
             });
 
@@ -58,7 +53,7 @@ export default function useProject(title?: string, projectId?: string, initialPr
                 contract.removeAllListeners()
             };
         }
-    }, [project?.coin, project?.contract.address, projectId, title, userProvider]);
+    }, [project?.coin, project?.collection.address, projectId, title, userProvider]);
 
-    return { project, projectInfo, newDonation }
+    return { project, newDonation }
 }

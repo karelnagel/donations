@@ -1,0 +1,8 @@
+query accountCollections($owner: String = "") {
+  collections(where: { owner_contains_nocase: $owner }, orderBy: time, orderDirection: desc) {
+    id
+    address
+    time
+    owner
+  }
+}

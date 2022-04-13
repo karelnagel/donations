@@ -2,29 +2,23 @@ query project($id: ID = "") {
   project(id: $id) {
     donated
     donationCount
-    count
+    index
     active
     coin
     time
     id
-    owner {
-      id
-    }
-    contract {
+    owner 
+    name
+    description
+    image
+    url
+    goal
+    socials
+    donationOptions
+    collection {
       id
       address
-      owner {
-        id
-      }
-    }
-    tokens(first: 5, orderBy: time, orderDirection: desc) {
-      id
-      amount
-      message
-      owner {
-        id
-      }
-      time
+      owner
     }
   }
 }

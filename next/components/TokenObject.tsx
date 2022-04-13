@@ -1,14 +1,14 @@
 import Link from "next/link";
 import React from "react";
-import { Token } from "../graphql/generated";
+import { Donation } from "../graphql/generated";
 import { coinName, toCoin } from "../idk/helpers";
 
-export function TokenObject({ token }: { token: Token }) {
+export function TokenObject({ token }: { token: Donation }) {
   return (
     <div className="w-full p-4 shadow-lg text-center rounded-lg cursor-pointer">
-      <Link href={`/projects/${token.project.contract.id}/${token.project.count}`} passHref>
+      <Link href={`/projects/${token.project.collection.id}/${token.project.index}`} passHref>
         <p>
-          Donated {toCoin(token.amount)} {coinName(token.project.coin)} to {token.project.contract.id}, with message {`"${token.message}"`}
+          Donated {toCoin(token.amount)} {coinName(token.project.coin)} to {token.project.name}, with message {`"${token.message}"`}
         </p>
       </Link>
     </div>

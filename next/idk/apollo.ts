@@ -1,10 +1,11 @@
 import { ApolloClient, DocumentNode, InMemoryCache, QueryResult } from "@apollo/client";
+import { network } from "../config";
 
 export const client = new ApolloClient({
-    uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+    uri: network.graph,
     cache: new InMemoryCache(),
 });
-export async function apolloRequest<Type extends QueryResult>(query: DocumentNode, variables?: {}):Promise<Type> {
+export async function apolloRequest<Type extends QueryResult>(query: DocumentNode, variables?: {}): Promise<Type> {
     const result = (await client.query({ query, variables })) as Type;
     return result;
 }

@@ -1,9 +1,9 @@
 query projectList {
   projects {
-    count
-    contract {
+    index
+    collection {
       id
-      lastProject
+      projectsCount
     }
   }
 }

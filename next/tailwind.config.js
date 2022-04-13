@@ -9,10 +9,12 @@ module.exports = {
     extend: {
       colors: {
         primary: colors.red[500],
-        primaryDark:colors.red[700],
-        secondary:colors.blue[300],
+        primaryDark: colors.red[700],
+        secondary: colors.blue[300],
         white: colors.white,
-        black:colors.black
+        black: colors.black,
+        stream1: colors.blue[500],
+        stream2: colors.orange[400],
       }
     },
   },

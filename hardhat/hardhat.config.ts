@@ -52,7 +52,7 @@ const config: HardhatUserConfig = {
     apiKey: process.env.ETHERSCAN_API_KEY,
   },
   paths: {
-    artifacts: "./abis",
+    artifacts: "./../graph/abis",
   },
 };
 

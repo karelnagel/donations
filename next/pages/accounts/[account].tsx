@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
-import { Project, Token, useAccountContractsLazyQuery, useAccountProjectsLazyQuery, useAccountTokensLazyQuery } from "../../graphql/generated";
-import { getProjectInfo } from "../../lib/firestore";
-import { ProjectInfo } from "../../interfaces/ProjectInfo";
-import { AccountObject } from "../../components/AccountObject";
+import {
+  Donation,
+  Project,
+  useAccountCollectionsLazyQuery,
+  useAccountDonationsLazyQuery,
+  useAccountProjectsLazyQuery,
+} from "../../graphql/generated";
 import { useRouter } from "next/router";
 import { CircularProgress, Tab, Tabs } from "@mui/material";
 import { TokenObject } from "../../components/TokenObject";
@@ -16,35 +19,19 @@ const AccountPage: NextPage = () => {
   const router = useRouter();
   const { account, tab } = router.query as { account: string; tab?: string };
   const [value, setValue] = useState(0);
-  const [getTokens, tokens] = useAccountTokensLazyQuery({ variables: { owner: account } });
+  const [getDonations, donations] = useAccountDonationsLazyQuery({ variables: { owner: account } });
   const [getProjects, projects] = useAccountProjectsLazyQuery({ variables: { owner: account } });
-  const [getContracts, contracts] = useAccountContractsLazyQuery({ variables: { owner: account } });
-  const [projectInfo, setProjectInfo] = useState<{ project: Project; projectInfo?: ProjectInfo }[]>();
+  const [getCollections, collections] = useAccountCollectionsLazyQuery({ variables: { owner: account } });
   const { name, avatar } = useENS(account);
   useEffect(() => {
     if (tab) setValue(Number(tab));
   }, [tab]);
 
   useEffect(() => {
-    if (value === 0) getContracts();
+    if (value === 0) getCollections();
     else if (value === 1) getProjects();
-    else if (value === 2) getTokens();
-  }, [getContracts, getProjects, getTokens, value]);
-
-  useEffect(() => {
-    const effect = async () => {
-      const proInfo = projects?.data
-        ? await Promise.all(
-            projects.data.projects.map(async (p) => {
-              const info = await getProjectInfo(p.contract.id, p.count);
-              return { project: p as Project, projectInfo: info ?? undefined };
-            })
-          )
-        : undefined;
-      setProjectInfo(proInfo);
-    };
-    effect();
-  }, [projects.data]);
+    else if (value === 2) getDonations();
+  }, [getCollections, getProjects, getDonations, value]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -64,14 +51,11 @@ const AccountPage: NextPage = () => {
           </Tabs>
           <div className="max-w-md flex flex-col space-y-4">
             {value === 0 &&
-              (contracts.loading ? <CircularProgress /> : contracts.data?.contracts.map((c, i) => <ContractObject title={c.id} key={i} />))}
+              (collections.loading ? <CircularProgress /> : collections.data?.collections.map((c, i) => <ContractObject title={c.id} key={i} />))}
             {value === 1 &&
-              (projects.loading || !projectInfo ? (
-                <CircularProgress />
-              ) : (
-                projectInfo && projectInfo.map((p, i) => <ProjectObject key={i} project={p.project} projectInfo={p.projectInfo} />)
-              ))}
-            {value === 2 && (tokens.loading ? <CircularProgress /> : tokens.data?.tokens.map((t, i) => <TokenObject key={i} token={t as Token} />))}
+              (projects.loading ? <CircularProgress /> : projects.data?.projects.map((p, i) => <ProjectObject key={i} project={p as Project} />))}
+            {value === 2 &&
+              (donations.loading ? <CircularProgress /> : donations.data?.donations.map((d, i) => <TokenObject key={i} token={d as Donation} />))}
           </div>
         </div>
       </Layout>

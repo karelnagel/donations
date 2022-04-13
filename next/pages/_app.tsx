@@ -5,10 +5,10 @@ import Head from "next/head";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../idk/apollo";
 import { Context, User } from "../idk/context";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import { Web3Provider } from "@ethersproject/providers";
 import { ThemeProvider } from "@mui/material/styles";
 import { materialTheme } from "../idk/materialTheme";
-import { Alert, AlertColor, Button, CircularProgress, IconButton, Modal, Snackbar } from "@mui/material";
+import { Alert, AlertColor, CircularProgress, IconButton, Snackbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const url = "https://ethdon.xyz";
   const image = `${url}/favicon.png`;
 
-  const [provider, setProvider] = useState<JsonRpcProvider>();
+  const [provider, setProvider] = useState<Web3Provider>();
   const [user, setUser] = useState<User>();
   const [snackBar, setSnackBar] = useState<{ message: string; severity: AlertColor }>();
   const [loading, setLoading] = useState("");

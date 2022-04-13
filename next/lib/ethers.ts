@@ -1,8 +1,8 @@
 import { ethers } from "ethers/";
-import { domain } from "../idk/config";
+import { network } from "../config";
 
 export async function getENS(address: string, provider?: ethers.providers.BaseProvider) {
-    if (!provider) provider = new ethers.providers.InfuraProvider(process.env.NEXT_PUBLIC_NETWORK, process.env.NEXT_PUBLIC_INFURA_ID)
+    if (!provider) provider = new ethers.providers.InfuraProvider(network.name, process.env.NEXT_PUBLIC_INFURA_ID)
 
     try {
         const name = await provider.lookupAddress(address) ?? undefined
@@ -13,7 +13,4 @@ export async function getENS(address: string, provider?: ethers.providers.BasePr
         console.log(e)
     }
     return {}
-}
-export function verifySignature(type: {}, data: {}, signature: string) {
-    return ethers.utils.verifyTypedData(domain, type, data, signature)
 }

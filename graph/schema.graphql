@@ -1,46 +1,48 @@
-type Title @entity{
-  id:ID!
-  title:Contract!
+type Title @entity {
+  id: ID!
+  collection: String!
 }
-type Contract @entity {
+type Collection @entity {
   id: ID! # title
   address: Bytes!
-  contractURI: String
-  projects: [Project!]! @derivedFrom(field: "contract")
-  lastProject:Int!
+  projects: [Project!]! @derivedFrom(field: "collection")
+  projectsCount: Int!
 
   time: BigInt!
-  owner: Account!
+  owner: String!
 }
 
 type Project @entity {
   id: ID! # title_p1
-  count: BigInt!
+  index: BigInt!
   donated: BigInt!
   donationCount: Int!
   coin: Bytes!
   active: Boolean!
-  contract: Contract!
-  tokens: [Token!]! @derivedFrom(field: "project")
+  ipfs: String!
 
-  owner: Account!
+  name: String!
+  description: String!
+  image: String!
+  goal: String!
+  url: String!
+  socials: [String!]!
+  donationOptions: [String!]!
+
+  collection: Collection!
+  donations: [Donation!]! @derivedFrom(field: "project")
+
+  owner: String!
   time: BigInt!
 }
 
-type Token @entity {
+type Donation @entity {
   id: ID! # title_t1
   amount: BigInt!
   message: String!
   project: Project!
-  tokenURI: String
+  originalOwner: String!
 
-  owner: Account!
+  owner: String!
   time: BigInt!
-}
-
-type Account @entity {
-  id: ID! # address
-  contracts: [Contract!]! @derivedFrom(field: "owner")
-  projects: [Project!]! @derivedFrom(field: "owner")
-  tokens: [Token!]! @derivedFrom(field: "owner")
 }

@@ -5,9 +5,7 @@ import Button from "@mui/material/Button";
 import Link from "next/link";
 import Image from "next/image";
 import { LatestProjectsDocument, LatestProjectsQueryResult, Project } from "../graphql/generated";
-import { ProjectInfo } from "../interfaces/ProjectInfo";
 import { apolloRequest } from "../idk/apollo";
-import { getProjectInfo } from "../lib/firestore";
 import { ProjectObject } from "../components/ProjectObject";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -15,14 +13,14 @@ import { faqs } from "../idk/faqs";
 import { crypto, nft, streamer } from "../idk/images";
 
 interface ProjectProps {
-  projects: { project?: Project; projectInfo?: ProjectInfo }[];
+  projects: Project[];
 }
 
 const Home: NextPage<ProjectProps> = ({ projects }) => {
   return (
     <Layout className="flex flex-col items-center space-y-4 ">
       <div className="relative w-full">
-        <div className="z-10 absolute text-white flex flex-col justify-center items-center w-full h-full">
+        <div className="z-[1] absolute text-white flex flex-col justify-center items-center w-full h-full">
           <h1 className="uppercase font-bold md:text-3xl mb-14 text-center text-xl">Crypto donations with NFTs for streamers</h1>
           <Link href={"/new"} passHref>
             <Button variant="contained" size="large">
@@ -75,7 +73,7 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
           <h2 className="text-center">Latest projects</h2>
           <div className="flex flex-col  space-y-4 max-w-screen-sm mx-auto my-10">
             {projects.map((p, i) => (
-              <ProjectObject project={p.project} projectInfo={p.projectInfo} key={i} />
+              <ProjectObject project={p} key={i} />
             ))}
           </div>
           <Link href={"/projects"} passHref>
@@ -107,14 +105,7 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
 
 export const getStaticProps: GetStaticProps<ProjectProps> = async () => {
   const result = await apolloRequest<LatestProjectsQueryResult>(LatestProjectsDocument, { first: 4 });
-  const projects = result.data
-    ? await Promise.all(
-        result.data.projects.map(async (p) => {
-          const info = await getProjectInfo(p.contract.id, p.count);
-          return { project: (p as Project) ?? undefined, projectInfo: info ?? undefined };
-        })
-      )
-    : [];
+  const projects = result.data?.projects ? result.data.projects.map((p) => p as Project) : [];
   return {
     props: {
       projects,
