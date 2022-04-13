@@ -90,7 +90,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
     <>
       <CustomHead name={project.name} description={project.description} image={getImage(project.image)} />
       <Layout>
-        <div className="fixed bottom-5 left-5 ">
+        <div className="fixed top-0 right-0 rounded-bl-2xl overflow-hidden">
           <NewDonation donation={newDonation} />
         </div>
         <div className="max-w-screen-md mx-auto text-center">
@@ -178,7 +178,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
                   Donate
                 </Button>
               </form>
-              {sameAddr(project.owner, user.address) && (
+              {sameAddr(project.collection.owner, user.address) && (
                 <>
                   <br />
                   <Button onClick={endPro} variant="outlined">

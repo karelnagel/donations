@@ -1,32 +1,39 @@
 import { useEffect, useState } from "react";
 import { Donation } from "../graphql/generated";
 import { coinName, toCoin } from "../idk/helpers";
-import { AccountObject } from "./AccountObject";
+import { getENS } from "../lib/ethers";
 
-export function NewDonation({ donation, onlyNew = true }: { donation?: Donation; onlyNew?: boolean }) {
-  const [visible, setVisible] = useState(true);
+export function NewDonation({ donation }: { donation?: Donation }) {
+  const [visible, setVisible] = useState(false);
+  const [name, setName] = useState<string>();
+  const [avatar, setAvatar] = useState<string>();
 
   useEffect(() => {
-    if (onlyNew) {
+    const effect = async () => {
       if (donation) {
+        const { name, avatar } = await getENS(donation.owner);
+        setName(name);
+        setAvatar(avatar);
         setVisible(true);
-        setTimeout(() => setVisible(false), 15000);
-      } else setVisible(true);
-    }
-  }, [donation, onlyNew]);
+        setTimeout(() => setVisible(false), 20000);
+      }
+    };
+    effect();
+  }, [donation]);
 
   return donation && visible ? (
     <div
       onClick={() => setVisible(false)}
-      className="cursor-pointer bg-blue-300 rounded-lg px-4 py-2 shadow-lg flex flex-col items-center max-w-screen-sm"
+      className="cursor-pointer bg-stream1 shadow-md flex items-center overflow-hidden space-x-10 uppercase font-bold text-lg pr-2 text-white"
     >
-      <div className="flex items-center space-x-1">
-        <AccountObject account={donation.owner} />
-        <p>
-          donated {toCoin(donation.amount)} {coinName(donation.project.coin)}
-        </p>
-      </div>
-      <p>{`"${donation.message}"`}</p>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img alt="" src={avatar} className="w-16 h-16" />
+
+      <p>{name}</p>
+      <p>
+        {toCoin(donation.amount)} {coinName(donation.project.coin)}
+      </p>
+      <p>{`'${donation.message}'`}</p>
     </div>
   ) : (
     <div></div>
