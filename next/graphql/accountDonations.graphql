@@ -7,6 +7,8 @@ query accountDonations($owner: String = "") {
     project {
       coin
       index
+      name
+      image
       collection {
         id
       }

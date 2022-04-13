@@ -796,7 +796,7 @@ export type AccountDonationsQueryVariables = Exact<{
 }>;
 
 
-export type AccountDonationsQuery = { __typename?: 'Query', donations: Array<{ __typename?: 'Donation', id: string, message: string, amount: any, owner: string, time: any, project: { __typename?: 'Project', coin: any, index: any, collection: { __typename?: 'Collection', id: string } } }> };
+export type AccountDonationsQuery = { __typename?: 'Query', donations: Array<{ __typename?: 'Donation', id: string, message: string, amount: any, owner: string, time: any, project: { __typename?: 'Project', coin: any, index: any, name: string, image: string, collection: { __typename?: 'Collection', id: string } } }> };
 
 export type AccountProjectsQueryVariables = Exact<{
   owner?: InputMaybe<Scalars['String']>;
@@ -901,6 +901,8 @@ export const AccountDonationsDocument = gql`
     project {
       coin
       index
+      name
+      image
       collection {
         id
       }

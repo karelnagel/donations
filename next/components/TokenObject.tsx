@@ -8,7 +8,7 @@ export function TokenObject({ token }: { token: Donation }) {
     <div className="w-full p-4 shadow-lg text-center rounded-lg cursor-pointer">
       <Link href={`/projects/${token.project.collection.id}/${token.project.index}`} passHref>
         <p>
-          Donated {toCoin(token.amount)} {coinName(token.project.coin)} to {token.project.collection.id}, with message {`"${token.message}"`}
+          Donated {toCoin(token.amount)} {coinName(token.project.coin)} to {token.project.name}, with message {`"${token.message}"`}
         </p>
       </Link>
     </div>

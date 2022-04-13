@@ -11,6 +11,7 @@ import { AccountObject } from "../../../components/AccountObject";
 import { sameAddr } from "../../../idk/helpers";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { network } from "../../../config";
 
 interface Params extends ParsedUrlQuery {
   title: string;
@@ -32,8 +33,13 @@ const ContractPage: NextPage<ContractProps> = ({ collection }) => {
             <AccountObject account={collection.owner} />
           </span>
 
-          <Button>etherscan</Button>
-          <Button>opensea</Button>
+          <Link href={`${network.etherscan}${collection.address}`} passHref>
+            <Button>etherscan</Button>
+          </Link>
+
+          <Link href={`${network.opensea}${collection.address}/1`} passHref>
+            <Button>opensea</Button>
+          </Link>
           {sameAddr(user?.address, collection.owner) && (
             <Link href={`/collections/${collection.id}/new`} passHref>
               <Button>Start new project </Button>

@@ -28,5 +28,5 @@ export const sameAddr = (address1?: string, address2?: string) => {
 export const coinName = (address?:string) => network.coins.find((c) => sameAddr(c.address, address))?.coin ?? "ERC20";
 
 export function getImage(hash:string){
-  return `${network.ipfsGateway}/${hash}`
+  return `${network.ipfsGateway}${hash}`
 }
