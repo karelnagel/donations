@@ -1,12 +1,15 @@
-import { ethers } from "hardhat";
+import { ethers, upgrades } from "hardhat";
 
-const url = "https://ethdon.xyz/api/tokens/"
+const url = "https://ethdon.xyz/api/tokens/";
 async function main() {
   const Contract = await ethers.getContractFactory("Factory");
-  const contract = await Contract.deploy(url);
+
+  const contract = await upgrades.deployProxy(Contract, [url], {
+    kind: "uups",
+  });
   await contract.deployed();
 
-  console.log(`CONTRACT=${contract.address} URL=${url} yarn verify`);
+  console.log(`CONTRACT=${contract.address} yarn verify`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

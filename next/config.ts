@@ -4,7 +4,7 @@ export const networks = [
     {
         name: "rinkeby",
         chainId: 4,
-        factory: "0x2282C2D11917b157e6a75B1dA3F58D8264c6Dc87",
+        factory: "0x5eF79CA6a5D3908CA9B7432b96367335E815A25F",
         graph: "https://api.thegraph.com/subgraphs/name/karelnagel/ethdon-dev",
         graphIpfs: "https://api.thegraph.com/ipfs/api/v0/",
         ipfsGateway: "https://ipfs.io/ipfs/",

@@ -1,19 +1,32 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.2;
+pragma solidity ^0.8.13;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Collection.sol";
 
-contract Factory is Ownable {
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+
+contract Factory is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     using Strings for uint256;
 
     mapping(string => address) public collections;
     string private _uri;
 
-    constructor(string memory uri) {
+    function initialize(string memory uri) initializer public {
+        __Ownable_init();
+        __UUPSUpgradeable_init();
+        
         _uri = uri;
         emit SetURI(uri);
     }
+
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        onlyOwner
+        override
+    {}
 
     function newCollection(
         string memory title,
