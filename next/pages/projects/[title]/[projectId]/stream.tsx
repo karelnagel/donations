@@ -2,13 +2,14 @@ import { useRouter } from "next/router";
 import { NewDonation } from "../../../../components/NexDonation";
 import useProject from "../../../../hooks/useProject";
 import Image from "next/image";
-import { coinName, getImage, toCoin, toWei } from "../../../../idk/helpers";
+import { coinName, getImage, toCoin, toWeiStr } from "../../../../idk/helpers";
 import { Donation } from "../../../../graphql/generated";
 export default function Stream() {
   const { title, projectId, left } = useRouter().query;
 
   const { project, newDonation } = useProject(title?.toString(), projectId?.toString());
-  const donationPercent = project?.donated && project?.goal ? (Number(toCoin(project.donated)) / Number(toCoin(project.goal))) * 100 : 0;
+  const donationPercent =
+    project?.donated && project?.goal ? (Number(toCoin(project.donated, project.coin)) / Number(toCoin(project.goal, project.coin))) * 100 : 0;
 
   if (!project) return <div></div>;
   return (
@@ -16,11 +17,12 @@ export default function Stream() {
       <div className={`${left ? "rounded-br-2xl" : "rounded-bl-2xl"} overflow-hidden`}>
         <NewDonation
           donation={
-            newDonation ?? ({ amount: toWei("100"), message: "hello", owner: "0xF4ABa5431B0A26E15FC50Ca03264011e8d86EaB9", project } as Donation)
+            newDonation ??
+            ({ amount: toWeiStr("100", project.coin), message: "hello", owner: "0xF4ABa5431B0A26E15FC50Ca03264011e8d86EaB9", project } as Donation)
           }
         />
       </div>
-      <div className={`bg-stream1 h-16 flex overflow-hidden shadow-lg ${left ?"rounded-tr-2xl" : "rounded-tl-2xl"}`}>
+      <div className={`bg-stream1 h-16 flex overflow-hidden shadow-lg ${left ? "rounded-tr-2xl" : "rounded-tl-2xl"}`}>
         <div className="relative h-16 w-16 object-cover">
           <Image src={getImage(project.image)} alt="" layout="fill" />
         </div>
@@ -28,7 +30,7 @@ export default function Stream() {
           <div className="absolute left-0 w-[90%] h-full bg-stream2 shadow-md" style={{ width: `${donationPercent ?? "0"}%` }}></div>
           <p className="relative">{project.name}</p>
           <p className="relative">
-            {toCoin(project.donated).split(".")[0]} / {toCoin(project.goal).split(".")[0]} {coinName(project.coin)}
+            {toCoin(project.donated, project.coin).split(".")[0]} / {toCoin(project.goal, project.coin).split(".")[0]} {coinName(project.coin)}
           </p>
         </div>
       </div>
