@@ -26,10 +26,10 @@ export default function useWeb3Modal() {
                     package: WalletConnectProvider,
                     options: {
                         infuraId: process.env.NEXT_PUBLIC_INFURA_ID,
-                        // rpc: {
-                        //     137: "https://polygon-mainnet.infura.io/v3/1fa1025d0ae7412f93785bb01b7bc589",
-                        // },
-                        // network: "matic"
+                        rpc: {
+                            137: `https://polygon-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_ID}`,
+                        },
+                        network: "matic"
                     }
                 }
             }
