@@ -16,7 +16,6 @@ export const networks = [
             { coin: "USDT", address: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F", decimals: 6 },
             { coin: "USDC", address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", decimals: 6 },
             { coin: "WBTC", address: "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6", decimals: 8 },
-            { coin: "MATIC", address: "0x0000000000000000000000000000000000001010", decimals: 18 },
             { coin: "DAI", address: "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063", decimals: 18 },
             { coin: "LINK", address: "0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39", decimals: 18 },
             { coin: "UNI", address: "0xb33EaAd8d922B1083446DC23f610c2567fB5180f", decimals: 18 },
