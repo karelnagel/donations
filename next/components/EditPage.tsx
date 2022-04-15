@@ -6,7 +6,7 @@ import Layout from "./Layout";
 import { MenuItem } from "@mui/material";
 import { Context } from "../idk/context";
 import { useRouter } from "next/router";
-import { getProjectId, sameAddr, toCoin, toWei } from "../idk/helpers";
+import { getProjectId, sameAddr, toCoin, toWeiStr } from "../idk/helpers";
 import { Project, useCollectionLazyQuery, useCollectionListLazyQuery, useProjectLazyQuery } from "../graphql/generated";
 import { ipfsUpload } from "../lib/ipfs";
 import { network } from "../config";
@@ -156,8 +156,8 @@ const EditPage = ({
             <TextField
               type="number"
               label="Project goal"
-              value={toCoin(project.goal)}
-              onChange={(e) => setProject((p) => ({ ...p, goal: toWei(e.target.value) }))}
+              value={toCoin(project.goal, project.coin)}
+              onChange={(e) => setProject((p) => ({ ...p, goal: toWeiStr(e.target.value, project.coin) }))}
             />
             <TextField
               type="text"
@@ -186,10 +186,13 @@ const EditPage = ({
                     key={i}
                     type="number"
                     label={`Option ${i + 1}`}
-                    value={toCoin(d)}
+                    value={toCoin(d, project.coin)}
                     required
                     onChange={(e) =>
-                      setProject((p) => ({ ...p, donationOptions: [...p.donationOptions.map((d2, i2) => (i2 === i ? toWei(e.target.value) : d2))] }))
+                      setProject((p) => ({
+                        ...p,
+                        donationOptions: [...p.donationOptions.map((d2, i2) => (i2 === i ? toWeiStr(e.target.value, project.coin) : d2))],
+                      }))
                     }
                   />
                 ))}

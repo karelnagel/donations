@@ -31,7 +31,7 @@ export function NewDonation({ donation }: { donation?: Donation }) {
 
       <p>{name}</p>
       <p>
-        {toCoin(donation.amount)} {coinName(donation.project.coin)}
+        {toCoin(donation.amount,donation.project.coin)} {coinName(donation.project.coin)}
       </p>
       <p>{`'${donation.message}'`}</p>
     </div>

@@ -5,9 +5,8 @@ import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { CustomHead } from "../../../../components/CustomHead";
 import Layout from "../../../../components/Layout";
-import { coinName, getImage, getProjectId, sameAddr, toCoin } from "../../../../idk/helpers";
+import { coinName, getImage, getProjectId, sameAddr, toCoin, toWei } from "../../../../idk/helpers";
 import useChain from "../../../../hooks/useChain";
-import { ethers } from "ethers";
 import useBalance from "../../../../hooks/useBalance";
 import useProject from "../../../../hooks/useProject";
 import { Button, Chip, InputAdornment, TextField } from "@mui/material";
@@ -49,16 +48,16 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
   const { balance } = useBalance(project?.coin);
 
   const donationOptions = [
-    toCoin(project?.donationOptions[0] ?? "0"),
-    toCoin(project?.donationOptions[1] ?? "0"),
-    toCoin(project?.donationOptions[2] ?? "0"),
-    toCoin(balance.toString()),
+    toCoin(project?.donationOptions[0] ?? "0", project?.coin),
+    toCoin(project?.donationOptions[1] ?? "0", project?.coin),
+    toCoin(project?.donationOptions[2] ?? "0", project?.coin),
+    toCoin(balance.toString(), project?.coin),
   ];
 
   const makeDonation = async (e: any) => {
     e.preventDefault();
     load!(async () => {
-      const amountInWei = ethers.utils.parseEther(amount);
+      const amountInWei = toWei(amount, project?.coin);
 
       const allowance = await getAllowance();
       if (amountInWei.gt(balance)) {
@@ -160,8 +159,8 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
                   type="number"
                   label="How much you want to donate?"
                   id="filled-start-adornment"
-                  error={amount ? ethers.utils.parseEther(amount).gt(balance) : false}
-                  helperText={amount && ethers.utils.parseEther(amount).gt(balance) ? "Balance too low" : ""}
+                  error={amount ? toWei(amount, project?.coin).gt(balance) : false}
+                  helperText={amount && toWei(amount, project?.coin).gt(balance) ? "Balance too low" : ""}
                   value={amount}
                   InputProps={{
                     endAdornment: <InputAdornment position="end">{coinName(project.coin)}</InputAdornment>,

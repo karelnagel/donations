@@ -3,6 +3,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prepare:rinkeby": "mustache networks/rinkeby.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:matic": "mustache networks/matic.json subgraph.template.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph codegen && graph build",
     "deploy:main": "graph deploy --product hosted-service karelnagel/ethdon",

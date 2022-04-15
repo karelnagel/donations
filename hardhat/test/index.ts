@@ -1,10 +1,10 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { BigNumber } from "ethers";
-import { ethers } from "hardhat";
-import { Factory, USDC, Collection } from "../typechain";
+import { ethers, upgrades } from "hardhat";
+import { USDC, Collection } from "../typechain";
 
-let factory: Factory;
+let factory: any;
 let collection: Collection;
 let usdc: USDC;
 
@@ -13,15 +13,15 @@ let acc2: SignerWithAddress;
 let acc3: SignerWithAddress;
 
 const donation = ethers.utils.parseEther("100");
-const url = "https://ethdon.xyz/api/tokens/"
+const url = "https://ethdon.xyz/api/tokens/";
 
 before("Start", async function () {
   // Getting accounts
   [acc1, acc2, acc3] = await ethers.getSigners();
 
   // Deploy contract
-  const Contract = await ethers.getContractFactory("Factory");
-  factory = await Contract.deploy(url);
+  const Factory = await ethers.getContractFactory("Factory");
+  factory = await upgrades.deployProxy(Factory, [url], { kind: "uups" });
   await factory.deployed();
 
   // Deploy usdc
@@ -32,11 +32,18 @@ before("Start", async function () {
 
 describe("Start project", function () {
   it("emits an event", async function () {
-    expect(await factory.newCollection("my_collection", usdc.address, acc2.address, "my_project_ipfs"))
+    expect(
+      await factory.newCollection(
+        "my_collection",
+        usdc.address,
+        acc2.address,
+        "my_project_ipfs"
+      )
+    )
       .to.emit(factory, "NewCollection")
       .withArgs(
         "my_collection",
-        "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be",
+        "0xCafac3dD18aC6c6e92c921884f9E4176737C052c",
         acc1.address,
         "0x663F3ad617193148711d28f5334eE4Ed07016602",
         acc2.address,
@@ -52,12 +59,8 @@ describe("Start project", function () {
 
     expect(await collection.title()).to.equal("my_collection");
     expect(await collection.owner()).to.equal(acc1.address);
-    expect(await collection.tokenURI(1)).to.equal(
-      `${url}my_collection/1`
-    );
-    expect(await collection.contractURI()).to.equal(
-      `${url}my_collection`
-    );
+    expect(await collection.tokenURI(1)).to.equal(`${url}my_collection/1`);
+    expect(await collection.contractURI()).to.equal(`${url}my_collection`);
 
     const project = await collection.projects(1);
     expect(project.coin).to.equal(usdc.address);
@@ -68,7 +71,12 @@ describe("Start project", function () {
 
   it("can't create a new project with same title", async function () {
     await expect(
-      factory.newCollection("my_collection", usdc.address, acc2.address, "my_project2_ipfs")
+      factory.newCollection(
+        "my_collection",
+        usdc.address,
+        acc2.address,
+        "my_project2_ipfs"
+      )
     ).to.be.revertedWith("Title already exists");
   });
 });
@@ -81,7 +89,9 @@ describe("Edit uri", function () {
   });
   it("parameters changed", async function () {
     const uri2 = "https://twitter.com/";
-    await expect(factory.setURI(uri2)).to.emit(factory, "SetURI").withArgs(uri2);
+    await expect(factory.setURI(uri2))
+      .to.emit(factory, "SetURI")
+      .withArgs(uri2);
     expect(await factory.getContractURI("title")).to.equal(`${uri2}title`);
     expect(await factory.getTokenURI("title", 5)).to.equal(`${uri2}title/5`);
     expect(await collection.tokenURI(1)).to.equal(uri2 + "my_collection/1");
@@ -90,14 +100,16 @@ describe("Edit uri", function () {
 });
 
 describe("Edit project ipfs", function () {
-  const ipfs2 = "my_project_ipfs2"
+  const ipfs2 = "my_project_ipfs2";
   it("not owners can't edit", async function () {
-    await expect(
-      collection.connect(acc2).setIPFS(1,ipfs2)
-    ).to.be.revertedWith("caller is not the owner");
+    await expect(collection.connect(acc2).setIPFS(1, ipfs2)).to.be.revertedWith(
+      "caller is not the owner"
+    );
   });
   it("parameters changed", async function () {
-    await expect(collection.setIPFS(1,ipfs2)).to.emit(collection, "SetIPFS").withArgs(1,ipfs2);
+    await expect(collection.setIPFS(1, ipfs2))
+      .to.emit(collection, "SetIPFS")
+      .withArgs(1, ipfs2);
     expect((await collection.projects(1)).ipfs).to.equal(ipfs2);
   });
 });
@@ -119,15 +131,17 @@ const Donate = (id: number, projectId: number) => {
       ).to.be.revertedWith("Donation amount is 0");
     });
 
-    it("fails if not enough coins", async function () {
+    it("fails if not allowed", async function () {
       await expect(
         collection.donate(projectId, donation, message)
-      ).to.be.revertedWith("transfer amount exceeds balance");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
     });
 
     it("successful donation", async function () {
       await usdc.connect(acc3).approve(collection.address, donation);
-      expect(await collection.connect(acc3).donate(projectId, donation, message))
+      expect(
+        await collection.connect(acc3).donate(projectId, donation, message)
+      )
         .to.emit(collection, "NewDonation")
         .withArgs(
           id.toString(),
@@ -156,7 +170,13 @@ Donate(1, 1);
 
 describe("New project", async function () {
   it("emits event", async function () {
-    expect(await collection.newProject(usdc.address, acc2.address, "my_project2_ipfs"))
+    expect(
+      await collection.newProject(
+        usdc.address,
+        acc2.address,
+        "my_project2_ipfs"
+      )
+    )
       .to.emit(collection, "NewProject")
       .withArgs(2, usdc.address, acc2.address, "my_project2_ipfs");
   });
@@ -175,19 +195,16 @@ Donate(4, 1);
 
 describe("acc2 ending project 1", async function () {
   const id = 1;
-  let userBalance: BigNumber;
-  let tokenBalance: BigNumber;
-
-  before(async function () {
-    userBalance = await usdc.balanceOf(acc2.address);
-    tokenBalance = await usdc.balanceOf(collection.address);
-  });
 
   it("acc3 cant end", async function () {
-    expect(collection.connect(acc3).end(id)).to.be.revertedWith("Ownable: caller is not the owner");
+    expect(collection.connect(acc3).end(id)).to.be.revertedWith(
+      "Ownable: caller is not the owner"
+    );
   });
   it("acc2 cant end", async function () {
-    expect(collection.connect(acc2).end(id)).to.be.revertedWith("Ownable: caller is not the owner");
+    expect(collection.connect(acc2).end(id)).to.be.revertedWith(
+      "Ownable: caller is not the owner"
+    );
   });
   it("success", async function () {
     expect(await collection.connect(acc1).end(id))
@@ -205,24 +222,22 @@ describe("acc2 ending project 1", async function () {
       "Project not active!"
     );
   });
-  
 });
 
 Donate(5, 2);
 
 describe("acc1 ending project 2", async function () {
   const id = 2;
-  let userBalance: BigNumber;
-
-  before(async function () {
-    userBalance = await usdc.balanceOf(acc2.address);
-  });
 
   it("acc3 cant end", async function () {
-    expect(collection.connect(acc3).end(id)).to.be.revertedWith("Ownable: caller is not the owner");
+    expect(collection.connect(acc3).end(id)).to.be.revertedWith(
+      "Ownable: caller is not the owner"
+    );
   });
   it("acc2 cant end", async function () {
-    expect(collection.connect(acc2).end(id)).to.be.revertedWith("Ownable: caller is not the owner");
+    expect(collection.connect(acc2).end(id)).to.be.revertedWith(
+      "Ownable: caller is not the owner"
+    );
   });
   it("success", async function () {
     expect(await collection.connect(acc1).end(id))

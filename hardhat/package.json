@@ -1,7 +1,7 @@
 {
   "name": "hardhat-project",
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.4",
+    "@nomiclabs/hardhat-ethers": "^2.0.5",
     "@nomiclabs/hardhat-etherscan": "^2.1.8",
     "@nomiclabs/hardhat-waffle": "^2.0.2",
     "@typechain/ethers-v5": "^7.2.0",
@@ -21,7 +21,7 @@
     "eslint-plugin-prettier": "^3.4.1",
     "eslint-plugin-promise": "^5.2.0",
     "ethereum-waffle": "^3.4.0",
-    "ethers": "^5.5.4",
+    "ethers": "^5.6.3",
     "hardhat": "^2.8.3",
     "hardhat-gas-reporter": "^1.0.7",
     "prettier": "^2.5.1",
@@ -33,7 +33,10 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.4.2"
+    "@openzeppelin/contracts": "^4.4.2",
+    "@openzeppelin/contracts-upgradeable": "^4.5.2",
+    "@openzeppelin/hardhat-upgrades": "^1.17.0",
+    "truffle": "^5.5.10"
   },
   "scripts": {
     "start": "npx hardhat node",
@@ -41,7 +44,8 @@
     "test": "npx hardhat test",
     "dashboard": "truffle dashboard",
     "deploy": "npx hardhat run --network dashboard scripts/deploy.ts",
-    "verify": "npx hardhat verify --network dashboard \"$CONTRACT\" \"$URL\"",
+    "deploy-upgrade": "npx hardhat run --network dashboard scripts/upgrade.ts",
+    "verify": "npx hardhat verify --network dashboard \"$CONTRACT\" ",
     "localhost": "npx hardhat run --network localhost scripts/deploy.ts",
     "rinkeby": "npx hardhat run --network rinkeby scripts/deploy.ts",
     "verify-rinkeby": "npx hardhat verify --network rinkeby \"$CONTRACT\""
