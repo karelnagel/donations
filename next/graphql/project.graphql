@@ -7,7 +7,7 @@ query project($id: ID = "") {
     coin
     time
     id
-    owner 
+    owner
     name
     description
     image
@@ -19,6 +19,16 @@ query project($id: ID = "") {
       id
       address
       owner
+    }
+    donations(first: 1, orderBy: time, orderDirection: desc) {
+      id
+      message
+      owner
+      amount
+      time
+      project {
+        coin
+      }
     }
   }
 }

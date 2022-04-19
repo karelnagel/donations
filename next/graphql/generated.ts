@@ -830,14 +830,14 @@ export type LatestProjectsQueryVariables = Exact<{
 }>;
 
 
-export type LatestProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', donated: any, time: any, index: any, coin: any, active: boolean, name: string, description: string, image: string, goal: string, owner: string, collection: { __typename?: 'Collection', id: string } }> };
+export type LatestProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', donated: any, time: any, index: any, coin: any, active: boolean, name: string, description: string, image: string, goal: string, donationCount: number, owner: string, collection: { __typename?: 'Collection', id: string } }> };
 
 export type ProjectQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', donated: any, donationCount: number, index: any, active: boolean, coin: any, time: any, id: string, owner: string, name: string, description: string, image: string, url: string, goal: string, socials: Array<string>, donationOptions: Array<string>, collection: { __typename?: 'Collection', id: string, address: any, owner: string } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', donated: any, donationCount: number, index: any, active: boolean, coin: any, time: any, id: string, owner: string, name: string, description: string, image: string, url: string, goal: string, socials: Array<string>, donationOptions: Array<string>, collection: { __typename?: 'Collection', id: string, address: any, owner: string }, donations: Array<{ __typename?: 'Donation', id: string, message: string, owner: string, amount: any, time: any, project: { __typename?: 'Project', coin: any } }> } | null };
 
 export type ProjectListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1143,6 +1143,7 @@ export const LatestProjectsDocument = gql`
     description
     image
     goal
+    donationCount
     collection {
       id
     }
@@ -1200,6 +1201,16 @@ export const ProjectDocument = gql`
       id
       address
       owner
+    }
+    donations(first: 1, orderBy: time, orderDirection: desc) {
+      id
+      message
+      owner
+      amount
+      time
+      project {
+        coin
+      }
     }
   }
 }

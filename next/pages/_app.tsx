@@ -71,7 +71,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             </Snackbar>
             <div className={`${loading ? "" : "hidden"} fixed top-0 w-full h-full flex justify-center items-center bg-opacity-50 bg-black z-10`}>
               <div className="bg-white rounded-lg p-10 flex flex-col items-center max-w-md relative">
-                <IconButton aria-label="close" onClick={() => setLoading("")} className="absolute right-0 top-0">
+                <IconButton aria-label="close" onClick={() => setLoading("")} className="!absolute right-0 top-0">
                   <CloseIcon />
                 </IconButton>
                 <CircularProgress />
