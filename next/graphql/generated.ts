@@ -1128,7 +1128,12 @@ export type DonationLazyQueryHookResult = ReturnType<typeof useDonationLazyQuery
 export type DonationQueryResult = Apollo.QueryResult<DonationQuery, DonationQueryVariables>;
 export const LatestProjectsDocument = gql`
     query latestProjects($first: Int = 10) {
-  projects(first: $first, orderBy: time, orderDirection: desc) {
+  projects(
+    first: $first
+    orderBy: time
+    orderDirection: desc
+    where: {active: true}
+  ) {
     donated
     time
     index
