@@ -82,7 +82,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
       const error2 = await donate(amountInWei, message);
       if (error2) return setSnack!(error2);
       setSnack!("Donation was successful", "success");
-      setTokenId("loading");
+      setTokenId(t=>t??"loading");
     }, "Making donation! \n\nThis will take 2 transactions: \n1. for approving spending the coins  \n2. for donating. \n\nPlease continue to your wallet!");
   };
 
