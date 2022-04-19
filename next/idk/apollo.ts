@@ -6,6 +6,6 @@ export const client = new ApolloClient({
     cache: new InMemoryCache(),
 });
 export async function apolloRequest<Type extends QueryResult>(query: DocumentNode, variables?: {}): Promise<Type> {
-    const result = (await client.query({ query, variables })) as Type;
+    const result = (await client.query({ query, variables, fetchPolicy: "no-cache" })) as Type;
     return result;
 }
