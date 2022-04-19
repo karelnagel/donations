@@ -29,7 +29,7 @@ export function NewDonation({ donation }: { donation?: Donation }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       {avatar && <img alt="" src={avatar} className="w-16 h-16" />}
 
-      <p>{name ?? short(donation.owner)}</p>
+      <p className="my-4 ml-4">{name ?? short(donation.owner)}</p>
       <p>
         {toCoin(donation.amount, donation.project.coin)} {coinName(donation.project.coin)}
       </p>
