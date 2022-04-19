@@ -7,7 +7,7 @@ import { Donation } from "../../../../graphql/generated";
 export default function Stream() {
   const { title, projectId, left } = useRouter().query;
 
-  const { project, newDonation } = useProject(title?.toString(), projectId?.toString());
+  const { project, lastDonation } = useProject(title?.toString()!, projectId?.toString()!, null);
   const donationPercent =
     project?.donated && project?.goal ? (Number(toCoin(project.donated, project.coin)) / Number(toCoin(project.goal, project.coin))) * 100 : 0;
 
@@ -17,7 +17,7 @@ export default function Stream() {
       <div className={`${left ? "rounded-br-2xl" : "rounded-bl-2xl"} overflow-hidden`}>
         <NewDonation
           donation={
-            newDonation ??
+            lastDonation ??
             ({ amount: toWeiStr("100", project.coin), message: "hello", owner: "0xF4ABa5431B0A26E15FC50Ca03264011e8d86EaB9", project } as Donation)
           }
         />

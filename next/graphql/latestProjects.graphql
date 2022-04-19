@@ -14,6 +14,7 @@ query latestProjects($first: Int = 10) {
     description
     image
     goal
+    donationCount
     collection {
       id
     }

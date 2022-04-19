@@ -35,17 +35,19 @@ interface ProjectProps {
 }
 const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId }) => {
   const router = useRouter();
-  const { project, newDonation } = useProject(title, projectId, initialProject!);
+  const { project, lastDonation } = useProject(title, projectId, initialProject);
   const { user, setSnack, load } = useContext(Context);
+
+  const [amount, setAmount] = useState("");
+  const [message, setMessage] = useState("");
+  const [active, setActive] = useState(project?.active!);
+
+  const { balance } = useBalance(project?.coin);
   const { donate, end, getAllowance, approve } = useChain({
     contractAddress: project?.collection.address,
     projectId: project?.index,
     coinAddress: project?.coin,
   });
-  const [amount, setAmount] = useState("");
-  const [message, setMessage] = useState("");
-  const [active, setActive] = useState(project?.active!);
-  const { balance } = useBalance(project?.coin);
 
   const donationOptions = [
     toCoin(project?.donationOptions[0] ?? "0", project?.coin),
@@ -90,7 +92,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
       <CustomHead name={project.name} description={project.description} image={getImage(project.image)} />
       <Layout>
         <div className="fixed top-0 right-0 rounded-bl-2xl overflow-hidden">
-          <NewDonation donation={newDonation} />
+          <NewDonation donation={lastDonation} />
         </div>
         <div className="max-w-screen-md mx-auto text-center">
           <h1 className="mt-20 mb-10 text-2xl uppercase font-bold">{project.name}</h1>
@@ -202,7 +204,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
               )}
             </div>
           ) : (
-            <p className="my-10 uppercase font-bold text-lg">{user ? "Connect your wallet to make a donation" : "Project is not active"}</p>
+            <p className="my-10 uppercase font-bold text-lg">{!user ? "Connect your wallet to make a donation" : "Project is not active"}</p>
           )}
         </div>
       </Layout>

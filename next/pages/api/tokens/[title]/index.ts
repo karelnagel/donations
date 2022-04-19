@@ -11,6 +11,7 @@ export default async function contractMeta(
   const { title } = req.query as { title: string }
 
   const projectRequest = await apolloRequest<ProjectQueryResult>(ProjectDocument, { id: getProjectId(title, "1") })
+  console.log(projectRequest)
   const project = projectRequest.data?.project;
   if (!project) return res.status(404).json({ error: " no contract" })
 

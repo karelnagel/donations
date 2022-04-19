@@ -1,59 +1,27 @@
-import { useContext, useEffect, useState } from "react";
-import { Donation, Project, ProjectDocument, ProjectQueryResult } from "../graphql/generated";
-import { Context } from "../idk/context";
-import { BigNumber, Contract, ethers } from "ethers";
-import { apolloRequest } from "../idk/apollo";
+import { useEffect, useState } from "react";
+import { Donation, Project, useProjectQuery } from "../graphql/generated";
 import { getProjectId } from "../idk/helpers";
-import { contractAbi } from "./useChain";
-import { network } from "../config";
 
-export default function useProject(title?: string, projectId?: string, initialProject?: Project) {
+export default function useProject(title: string, projectId: string, initialProject: Project | null) {
     const [project, setProject] = useState(initialProject);
-    const [newDonation, setNewDonation] = useState<Donation>();
-    const { provider: userProvider } = useContext(Context);
 
+    const [lastDonationId, setLastDonationId] = useState("");
+    const [lastDonation, setLastDonation] = useState<Donation>();
+    const { data, networkStatus } = useProjectQuery({ variables: { id: getProjectId(title!, projectId!) }, pollInterval: 1000 });
 
     useEffect(() => {
-        async function effect() {
-            if (projectId && title) {
-                const result = await apolloRequest<ProjectQueryResult>(ProjectDocument, { id: getProjectId(title, projectId) })
-                const pro = result.data?.project
-                if (pro) setProject(pro as Project)
+        console.log("network status:", networkStatus)
+        if (data?.project) {
+
+            setProject(data.project as Project);
+            if (data.project.donations[0]) {
+                if (lastDonationId && data.project.donations[0].id !== lastDonationId) setLastDonation(data.project.donations[0] as Donation);
+                setLastDonationId(data.project.donations[0].id);
             }
         }
-        effect()
-    }, [projectId, title])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data?.project]);
 
-    useEffect(() => {
-        if (project?.collection.address && projectId && title) {
-            const provider = userProvider ?? new ethers.providers.InfuraProvider(network.name, process.env.NEXT_PUBLIC_INFURA_ID)
 
-            const contract = new Contract(project.collection.address, contractAbi, provider)
-            const filter = contract.filters.NewDonation();
-            contract.on(filter, (id: BigNumber, proId: BigNumber, owner: string, amount: BigNumber, message: string) => {
-                console.log(owner, amount, message, id, proId);
-                const newToken: Donation = {
-                    amount: amount.toString(),
-                    message,
-                    owner,
-                    originalOwner: owner,
-                    time: new Date(),
-                    project: { coin: project.coin } as Project,
-                    id: ""
-                }
-                setNewDonation(newToken)
-                setProject((p) => p ? ({
-                    ...p,
-                    donated: BigNumber.from(p.donated).add(amount).toString(),
-                    donationCount: p.donationCount + 1,
-                }) : p)
-            });
-
-            return () => {
-                contract.removeAllListeners()
-            };
-        }
-    }, [project?.coin, project?.collection.address, projectId, title, userProvider]);
-
-    return { project, newDonation }
+    return { project, lastDonation }
 }
