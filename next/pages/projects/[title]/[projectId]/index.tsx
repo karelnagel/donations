@@ -42,7 +42,6 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
 
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
-  const [active, setActive] = useState(project?.active!);
   const [tokenId, setTokenId] = useState("");
 
   const { balance } = useBalance(project?.coin);
@@ -93,7 +92,6 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
       if (error) return setSnack!(error);
 
       setSnack!("Ended project successfully!", "success");
-      setActive(false);
     }, "Ending project! Please continue to your wallet!");
   };
 
@@ -179,7 +177,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
 
           <ProgresssBar project={project} />
           <br />
-          {user && active ? (
+          {user && project.active ? (
             <div className="mb-20">
               <h2 className="my-6 text-lg font-bold">Make a donation to {project.name}</h2>
               <form onSubmit={makeDonation} className="flex-col flex max-w-xs mx-auto space-y-2">

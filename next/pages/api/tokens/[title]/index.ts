@@ -19,7 +19,7 @@ export default async function contractMeta(
     name: project.name,
     description: project.description,
     external_link: project.url,
-    seller_fee_basis_points: 10,
+    seller_fee_basis_points: 750,
     fee_recipient: project.collection.owner,
     image: getImage(project.image)
   }
