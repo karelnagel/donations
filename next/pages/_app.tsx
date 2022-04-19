@@ -9,7 +9,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import { ThemeProvider } from "@mui/material/styles";
 import { materialTheme } from "../idk/materialTheme";
 import { Alert, AlertColor, CircularProgress, IconButton, Snackbar } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import Modal from "../components/Modal";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const name = "Ethereum donations";
@@ -69,15 +69,10 @@ function MyApp({ Component, pageProps }: AppProps) {
                 {snackBar?.message}
               </Alert>
             </Snackbar>
-            <div className={`${loading ? "" : "hidden"} fixed top-0 w-full h-full flex justify-center items-center bg-opacity-50 bg-black z-10`}>
-              <div className="bg-white rounded-lg p-10 flex flex-col items-center max-w-md relative">
-                <IconButton aria-label="close" onClick={() => setLoading("")} className="!absolute right-0 top-0">
-                  <CloseIcon />
-                </IconButton>
-                <CircularProgress />
-                <p className="whitespace-pre-line mt-6 text-md font-bold">{loading}</p>
-              </div>
-            </div>
+            <Modal visible={!!loading} onClose={() => setLoading("")}>
+              <p className="whitespace-pre-line mb-6 text-md font-bold">{loading}</p>
+              <CircularProgress />
+            </Modal>
           </ThemeProvider>
         </ApolloProvider>
       </Context.Provider>

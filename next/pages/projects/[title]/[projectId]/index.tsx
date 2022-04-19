@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { apolloRequest } from "../../../../idk/apollo";
 import { ProjectDocument, ProjectQueryResult, Project, ProjectListDocument, ProjectListQueryResult } from "../../../../graphql/generated";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
@@ -9,7 +9,7 @@ import { coinName, getImage, getProjectId, sameAddr, toCoin, toWei } from "../..
 import useChain from "../../../../hooks/useChain";
 import useBalance from "../../../../hooks/useBalance";
 import useProject from "../../../../hooks/useProject";
-import { Button, Chip, InputAdornment, TextField } from "@mui/material";
+import { Button, Chip, CircularProgress, InputAdornment, TextField } from "@mui/material";
 import Image from "next/image";
 import { AccountObject } from "../../../../components/AccountObject";
 import TwitterIcon from "@mui/icons-material/Twitter";
@@ -23,6 +23,8 @@ import { ProgresssBar } from "../../../../components/ProgressBar";
 import { NewDonation } from "../../../../components/NexDonation";
 import { ContractObject } from "../../../../components/ContractObject";
 import Link from "next/link";
+import Modal from "../../../../components/Modal";
+import { network } from "../../../../config";
 
 interface Params extends ParsedUrlQuery {
   title: string;
@@ -41,6 +43,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
   const [active, setActive] = useState(project?.active!);
+  const [tokenId, setTokenId] = useState("");
 
   const { balance } = useBalance(project?.coin);
   const { donate, end, getAllowance, approve } = useChain({
@@ -55,6 +58,13 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
     toCoin(project?.donationOptions[2] ?? "0", project?.coin),
     toCoin(balance.toString(), project?.coin),
   ];
+
+  useEffect(() => {
+    if (sameAddr(lastDonation?.owner, user?.address)) {
+      setTokenId(lastDonation?.id.split("_t")[1]!);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastDonation]);
 
   const makeDonation = async (e: any) => {
     e.preventDefault();
@@ -72,6 +82,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
       const error2 = await donate(amountInWei, message);
       if (error2) return setSnack!(error2);
       setSnack!("Donation was successful", "success");
+      setTokenId("loading");
     }, "Making donation! \n\nThis will take 2 transactions: \n1. for approving spending the coins  \n2. for donating. \n\nPlease continue to your wallet!");
   };
 
@@ -91,6 +102,22 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
     <>
       <CustomHead name={project.name} description={project.description} image={getImage(project.image)} />
       <Layout>
+        <Modal
+          visible={!!tokenId}
+          onClose={() => {
+            setTokenId("");
+          }}
+        >
+          <p className="uppercase font-bold my-4">Donation successful</p>
+          <p className="mb-2">View your NFT on Opensea:</p>
+          {tokenId && tokenId !== "loading" ? (
+            <Button variant="contained" target="_blank" rel="noopener noreferrer" href={`${network.opensea}${project.collection.address}/${tokenId}`}>
+              View NFT
+            </Button>
+          ) : (
+            <CircularProgress />
+          )}
+        </Modal>
         <div className="fixed top-0 right-0 rounded-bl-2xl overflow-hidden">
           <NewDonation donation={lastDonation} />
         </div>
