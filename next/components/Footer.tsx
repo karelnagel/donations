@@ -13,8 +13,8 @@ export default function Footer() {
         ))}
       </div>
 
-      <h2 className=" ">
-        <Link href="/">Ethereum Donations</Link>{" "}
+      <h2 className="logo">
+        <Link href="/">Streamint</Link>{" "}
       </h2>
     </footer>
   );

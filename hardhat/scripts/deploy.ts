@@ -1,6 +1,6 @@
 import { ethers, upgrades } from "hardhat";
 
-const url = "https://ethdon.xyz/api/tokens/";
+const url = "https://streamint.xyz/api/tokens/";
 async function main() {
   const Contract = await ethers.getContractFactory("Factory");
 

@@ -12,9 +12,9 @@ import { Alert, AlertColor, CircularProgress, IconButton, Snackbar } from "@mui/
 import Modal from "../components/Modal";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const name = "Ethereum donations";
-  const description = "Ethereum donations for creators";
-  const url = "https://ethdon.xyz";
+  const name = "Streamint - Donations for streamers";
+  const description = "Crypto donations for streamers";
+  const url = "https://streamint.xyz";
   const image = `${url}/favicon.png`;
 
   const [provider, setProvider] = useState<Web3Provider>();

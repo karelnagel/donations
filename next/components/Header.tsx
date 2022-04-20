@@ -25,8 +25,8 @@ export default function Header() {
     <div>
       <header className="w-full shadow-md hover:bg-gray-50 duration-300">
         <div className="flex justify-between max-w-screen-lg items-center m-auto p-2 ">
-          <h3 className="font-bold text-2xl text-primary text hover:text-primaryDark duration-300">
-            <Link href={"/"}>Donations</Link>
+          <h3 className="logo">
+            <Link href="/">Streamint</Link>
           </h3>
           <div
             className="bg-primary flex px-1 items-center rounded-3xl hover:bg-primaryDark shadow-xl duration-300 text-white font-bold h-12 cursor-pointer"
@@ -54,7 +54,7 @@ export default function Header() {
               <MenuItem>My projects</MenuItem>
             </Link>
             <Link href={`/accounts/${user?.address}?tab=2`} passHref>
-              <MenuItem>My Donations</MenuItem>
+              <MenuItem>My donations</MenuItem>
             </Link>
             <Divider />
 

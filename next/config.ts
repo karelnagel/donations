@@ -1,11 +1,11 @@
-import { discord, github, twitter } from "./idk/images";
+import { discord, etherscan, github, twitter } from "./idk/images";
 
 export const networks = [
     {
         name: "matic",
         chainId: 137,
         factory: "0xca551fEA6ea8339cfF61C75a5b3eD04E7D5fd9f3",
-        graph: "https://api.thegraph.com/subgraphs/name/karelnagel/ethdon",
+        graph: "https://api.thegraph.com/subgraphs/name/karelnagel/streamint",
         graphIpfs: "https://api.thegraph.com/ipfs/api/v0/",
         ipfsGateway: "https://ipfs.io/ipfs/",
         opensea: "https://opensea.io/assets/matic/",
@@ -26,7 +26,7 @@ export const networks = [
         name: "rinkeby",
         chainId: 4,
         factory: "0x5eF79CA6a5D3908CA9B7432b96367335E815A25F",
-        graph: "https://api.thegraph.com/subgraphs/name/karelnagel/ethdon-dev",
+        graph: "https://api.thegraph.com/subgraphs/name/karelnagel/streamint-dev",
         graphIpfs: "https://api.thegraph.com/ipfs/api/v0/",
         ipfsGateway: "https://ipfs.io/ipfs/",
         opensea: "https://testnets.opensea.io/assets/",
@@ -42,6 +42,7 @@ export const network = networks[Number(process.env.NEXT_PUBLIC_NETWORK) ?? 0]
 
 export const links = [
     { link: "https://discord.gg/gAK73yAjJ6", image: discord },
-    { link: "https://twitter.com/karelETH", image: twitter },
-    { link: "https://github.com/karelnagel/donations", image: github },
+    { link: "https://twitter.com/Streamint_", image: twitter },
+    { link: "https://github.com/karelnagel/streamint", image: github },
+    { link: `${network.etherscan}${network.factory}`, image: etherscan },
 ]

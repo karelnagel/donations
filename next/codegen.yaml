@@ -1,4 +1,4 @@
-schema: https://api.thegraph.com/subgraphs/name/karelnagel/ethdon-dev
+schema: https://api.thegraph.com/subgraphs/name/karelnagel/streamint-dev
 documents: './graphql/*.graphql'
 generates:
   graphql/generated.ts:

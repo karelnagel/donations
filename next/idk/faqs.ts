@@ -1,5 +1,5 @@
 export const faqs = [
-    { question: "How to start?", answer: "Go to https://ethdon.xyz/new and start your first collection" },
+    { question: "How to start?", answer: "Go to https://streamint.xyz/new and start your first collection" },
     {
       question: "Do I have to start new collection every time?",
       answer:
