@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const name = "Streamint - Donations for streamers";
   const description = "Crypto donations for streamers";
   const url = "https://streamint.xyz";
-  const image = `${url}/favicon.png`;
+  const image = `${url}/logo.png`;
 
   const [provider, setProvider] = useState<Web3Provider>();
   const [user, setUser] = useState<User>();
