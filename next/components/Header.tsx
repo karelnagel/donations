@@ -7,6 +7,7 @@ import { Divider, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { network } from "../config";
+import Logo from "./Logo";
 
 export default function Header() {
   const { loadWeb3Modal, logoutOfWeb3Modal } = useWeb3Modal();
@@ -25,9 +26,7 @@ export default function Header() {
     <div>
       <header className="w-full shadow-md hover:bg-gray-50 duration-300">
         <div className="flex justify-between max-w-screen-lg items-center m-auto p-2 ">
-          <h3 className="logo">
-            <Link href="/">Streamint</Link>
-          </h3>
+          <Logo />
           <div
             className="bg-primary flex px-1 items-center rounded-3xl hover:bg-primaryDark shadow-xl duration-300 text-white font-bold h-12 cursor-pointer"
             onClick={handleClick}
@@ -81,4 +80,3 @@ export default function Header() {
     </div>
   );
 }
-

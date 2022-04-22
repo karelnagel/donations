@@ -1,10 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,700;1,800&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Rubik:ital,wght@0,400;0,700;1,800&display=swap");
 :root {
-  font-family: "Rubik", sans-serif !important;
+  font-family: "Inter", sans-serif !important;
 }
 html,
 body {
@@ -40,15 +39,21 @@ h2 {
   @apply uppercase font-bold text-lg mb-4 text-center;
 }
 section {
-  @apply py-20 shadow-md px-2 md:shadow-none;
+  @apply py-10 shadow-md px-2 md:shadow-none;
 }
 ul {
   @apply list-disc ml-6;
+}
+ol {
+  @apply list-decimal ml-6;
+}
+ol a{
+  @apply text-primary
 }
 .home-image {
   @apply relative h-60 w-80 rounded-lg shadow-lg overflow-hidden mx-auto mt-4;
 }
 
-.logo{
-  @apply text-2xl font-extrabold uppercase text-primary hover:text-primaryDark duration-300
+.logo {
+  @apply text-2xl font-extrabold uppercase text-primary hover:text-primaryDark duration-300;
 }

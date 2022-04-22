@@ -139,7 +139,7 @@ const EditPage = ({
                 </TextField>
                 <TextField
                   type="text"
-                  label="Project owner (leave empty if its you)"
+                  label="Project beneficiary (leave empty if its you)"
                   value={project.owner}
                   onChange={(e) => setProject((p) => ({ ...p, owner: e.target.value }))}
                 />
