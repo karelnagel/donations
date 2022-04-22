@@ -184,6 +184,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
                 <TextField type="text" label="Your message" onChange={(e) => setMessage(e.currentTarget.value)} required />
                 <TextField
                   type="number"
+                  inputProps={{ step: "any" }}
                   label="How much you want to donate?"
                   id="filled-start-adornment"
                   error={amount ? toWei(amount, project?.coin).gt(balance) : false}
