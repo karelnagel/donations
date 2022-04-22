@@ -36,7 +36,7 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
         <section id="about">
           <p className=" text-center text-xl">
             A decentralized opensource platform for accepting crypto donations in live streams. All donations are NFTs, that allow the streamer to
-            create private content, groups and meetups for their supporters, but at the same time the NFTs are resellable.
+            create private content, groups and meetups for their supporters.
           </p>
         </section>
         <section id="why-crypto" className="md:flex justify-between items-center">
