@@ -1,5 +1,5 @@
 import { BigInt, Bytes, log } from "@graphprotocol/graph-ts"
-import { Collection, Donation, Project, Title } from "../generated/schema"
+import { Collection, Donation, Project, Title, Global } from "../generated/schema"
 
 
 export function getProjectId(title: string, projectId: string): string { return title + "_p" + projectId }
@@ -13,6 +13,23 @@ export function getTitle(address: string): Title | null {
         return null
     }
     return title
+}
+export function getGlobal(): Global {
+    let global = Global.load("0");
+    if (!global) {
+        global = new Global("0");
+        global.donationsCount = 0
+        global.projectsCount = 0
+        global.collectionsCount = 0
+
+        global.users = []
+        global.usersCount = 0
+        global.streamers = []
+        global.streamersCount = 0
+
+        global.save()
+    }
+    return global
 }
 export function getCollection(title: string): Collection {
     let collection = Collection.load(title);

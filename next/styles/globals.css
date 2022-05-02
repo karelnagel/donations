@@ -9,6 +9,7 @@ html,
 body {
   padding: 0;
   margin: 0;
+  @apply text-white;
 }
 
 a {
@@ -36,13 +37,13 @@ svg.MuiSvgIcon-root {
   @apply text-primary hover:text-primaryDark hover:scale-125 duration-300;
 }
 h2 {
-  @apply uppercase font-bold text-lg mb-4 text-center;
+  @apply  font-bold text-3xl mb-4;
 }
 section {
-  @apply py-10 shadow-md px-2 md:shadow-none;
+  @apply py-20 px-2 text-lg;
 }
 ul {
-  @apply list-disc ml-6;
+  @apply list-disc ml-6 text-lg;
 }
 ol {
   @apply list-decimal ml-6;
@@ -51,7 +52,7 @@ ol a {
   @apply text-primary;
 }
 .home-image {
-  @apply relative h-60 w-80 rounded-lg shadow-lg overflow-hidden mx-auto mt-4;
+  @apply relative h-60 w-full rounded-lg shadow-lg overflow-hidden basis-3/5 shadow-primary;
 }
 
 .logo {

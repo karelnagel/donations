@@ -23,9 +23,12 @@ export default function Header() {
     setAnchorEl(null);
   };
   return (
-    <div>
-      <header className="w-full shadow-md hover:bg-gray-50 duration-300">
-        <div className="flex justify-between max-w-screen-lg items-center m-auto p-2 ">
+    <div className="absolute top-0 z-20 w-full">
+      {user && network.chainId !== user?.chainId && (
+        <div className="w-full py-2 bg-primary text-center text-white font-bold absolute">Wrong network, use {network.name}!</div>
+      )}
+      <header className="w-full mt-10">
+        <div className="flex justify-between max-w-screen-lg items-center m-auto p-2">
           <Logo />
           <div
             className="bg-primary flex px-1 items-center rounded-3xl hover:bg-primaryDark shadow-xl duration-300 text-white font-bold h-12 cursor-pointer"
@@ -74,9 +77,6 @@ export default function Header() {
           </Menu>
         </div>
       </header>
-      {user && network.chainId !== user?.chainId && (
-        <div className="w-full py-2 bg-primary text-center text-white font-bold">Wrong network, use {network.name}!</div>
-      )}
     </div>
   );
 }

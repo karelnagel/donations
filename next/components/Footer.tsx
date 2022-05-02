@@ -5,7 +5,7 @@ import Logo from "./Logo";
 
 export default function Footer() {
   return (
-    <footer className="mt-auto bg-secondary bg-opacity-30 flex flex-col items-center p-10">
+    <footer className="mt-auto bg-cover flex flex-col items-center p-20 backdrop-blur-xl bg-background/10">
       <div className="flex space-x-10 my-4">
         {links.map((l, i) => (
           <a key={i} className="w-10 h-10 relative" href={l.link}>

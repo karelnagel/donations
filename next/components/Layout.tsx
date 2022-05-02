@@ -1,14 +1,16 @@
 import dynamic from "next/dynamic";
 import React from "react";
 import Footer from "./Footer";
-const Header = dynamic(() => import("./Header"));
+import Header from "./Header";
 
-export default function Layout({ children,className }: { children: any,className?:string }) {
+export default function Layout({ children, className, noMargin }: { children: any; className?: string; noMargin?: boolean }) {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className={className}>{children}</main>
-      <Footer />
+    <div className="min-h-screen flex flex-col bg-back bg-cover">
+      <div className="">
+        <Header />
+        <main className={className + ` ${noMargin ? "" : "mt-32"}`}>{children}</main>
+        <Footer />
+      </div>
     </div>
   );
 }
