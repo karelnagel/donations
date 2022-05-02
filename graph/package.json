@@ -1,16 +1,16 @@
 {
-  "name": "ethdon",
+  "name": "streamint",
   "license": "UNLICENSED",
   "scripts": {
     "prepare:rinkeby": "mustache networks/rinkeby.json subgraph.template.yaml > subgraph.yaml",
     "prepare:matic": "mustache networks/matic.json subgraph.template.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph codegen && graph build",
-    "deploy:main": "graph deploy --product hosted-service karelnagel/ethdon",
-    "deploy:dev": "graph deploy --product hosted-service karelnagel/ethdon-dev",
-    "create-local": "graph create --node http://localhost:8020/ ethdon",
-    "remove-local": "graph remove --node http://localhost:8020/ ethdon",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 ethdon"
+    "deploy:main": "graph deploy --product hosted-service karelnagel/streamint",
+    "deploy:dev": "graph deploy --product hosted-service karelnagel/streamint-dev",
+    "create-local": "graph create --node http://localhost:8020/ streamint",
+    "remove-local": "graph remove --node http://localhost:8020/ streamint",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 streamint"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.29.0",

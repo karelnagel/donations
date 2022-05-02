@@ -21,7 +21,7 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
     <Layout className="flex flex-col items-center space-y-4 ">
       <div className="relative w-full">
         <div className="z-[1] absolute text-white flex flex-col justify-center items-center w-full h-full">
-          <h1 className="uppercase font-bold md:text-3xl mb-14 text-center text-xl">Crypto donations with NFTs for streamers</h1>
+          <h1 className="uppercase font-bold md:text-3xl mb-14 text-center text-xl">Crypto donations for streamers</h1>
           <Link href={"/new"} passHref>
             <Button variant="contained" size="large">
               Start your project
@@ -34,10 +34,9 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
       </div>
       <div className="max-w-screen-md m-auto">
         <section id="about">
-          <p className=" text-center text-lg">
-            A platform for streamers to accept crypto donations, it is decentralized, open source and with no commissions, so you can be sure all the
-            money goes to you. With every donation comes NFT for the donator, that can be later used for accessing private groups, meetings and other
-            benefits that the creator decides to add.
+          <p className=" text-center text-xl">
+            A decentralized opensource platform for accepting crypto donations in live streams. All donations are NFTs, that allow the streamer to
+            create private content, groups and meetups for their supporters.
           </p>
         </section>
         <section id="why-crypto" className="md:flex justify-between items-center">
@@ -47,7 +46,7 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
               <li>Easier to donate</li>
               <li>Smaller and more transparent fees</li>
               <li>Decentralized</li>
-              <li>Crypto people are usually more generous</li>
+              <li>Crypto people are usually more generous with their donations</li>
             </ul>
           </div>
           <div className="home-image">
@@ -56,18 +55,35 @@ const Home: NextPage<ProjectProps> = ({ projects }) => {
         </section>
         <section id="why-nfts" className="md:flex flex-row-reverse justify-between items-center">
           <div className="flex-1">
-            <h2 className="uppercase font-bold text-lg">Why NFTs?</h2>
+            <h2 className="">Why NFTs?</h2>
             <ul>
-              <li>So streamers can give back to their supporters</li>
-              <li>Supporters can show that they cared about someone or some cause early</li>
-              <li>If fans know that they can get something in return they might be more generous</li>
-              <li>Crypto people are usually more generous</li>
-              <li>If resold on market, then creator gets a percent of the sale</li>
+              <li>Streamers can give back to their supporters</li>
+              <li>Supporters can show that they cared about someone or some cause</li>
+              <li>If fans know that they can get something in return they might donate more</li>
+              <li>If resold on the market, then creator gets a percent of the sale</li>
             </ul>
           </div>
           <div className="home-image">
             <Image src={nft} alt="" layout="fill" className="object-cover"></Image>
           </div>
+        </section>
+        <section>
+          <h2>How does this work?</h2>
+          <ol>
+            <li>Streamer creates a new Project</li>
+            <li>
+              Streamer can add a overlay of their project to their stream (
+              <a href={process.env.NEXT_PUBLIC_URL + "/projects/ethdon/1/stream"}>example</a>)
+            </li>
+            <li>
+              Streamer adds donation link to their stream description (
+              <a href={process.env.NEXT_PUBLIC_URL + "/projects/ethdon/1"}>example</a>)
+            </li>
+            <li>Users go to the link and can donate in crypto using their ethereum wallet</li>
+            <li>After donating user receives a NFT with donation message and amount in the attributes</li>
+            <li>Streamer gets all the donated money (or if they set someone other as beneficiary then they will get the money)</li>
+            <li>Streamer can use these NFTs as a access tokens or any other way they wish</li>
+          </ol>
         </section>
         <section id="projects" className="text-center">
           <h2 className="text-center">Latest projects</h2>

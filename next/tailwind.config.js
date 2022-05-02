@@ -8,13 +8,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: colors.red[500],
-        primaryDark: colors.red[700],
-        secondary: colors.blue[300],
+        primary: colors.red[600],
+        primaryDark: colors.red[800],
+        secondary: colors.blue[700],
         white: colors.white,
-        black: colors.black,
-        stream1: colors.blue[500],
-        stream2: colors.orange[400],
+        black: colors.stone[900],
+        stream1: colors.blue[700],
+        stream2: colors.red[600],
       }
     },
   },

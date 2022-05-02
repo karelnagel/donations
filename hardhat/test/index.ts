@@ -13,7 +13,7 @@ let acc2: SignerWithAddress;
 let acc3: SignerWithAddress;
 
 const donation = ethers.utils.parseEther("100");
-const url = "https://ethdon.xyz/api/tokens/";
+const url = "https://streamint.xyz/api/tokens/";
 
 before("Start", async function () {
   // Getting accounts

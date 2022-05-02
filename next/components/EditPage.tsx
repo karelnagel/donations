@@ -139,7 +139,7 @@ const EditPage = ({
                 </TextField>
                 <TextField
                   type="text"
-                  label="Project owner (leave empty if its you)"
+                  label="Project beneficiary (leave empty if its you)"
                   value={project.owner}
                   onChange={(e) => setProject((p) => ({ ...p, owner: e.target.value }))}
                 />
@@ -155,6 +155,7 @@ const EditPage = ({
             />
             <TextField
               type="number"
+              inputProps={{ step: "any" }}
               label="Project goal"
               value={toCoin(project.goal, project.coin)}
               onChange={(e) => setProject((p) => ({ ...p, goal: toWeiStr(e.target.value, project.coin) }))}
@@ -185,6 +186,7 @@ const EditPage = ({
                   <TextField
                     key={i}
                     type="number"
+                    inputProps={{ step: "any" }}
                     label={`Option ${i + 1}`}
                     value={toCoin(d, project.coin)}
                     required

@@ -42,7 +42,6 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
 
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
-  const [active, setActive] = useState(project?.active!);
   const [tokenId, setTokenId] = useState("");
 
   const { balance } = useBalance(project?.coin);
@@ -82,7 +81,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
       const error2 = await donate(amountInWei, message);
       if (error2) return setSnack!(error2);
       setSnack!("Donation was successful", "success");
-      setTokenId("loading");
+      setTokenId((t) => t ?? "loading");
     }, "Making donation! \n\nThis will take 2 transactions: \n1. for approving spending the coins  \n2. for donating. \n\nPlease continue to your wallet!");
   };
 
@@ -93,7 +92,6 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
       if (error) return setSnack!(error);
 
       setSnack!("Ended project successfully!", "success");
-      setActive(false);
     }, "Ending project! Please continue to your wallet!");
   };
 
@@ -179,13 +177,14 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
 
           <ProgresssBar project={project} />
           <br />
-          {user && active ? (
+          {user && project.active ? (
             <div className="mb-20">
               <h2 className="my-6 text-lg font-bold">Make a donation to {project.name}</h2>
               <form onSubmit={makeDonation} className="flex-col flex max-w-xs mx-auto space-y-2">
                 <TextField type="text" label="Your message" onChange={(e) => setMessage(e.currentTarget.value)} required />
                 <TextField
                   type="number"
+                  inputProps={{ step: "any" }}
                   label="How much you want to donate?"
                   id="filled-start-adornment"
                   error={amount ? toWei(amount, project?.coin).gt(balance) : false}
