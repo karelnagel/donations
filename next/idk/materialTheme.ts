@@ -3,6 +3,7 @@ const tailwind = require("./../tailwind.config")
 
 export const materialTheme = createTheme({
     palette: {
+        mode: 'dark',
         primary: {
             main: tailwind.theme.extend.colors.primary,
         }

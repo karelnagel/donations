@@ -1,3 +1,15 @@
+type Global @entity {
+  id:ID!
+  donationsCount:Int!
+  projectsCount:Int!
+  collectionsCount:Int!
+
+  users:[String!]!
+  usersCount:Int!
+  
+  streamers:[String!]!
+  streamersCount:Int!
+}
 type Title @entity {
   id: ID!
   collection: String!

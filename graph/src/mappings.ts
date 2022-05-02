@@ -10,7 +10,7 @@ import {
 } from "../generated/templates/collection/Collection"
 import { Title } from "../generated/schema"
 import { Collection as CollectionTemplate } from '../generated/templates'
-import { getCollection, getDonation, getProject, getProjectId, getTitle } from "./helpers"
+import { getCollection, getDonation, getGlobal, getProject, getProjectId, getTitle } from "./helpers"
 import { getIpfs } from "./ipfs"
 
 function newProject(title: string, coin: Bytes, timestamp: BigInt, owner: string, ipfs: string): void {
@@ -26,6 +26,11 @@ function newProject(title: string, coin: Bytes, timestamp: BigInt, owner: string
   project.save()
 
   getIpfs(title, big, ipfs)
+
+  const global = getGlobal();
+  global.projectsCount++;
+  global.streamersCount++;// Todo check if already in list
+  global.save()
 }
 
 
@@ -43,6 +48,10 @@ export function handleNewCollection(event: NewCollection): void {
   newProject(event.params.title, event.params.projectCoin, event.block.timestamp, event.params.projectOwner.toHexString(), event.params.projectIpfs)
 
   CollectionTemplate.create(event.params.collection)
+
+  const global = getGlobal();
+  global.collectionsCount++;
+  global.save()
 }
 
 export function handleSetURI(event: SetURI): void {
@@ -85,6 +94,11 @@ export function handleNewDonation(event: NewDonation): void {
   donation.originalOwner = event.params.owner.toHexString()
 
   donation.save()
+
+  const global = getGlobal();
+  global.donationsCount++;
+  global.usersCount++; // Todo check if not already user
+  global.save()
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {

@@ -241,6 +241,94 @@ export enum Donation_OrderBy {
   Time = 'time'
 }
 
+export type Global = {
+  __typename?: 'Global';
+  collectionsCount: Scalars['Int'];
+  donationsCount: Scalars['Int'];
+  id: Scalars['ID'];
+  projectsCount: Scalars['Int'];
+  streamers: Array<Scalars['String']>;
+  streamersCount: Scalars['Int'];
+  users: Array<Scalars['String']>;
+  usersCount: Scalars['Int'];
+};
+
+export type Global_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  collectionsCount?: InputMaybe<Scalars['Int']>;
+  collectionsCount_gt?: InputMaybe<Scalars['Int']>;
+  collectionsCount_gte?: InputMaybe<Scalars['Int']>;
+  collectionsCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  collectionsCount_lt?: InputMaybe<Scalars['Int']>;
+  collectionsCount_lte?: InputMaybe<Scalars['Int']>;
+  collectionsCount_not?: InputMaybe<Scalars['Int']>;
+  collectionsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  donationsCount?: InputMaybe<Scalars['Int']>;
+  donationsCount_gt?: InputMaybe<Scalars['Int']>;
+  donationsCount_gte?: InputMaybe<Scalars['Int']>;
+  donationsCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  donationsCount_lt?: InputMaybe<Scalars['Int']>;
+  donationsCount_lte?: InputMaybe<Scalars['Int']>;
+  donationsCount_not?: InputMaybe<Scalars['Int']>;
+  donationsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  projectsCount?: InputMaybe<Scalars['Int']>;
+  projectsCount_gt?: InputMaybe<Scalars['Int']>;
+  projectsCount_gte?: InputMaybe<Scalars['Int']>;
+  projectsCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  projectsCount_lt?: InputMaybe<Scalars['Int']>;
+  projectsCount_lte?: InputMaybe<Scalars['Int']>;
+  projectsCount_not?: InputMaybe<Scalars['Int']>;
+  projectsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  streamers?: InputMaybe<Array<Scalars['String']>>;
+  streamersCount?: InputMaybe<Scalars['Int']>;
+  streamersCount_gt?: InputMaybe<Scalars['Int']>;
+  streamersCount_gte?: InputMaybe<Scalars['Int']>;
+  streamersCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  streamersCount_lt?: InputMaybe<Scalars['Int']>;
+  streamersCount_lte?: InputMaybe<Scalars['Int']>;
+  streamersCount_not?: InputMaybe<Scalars['Int']>;
+  streamersCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  streamers_contains?: InputMaybe<Array<Scalars['String']>>;
+  streamers_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+  streamers_not?: InputMaybe<Array<Scalars['String']>>;
+  streamers_not_contains?: InputMaybe<Array<Scalars['String']>>;
+  streamers_not_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+  users?: InputMaybe<Array<Scalars['String']>>;
+  usersCount?: InputMaybe<Scalars['Int']>;
+  usersCount_gt?: InputMaybe<Scalars['Int']>;
+  usersCount_gte?: InputMaybe<Scalars['Int']>;
+  usersCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  usersCount_lt?: InputMaybe<Scalars['Int']>;
+  usersCount_lte?: InputMaybe<Scalars['Int']>;
+  usersCount_not?: InputMaybe<Scalars['Int']>;
+  usersCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  users_contains?: InputMaybe<Array<Scalars['String']>>;
+  users_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+  users_not?: InputMaybe<Array<Scalars['String']>>;
+  users_not_contains?: InputMaybe<Array<Scalars['String']>>;
+  users_not_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export enum Global_OrderBy {
+  CollectionsCount = 'collectionsCount',
+  DonationsCount = 'donationsCount',
+  Id = 'id',
+  ProjectsCount = 'projectsCount',
+  Streamers = 'streamers',
+  StreamersCount = 'streamersCount',
+  Users = 'users',
+  UsersCount = 'usersCount'
+}
+
 /** Defines the order direction, either ascending or descending */
 export enum OrderDirection {
   Asc = 'asc',
@@ -534,6 +622,8 @@ export type Query = {
   collections: Array<Collection>;
   donation?: Maybe<Donation>;
   donations: Array<Donation>;
+  global?: Maybe<Global>;
+  globals: Array<Global>;
   project?: Maybe<Project>;
   projects: Array<Project>;
   title?: Maybe<Title>;
@@ -582,6 +672,24 @@ export type QueryDonationsArgs = {
 };
 
 
+export type QueryGlobalArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryGlobalsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Global_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Global_Filter>;
+};
+
+
 export type QueryProjectArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
@@ -625,6 +733,8 @@ export type Subscription = {
   collections: Array<Collection>;
   donation?: Maybe<Donation>;
   donations: Array<Donation>;
+  global?: Maybe<Global>;
+  globals: Array<Global>;
   project?: Maybe<Project>;
   projects: Array<Project>;
   title?: Maybe<Title>;
@@ -670,6 +780,24 @@ export type SubscriptionDonationsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<Donation_Filter>;
+};
+
+
+export type SubscriptionGlobalArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionGlobalsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Global_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Global_Filter>;
 };
 
 
@@ -824,6 +952,11 @@ export type DonationQueryVariables = Exact<{
 
 
 export type DonationQuery = { __typename?: 'Query', donation?: { __typename?: 'Donation', amount: any, owner: string, message: string, time: any, project: { __typename?: 'Project', index: any, name: string, description: string, url: string, image: string, socials: Array<string>, donationOptions: Array<string>, goal: string } } | null };
+
+export type GlobalQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GlobalQuery = { __typename?: 'Query', global?: { __typename?: 'Global', donationsCount: number, projectsCount: number, collectionsCount: number, usersCount: number, streamersCount: number } | null };
 
 export type LatestProjectsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
@@ -1126,6 +1259,44 @@ export function useDonationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<D
 export type DonationQueryHookResult = ReturnType<typeof useDonationQuery>;
 export type DonationLazyQueryHookResult = ReturnType<typeof useDonationLazyQuery>;
 export type DonationQueryResult = Apollo.QueryResult<DonationQuery, DonationQueryVariables>;
+export const GlobalDocument = gql`
+    query global {
+  global(id: "0") {
+    donationsCount
+    projectsCount
+    collectionsCount
+    usersCount
+    streamersCount
+  }
+}
+    `;
+
+/**
+ * __useGlobalQuery__
+ *
+ * To run a query within a React component, call `useGlobalQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGlobalQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGlobalQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGlobalQuery(baseOptions?: Apollo.QueryHookOptions<GlobalQuery, GlobalQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GlobalQuery, GlobalQueryVariables>(GlobalDocument, options);
+      }
+export function useGlobalLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GlobalQuery, GlobalQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GlobalQuery, GlobalQueryVariables>(GlobalDocument, options);
+        }
+export type GlobalQueryHookResult = ReturnType<typeof useGlobalQuery>;
+export type GlobalLazyQueryHookResult = ReturnType<typeof useGlobalLazyQuery>;
+export type GlobalQueryResult = Apollo.QueryResult<GlobalQuery, GlobalQueryVariables>;
 export const LatestProjectsDocument = gql`
     query latestProjects($first: Int = 10) {
   projects(
