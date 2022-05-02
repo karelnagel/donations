@@ -108,7 +108,7 @@ const EditPage = ({
   return (
     <Layout>
       <div className="max-w-screen-md m-auto text-center">
-        <h2 className="m-10 text-xl uppercase font-bold">{topText}</h2>
+        <h2 className="m-10 text-3xl font-bold">{topText}</h2>
         <form onSubmit={newPro}>
           <div className="flex-col flex  px-2 space-y-2 text-left">
             {type === Type.NEW_CONTRACT && (

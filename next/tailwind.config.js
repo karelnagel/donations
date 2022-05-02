@@ -14,9 +14,14 @@ module.exports = {
         white: colors.white,
         black: colors.stone[900],
         //remove
-        primaryDark: colors.blue[700],
+        primaryDark: colors.blue[900],
         stream1: colors.blue[700],
         stream2: colors.red[600],
+      },
+      backgroundImage: {
+        blobs: "url('/svgs/blobs.svg')",
+        footer: "url('/svgs/footer.svg')",
+        back: "url('/svgs/background.svg')",
       }
     },
   },

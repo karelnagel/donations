@@ -52,7 +52,7 @@ ol a {
   @apply text-primary;
 }
 .home-image {
-  @apply relative h-60 w-full rounded-lg shadow-lg overflow-hidden basis-3/5;
+  @apply relative h-60 w-full rounded-lg shadow-lg overflow-hidden basis-3/5 shadow-primary;
 }
 
 .logo {

@@ -19,14 +19,14 @@ interface ProjectProps {
 
 const Home: NextPage<ProjectProps> = ({ projects, global }) => {
   const stats = [
-    { number: global?.streamersCount, stat: "streamer" },
+    { number: global?.streamersCount, stat: "streamers" },
     { number: global?.usersCount, stat: "donators" },
     { number: global?.projectsCount, stat: "projects" },
     { number: global?.donationsCount, stat: "donations" },
   ];
   return (
-    <Layout className="flex flex-col items-center space-y-4">
-      <div className="relative w-full h-screen bg-cover bg-[url('/svgs/blobs.svg')] p-10">
+    <Layout className="flex flex-col items-center space-y-4" noMargin>
+      <div className="relative w-full h-screen bg-cover bg-blobs p-10">
         <div className="flex justify-between flex-col items-center h-full">
           <div></div>
           <div className="flex w-full max-w-screen-lg space-x-4 justify-between items-center">
@@ -102,7 +102,7 @@ const Home: NextPage<ProjectProps> = ({ projects, global }) => {
         </section>
         <section id="projects" className="text-center">
           <h2 className="text-center">Latest projects</h2>
-          <div className="flex flex-col  space-y-4 max-w-screen-sm mx-auto my-10">
+          <div className="flex flex-col  space-y-6 max-w-lg mx-auto my-10">
             {projects.map((p, i) => (
               <ProjectObject project={p} key={i} />
             ))}
@@ -114,7 +114,7 @@ const Home: NextPage<ProjectProps> = ({ projects, global }) => {
           </Link>
         </section>
         <section id="faq">
-          <h2>FAQ</h2>
+          <h2 className="text-center">FAQ</h2>
           <div>
             {/* Todo material accordion */}
             {faqs.map((f, i) => (

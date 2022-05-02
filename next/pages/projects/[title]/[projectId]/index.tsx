@@ -120,8 +120,8 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
           <NewDonation donation={lastDonation} />
         </div>
         <div className="max-w-screen-md mx-auto text-center">
-          <h1 className="mt-20 mb-10 text-2xl uppercase font-bold">{project.name}</h1>
-          <div className="md:flex  justify-between mb-20 shadow-lg p-4 rounded-lg">
+          <h1 className="mt-20 mb-10 text-4xl  font-bold">{project.name}</h1>
+          <div className="md:flex  justify-between mb-20 shadow-lg p-4 rounded-lg shadow-primary bg-zinc-800">
             <div className="min-w-60 w-60 h-60 relative object-cover rounded-3xl overflow-hidden m-auto">
               {project.image && (
                 <Image
