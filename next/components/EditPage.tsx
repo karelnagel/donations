@@ -1,7 +1,6 @@
 import React, { createRef, useContext, useEffect, useState } from "react";
 import useChain from "../hooks/useChain";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import Layout from "./Layout";
 import { MenuItem } from "@mui/material";
 import { Context } from "../idk/context";
@@ -10,6 +9,7 @@ import { getProjectId, sameAddr, toCoin, toWeiStr } from "../idk/helpers";
 import { Project, useCollectionLazyQuery, useCollectionListLazyQuery, useProjectLazyQuery } from "../graphql/generated";
 import { ipfsUpload } from "../lib/ipfs";
 import { network } from "../config";
+import Button from "./Button";
 
 export enum Type {
   NEW_CONTRACT,
@@ -201,12 +201,10 @@ const EditPage = ({
             </div>
           </div>
           <br />
-          <Button type="submit" variant="contained">
-            {buttonText}
-          </Button>
+          <Button submit>{buttonText}</Button>
           <br />
           <br />
-          <Button onClick={router.back} variant="outlined">
+          <Button onClick={router.back} secondary>
             Back
           </Button>
         </form>
