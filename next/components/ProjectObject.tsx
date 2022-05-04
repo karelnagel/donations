@@ -10,7 +10,7 @@ export function ProjectObject({ project }: { project?: Project }) {
   const router = useRouter();
 
   return project ? (
-    <div className="shadow-md p-4 rounded-lg cursor-pointer shadow-primary bg-background" onClick={() => router.push(`/projects/${project.collection.id}/${project.index}`)}>
+    <div className="shadow-md p-4 rounded-lg cursor-pointer shadow-primary bg-project bg-cover" onClick={() => router.push(`/projects/${project.collection.id}/${project.index}`)}>
       <div className="flex justify-between">
         <div className="w-20 h-20 relative">
           <Image

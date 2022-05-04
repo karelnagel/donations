@@ -12,16 +12,14 @@ interface ProjectProps {
 const ProjectsPage: NextPage<ProjectProps> = ({ projects }) => {
   return (
     <Layout>
-      <div className="flex flex-col items-center">
-        <h1 className="my-10 text-center uppercase text-lg font-bold">Latest projects</h1>
-        {projects && (
-          <div className="flex flex-col  space-y-4">
-            {projects.map((p, i) => (
-              <ProjectObject project={p} key={i} />
-            ))}
-          </div>
-        )}
-      </div>
+      <h1 className="my-10 text-center  text-3xl font-bold">Latest projects</h1>
+      {projects && (
+        <div className="flex flex-col space-y-4 max-w-screen-sm m-auto">
+          {projects.map((p, i) => (
+            <ProjectObject project={p} key={i} />
+          ))}
+        </div>
+      )}
     </Layout>
   );
 };

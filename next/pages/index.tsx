@@ -1,7 +1,6 @@
 import type { GetStaticProps, NextPage } from "next";
 import React from "react";
 import Layout from "../components/Layout";
-import Button from "@mui/material/Button";
 import Link from "next/link";
 import Image from "next/image";
 import { GlobalDocument, GlobalQueryResult, LatestProjectsDocument, LatestProjectsQueryResult, Project, Global } from "../graphql/generated";
@@ -11,6 +10,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { faqs } from "../idk/faqs";
 import { crypto, nft, streamer } from "../idk/images";
+import Button from "../components/Button";
 
 interface ProjectProps {
   projects: Project[];
@@ -33,7 +33,7 @@ const Home: NextPage<ProjectProps> = ({ projects, global }) => {
             <div className="md:basis-3/5">
               <h1 className="text-white text-5xl md:text-6xl font-bold">Crypto donations for streamers</h1>
               <p className="my-10 text-lg">Decentralized opensource platform for accepting crypto donations, with rewarding NFTs</p>
-              <Button href="/new" variant="contained">
+              <Button href="/new" big>
                 Start your project
               </Button>
             </div>
@@ -108,7 +108,7 @@ const Home: NextPage<ProjectProps> = ({ projects, global }) => {
             ))}
           </div>
           <Link href={"/projects"} passHref>
-            <Button variant="contained" className="">
+            <Button>
               Latest projects
             </Button>
           </Link>

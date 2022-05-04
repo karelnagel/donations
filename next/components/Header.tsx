@@ -8,6 +8,7 @@ import { Logout } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { network } from "../config";
 import Logo from "./Logo";
+import Button from "./Button";
 
 export default function Header() {
   const { loadWeb3Modal, logoutOfWeb3Modal } = useWeb3Modal();
@@ -31,15 +32,15 @@ export default function Header() {
         <div className="flex justify-between max-w-screen-lg items-center m-auto p-2">
           <Logo />
           <div
-            className="bg-primary flex px-1 items-center rounded-3xl hover:bg-primaryDark shadow-xl duration-300 text-white font-bold h-12 cursor-pointer"
-            onClick={handleClick}
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <div className="mx-4">{user ? user.name ?? short(user.address) : "Connect Wallet"}</div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            {user?.avatar && <img src={user.avatar} className="rounded-full h-10 w-10 object-cover " alt="" />}
+            <Button onClick={handleClick}>
+              <div className="mx-4">{user ? user.name ?? short(user.address) : "Connect Wallet"}</div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {user?.avatar && <img src={user.avatar} className="rounded-full h-10 w-10 object-cover " alt="" />}
+            </Button>
           </div>
           <Menu
             anchorEl={anchorEl}

@@ -9,7 +9,7 @@ import { coinName, getImage, getProjectId, sameAddr, toCoin, toWei } from "../..
 import useChain from "../../../../hooks/useChain";
 import useBalance from "../../../../hooks/useBalance";
 import useProject from "../../../../hooks/useProject";
-import { Button, Chip, CircularProgress, InputAdornment, TextField } from "@mui/material";
+import { Chip, CircularProgress, InputAdornment, TextField } from "@mui/material";
 import Image from "next/image";
 import { AccountObject } from "../../../../components/AccountObject";
 import TwitterIcon from "@mui/icons-material/Twitter";
@@ -25,6 +25,7 @@ import { ContractObject } from "../../../../components/ContractObject";
 import Link from "next/link";
 import Modal from "../../../../components/Modal";
 import { network } from "../../../../config";
+import Button from "../../../../components/Button";
 
 interface Params extends ParsedUrlQuery {
   title: string;
@@ -109,7 +110,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
           <p className="uppercase font-bold my-4">Donation successful</p>
           <p className="mb-2">View your NFT on Opensea:</p>
           {tokenId && tokenId !== "loading" ? (
-            <Button variant="contained" target="_blank" rel="noopener noreferrer" href={`${network.opensea}${project.collection.address}/${tokenId}`}>
+            <Button  href={`${network.opensea}${project.collection.address}/${tokenId}`}>
               View NFT
             </Button>
           ) : (
@@ -121,7 +122,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
         </div>
         <div className="max-w-screen-md mx-auto text-center">
           <h1 className="mt-20 mb-10 text-4xl  font-bold">{project.name}</h1>
-          <div className="md:flex  justify-between mb-20 shadow-lg p-4 rounded-lg shadow-primary bg-zinc-800">
+          <div className="bg-project bg-cover md:flex  justify-between mb-20 shadow-lg p-4 rounded-lg shadow-primary bg-zinc-800">
             <div className="min-w-60 w-60 h-60 relative object-cover rounded-3xl overflow-hidden m-auto">
               {project.image && (
                 <Image
@@ -201,24 +202,23 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
                     <Chip key={i} label={i === 3 ? "MAX" : o} onClick={() => setAmount(o)} variant={amount === o ? "filled" : "outlined"} />
                   ))}
                 </div>
-                <Button type="submit" variant="contained">
+                <Button>
                   Donate
                 </Button>
               </form>
               {sameAddr(project.collection.owner, user.address) && (
                 <>
                   <br />
-                  <Button onClick={endPro} variant="outlined">
+                  <Button onClick={endPro} secondary>
                     End
                   </Button>
                   <span> </span>
                   <Link href={`/projects/${title}/${projectId}/edit`} passHref>
-                    <Button variant="outlined">Edit</Button>
+                    <Button secondary>Edit</Button>
                   </Link>
                   <br />
                   <br />
-                  <Button
-                    variant="outlined"
+                  <Button secondary
                     onClick={() => {
                       navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_URL}${router.asPath}/stream`);
                       setSnack!("Stream link copied to clipboard!", "success");

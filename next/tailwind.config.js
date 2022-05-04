@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       colors: {
         primary: colors.blue[600],
-        secondary: colors.red[500],
+        secondary: colors.orange[400],
         background: colors.zinc[900],
         white: colors.white,
         black: colors.stone[900],
@@ -22,6 +22,7 @@ module.exports = {
         blobs: "url('/svgs/blobs.svg')",
         footer: "url('/svgs/footer.svg')",
         back: "url('/svgs/background.svg')",
+        project: "url('/svgs/project.svg')",
       }
     },
   },
