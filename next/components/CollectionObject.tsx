@@ -1,22 +1,22 @@
 import { useRouter } from "next/router";
 import React from "react";
-import { Project } from "../graphql/generated";
 import { getImage } from "../idk/helpers";
 import { AccountObject } from "./AccountObject";
 import { ProgresssBar } from "./ProgressBar";
 import Image from "next/image";
+import { Collection } from "../graphql/generated";
 
-export function ProjectObject({ project }: { project?: Project }) {
+export function CollectionObject({ collection }: { collection?: Collection }) {
   const router = useRouter();
 
-  return project ? (
-    <div className="shadow-md p-4 rounded-lg cursor-pointer shadow-primary bg-project bg-cover" onClick={() => router.push(`/projects/${project.collection.id}/${project.index}`)}>
+  return collection ? (
+    <div className="shadow-md p-4 rounded-lg cursor-pointer shadow-primary bg-project bg-cover" onClick={() => router.push(`/${collection.id}`)}>
       <div className="flex justify-between">
         <div className="w-20 h-20 relative">
           <Image
             placeholder="blur"
             blurDataURL="/favicon.png"
-            src={getImage(project.image)}
+            src={getImage(collection.image)}
             alt=""
             className="object-cover rounded-lg flex-1"
             layout="fill"
@@ -24,11 +24,11 @@ export function ProjectObject({ project }: { project?: Project }) {
         </div>
 
         <div className="text-right flex flex-col justify-evenly">
-          <h2 className="font-bold mb-2">{project.name}</h2>
-          <AccountObject account={project.owner} />
+          <h2 className="font-bold mb-2">{collection.name}</h2>
+          <AccountObject account={collection.owner?.id!} />
         </div>
       </div>
-      <ProgresssBar project={project} />
+      <ProgresssBar collection={collection} />
     </div>
   ) : (
     <div></div>

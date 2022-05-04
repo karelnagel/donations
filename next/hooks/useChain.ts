@@ -5,15 +5,13 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 import { network } from "../config";
 
 export const factoryAbi = [
-  "function newCollection(string memory title,address projectCoin,address projectOwner,string memory projectIpfs)",
+  "function newCollection(string memory title,address coin,string memory ipfs)",
 ];
 
 export const contractAbi = [
-  "function newProject(address coin, address owner,string memory ipfs)",
-  "function end(uint256 id)",
-  "function donate(uint256 id,uint256 amount,string memory message)",
-  "function setIPFS(uint256 id,string memory ipfs)",
-  "event NewDonation(uint256 id,uint256 projectId,address owner,uint256 amount,string message)"
+  "function donate(uint256 amount,string memory message)",
+  "function setIPFS(string memory ipfs)",
+  "event NewDonation(uint256 id,address owner,uint256 amount,string message)"
 ];
 
 export const coinAbi = [
@@ -22,7 +20,7 @@ export const coinAbi = [
   "function allowance(address owner,address spender) view returns (uint)",
 ];
 
-export default function useChain({ contractAddress, projectId, coinAddress }: { contractAddress?: string, projectId?: string, coinAddress?: string }) {
+export default function useChain({ contractAddress, coinAddress }: { contractAddress?: string, coinAddress?: string }) {
   const { provider, user } = useContext(Context)
 
   const factory = (pro?: JsonRpcProvider) => {
@@ -38,9 +36,9 @@ export default function useChain({ contractAddress, projectId, coinAddress }: { 
     return new ethers.Contract(coinAddress!, coinAbi, pro ?? provider.getSigner())
   }
 
-  async function newCollection(title: string, coin: string, projectOwner: string, ipfs: string) {
+  async function newCollection(title: string, coin: string, ipfs: string) {
     try {
-      const result = await factory()!.newCollection(title, coin, projectOwner, ipfs);
+      const result = await factory()!.newCollection(title, coin, ipfs);
       await result.wait(1);
       return
     }
@@ -48,23 +46,10 @@ export default function useChain({ contractAddress, projectId, coinAddress }: { 
       console.log(e)
       return "Error starting new contract!"
     }
-
   }
-  async function newProject(coin: string, owner: string, ipfs: string) {
+  async function setIPFS(ipfs: string) {
     try {
-      const result = await contract()!.newProject(coin, owner, ipfs);
-      await result.wait(1)
-      return
-    }
-    catch (e) {
-      console.log(e)
-    }
-    return "Error starting new project!'"
-  }
-
-  async function setIPFS(projectId: number, ipfs: string) {
-    try {
-      const result = await contract()!.setIPFS(projectId, ipfs);
+      const result = await contract()!.setIPFS(ipfs);
       await result.wait(1)
       return
     }
@@ -74,30 +59,14 @@ export default function useChain({ contractAddress, projectId, coinAddress }: { 
     return "Error setting new ipfs!'"
   }
 
-  async function end() {
-    if (projectId) {
-      try {
-        const result = await contract()!.end(projectId)
-        await result.wait(1)
-        return
-      }
-      catch (e) {
-        console.log(e)
-      }
-    }
-    return "Error ending the project!"
-  }
-
   async function donate(amount: ethers.BigNumber, message: string) {
-    if (projectId) {
-      try {
-        const result = await contract()!.donate(projectId, amount, message)
-        await result.wait(1);
-        return
-      }
-      catch (e) {
-        console.log(e)
-      }
+    try {
+      const result = await contract()!.donate(amount, message)
+      await result.wait(1);
+      return
+    }
+    catch (e) {
+      console.log(e)
     }
     return "Error with donating!"
   }
@@ -138,5 +107,5 @@ export default function useChain({ contractAddress, projectId, coinAddress }: { 
     }
     return ethers.BigNumber.from("0")
   }
-  return { newCollection, newProject, end, donate, getBalance, approve, getAllowance, setIPFS }
+  return { newCollection, donate, getBalance, approve, getAllowance, setIPFS }
 }

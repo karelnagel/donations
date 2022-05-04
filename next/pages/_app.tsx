@@ -70,7 +70,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               </Alert>
             </Snackbar>
             <Modal visible={!!loading} onClose={() => setLoading("")}>
-              <p className="whitespace-pre-line mb-6 text-md font-bold">{loading}</p>
+              <p className="whitespace-pre-line mb-6 text-md font-bold text-black">{loading}</p>
               <CircularProgress />
             </Modal>
           </ThemeProvider>

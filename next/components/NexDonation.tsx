@@ -11,7 +11,7 @@ export function NewDonation({ donation }: { donation?: Donation }) {
   useEffect(() => {
     const effect = async () => {
       if (donation) {
-        const { name, avatar } = await getENS(donation.owner);
+        const { name, avatar } = await getENS(donation.donator.id);
         setName(name);
         setAvatar(avatar);
         setVisible(true);
@@ -29,9 +29,9 @@ export function NewDonation({ donation }: { donation?: Donation }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       {avatar && <img alt="" src={avatar} className="w-16 h-16" />}
 
-      <p className="my-4 ml-4">{name ?? short(donation.owner)}</p>
+      <p className="my-4 ml-4">{name ?? short(donation.donator.id)}</p>
       <p>
-        {toCoin(donation.amount, donation.project.coin)} {coinName(donation.project.coin)}
+        {toCoin(donation.amount, donation.collection.coin)} {coinName(donation.collection.coin)}
       </p>
       <p>{`'${donation.message}'`}</p>
     </div>

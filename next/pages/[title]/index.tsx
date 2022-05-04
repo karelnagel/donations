@@ -1,66 +1,62 @@
 import React, { useContext, useEffect, useState } from "react";
-import { apolloRequest } from "../../../../idk/apollo";
-import { ProjectDocument, ProjectQueryResult, Project, ProjectListDocument, ProjectListQueryResult } from "../../../../graphql/generated";
+import { apolloRequest } from "../../idk/apollo";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
-import { CustomHead } from "../../../../components/CustomHead";
-import Layout from "../../../../components/Layout";
-import { coinName, getImage, getProjectId, sameAddr, toCoin, toWei } from "../../../../idk/helpers";
-import useChain from "../../../../hooks/useChain";
-import useBalance from "../../../../hooks/useBalance";
-import useProject from "../../../../hooks/useProject";
+import { CustomHead } from "../../components/CustomHead";
+import Layout from "../../components/Layout";
+import { coinName, getImage, sameAddr, toCoin, toWei } from "../../idk/helpers";
+import useChain from "../../hooks/useChain";
+import useBalance from "../../hooks/useBalance";
 import { Chip, CircularProgress, InputAdornment, TextField } from "@mui/material";
 import Image from "next/image";
-import { AccountObject } from "../../../../components/AccountObject";
+import { AccountObject } from "../../components/AccountObject";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkIcon from "@mui/icons-material/Link";
 import { useRouter } from "next/router";
-import { Context } from "../../../../idk/context";
-import { ProgresssBar } from "../../../../components/ProgressBar";
-import { NewDonation } from "../../../../components/NexDonation";
-import { ContractObject } from "../../../../components/ContractObject";
+import { Context } from "../../idk/context";
+import { ProgresssBar } from "../../components/ProgressBar";
+import { NewDonation } from "../../components/NexDonation";
 import Link from "next/link";
-import Modal from "../../../../components/Modal";
-import { network } from "../../../../config";
-import Button from "../../../../components/Button";
+import Modal from "../../components/Modal";
+import { network } from "../../config";
+import Button from "../../components/Button";
+import { Collection, CollectionDocument, CollectionListDocument, CollectionListQueryResult, CollectionQueryResult } from "../../graphql/generated";
+import useCollection from "../../hooks/useCollection";
 
 interface Params extends ParsedUrlQuery {
   title: string;
-  projectId: string;
 }
-interface ProjectProps {
-  initialProject: Project | null;
+interface CollectionProps {
+  initialCollection: Collection | null;
   title: string;
-  projectId: string;
 }
-const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId }) => {
+const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialCollection, title }) => {
   const router = useRouter();
-  const { project, lastDonation } = useProject(title, projectId, initialProject);
+  const { collection, lastDonation } = useCollection(title, initialCollection);
   const { user, setSnack, load } = useContext(Context);
 
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
   const [tokenId, setTokenId] = useState("");
 
-  const { balance } = useBalance(project?.coin);
-  const { donate, end, getAllowance, approve } = useChain({
-    contractAddress: project?.collection.address,
-    projectId: project?.index,
-    coinAddress: project?.coin,
+  const { balance } = useBalance(collection?.coin);
+  const { donate, getAllowance, approve } = useChain({
+    contractAddress: collection?.address,
+    coinAddress: collection?.coin,
   });
 
   const donationOptions = [
-    toCoin(project?.donationOptions[0] ?? "0", project?.coin),
-    toCoin(project?.donationOptions[1] ?? "0", project?.coin),
-    toCoin(project?.donationOptions[2] ?? "0", project?.coin),
-    toCoin(balance.toString(), project?.coin),
+    toCoin(collection?.donationOptions[0] ?? "0", collection?.coin),
+    toCoin(collection?.donationOptions[1] ?? "0", collection?.coin),
+    toCoin(collection?.donationOptions[2] ?? "0", collection?.coin),
+    toCoin(balance.toString(), collection?.coin),
   ];
 
   useEffect(() => {
-    if (sameAddr(lastDonation?.owner, user?.address)) {
+    if (sameAddr(lastDonation?.donator.id, user?.address)) {
       setTokenId(lastDonation?.id.split("_t")[1]!);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -69,7 +65,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
   const makeDonation = async (e: any) => {
     e.preventDefault();
     load!(async () => {
-      const amountInWei = toWei(amount, project?.coin);
+      const amountInWei = toWei(amount, collection?.coin);
 
       const allowance = await getAllowance();
       if (amountInWei.gt(balance)) {
@@ -86,20 +82,10 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
     }, "Making donation! \n\nThis will take 2 transactions: \n1. for approving spending the coins  \n2. for donating. \n\nPlease continue to your wallet!");
   };
 
-  const endPro = async (e: any) => {
-    e.preventDefault();
-    load!(async () => {
-      const error = await end();
-      if (error) return setSnack!(error);
-
-      setSnack!("Ended project successfully!", "success");
-    }, "Ending project! Please continue to your wallet!");
-  };
-
-  if (!project) return <h1>Loading...</h1>;
+  if (!collection) return <h1>Loading...</h1>;
   return (
     <>
-      <CustomHead name={project.name} description={project.description} image={getImage(project.image)} />
+      <CustomHead name={collection.name} description={collection.description} image={getImage(collection.image)} />
       <Layout>
         <Modal
           visible={!!tokenId}
@@ -107,12 +93,10 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
             setTokenId("");
           }}
         >
-          <p className="uppercase font-bold my-4">Donation successful</p>
-          <p className="mb-2">View your NFT on Opensea:</p>
+          <p className="uppercase font-bold my-4 text-black">Donation successful</p>
+          <p className="mb-2 text-black">View your NFT on Opensea:</p>
           {tokenId && tokenId !== "loading" ? (
-            <Button  href={`${network.opensea}${project.collection.address}/${tokenId}`}>
-              View NFT
-            </Button>
+            <Button href={`${network.opensea}${collection.address}/${tokenId}`} newTab>View NFT</Button>
           ) : (
             <CircularProgress />
           )}
@@ -121,15 +105,15 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
           <NewDonation donation={lastDonation} />
         </div>
         <div className="max-w-screen-md mx-auto text-center">
-          <h1 className="mt-20 mb-10 text-4xl  font-bold">{project.name}</h1>
-          <div className="bg-project bg-cover md:flex  justify-between mb-20 shadow-lg p-4 rounded-lg shadow-primary bg-zinc-800">
+          <h1 className="mt-20 mb-10 text-4xl  font-bold">{collection.name}</h1>
+          <div className="bg-collection bg-cover md:flex  justify-between mb-20 shadow-lg p-4 rounded-lg shadow-primary bg-zinc-800">
             <div className="min-w-60 w-60 h-60 relative object-cover rounded-3xl overflow-hidden m-auto">
-              {project.image && (
+              {collection.image && (
                 <Image
                   placeholder="blur"
                   blurDataURL="/favicon.png"
                   priority
-                  src={getImage(project.image)}
+                  src={getImage(collection.image)}
                   alt=""
                   layout="fill"
                   className="object-cover"
@@ -138,37 +122,36 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
             </div>
             <div className="md:text-right flex flex-col justify-between md:ml-4 md:w-[60%]">
               <div>
-                <p className="my-2">{project.description}</p>
+                <p className="my-2">{collection.description}</p>
                 <span className="flex justify-end items-center space-x-2">
                   <p className="my-2">Money goes to:</p>
-                  <AccountObject account={project.owner} />
+                  <AccountObject account={collection.owner?.id!} />
                 </span>
-                <ContractObject title={project.collection.id} />
               </div>
 
               <div className=" flex space-x-4 md:justify-end justify-center">
-                {project.url && (
-                  <a href={project.url}>
+                {collection.url && (
+                  <a href={collection.url}>
                     <LinkIcon fontSize="large" />
                   </a>
                 )}
-                {project.socials[0] && (
-                  <a href={project.socials[0]}>
+                {collection.socials[0] && (
+                  <a href={collection.socials[0]}>
                     <YouTubeIcon fontSize="large" />
                   </a>
                 )}
-                {project.socials[1] && (
-                  <a href={project.socials[1]}>
+                {collection.socials[1] && (
+                  <a href={collection.socials[1]}>
                     <FacebookIcon fontSize="large" />
                   </a>
                 )}
-                {project.socials[2] && (
-                  <a href={project.socials[2]}>
+                {collection.socials[2] && (
+                  <a href={collection.socials[2]}>
                     <TwitterIcon fontSize="large" />
                   </a>
                 )}
-                {project.socials[3] && (
-                  <a href={project?.socials[3]}>
+                {collection.socials[3] && (
+                  <a href={collection?.socials[3]}>
                     <InstagramIcon fontSize="large" />
                   </a>
                 )}
@@ -176,11 +159,11 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
             </div>
           </div>
 
-          <ProgresssBar project={project} />
+          <ProgresssBar collection={collection} />
           <br />
-          {user && project.active ? (
+          {user ? (
             <div className="mb-20">
-              <h2 className="my-6 text-lg font-bold">Make a donation to {project.name}</h2>
+              <h2 className="my-6 text-lg font-bold">Make a donation to {collection.name}</h2>
               <form onSubmit={makeDonation} className="flex-col flex max-w-xs mx-auto space-y-2">
                 <TextField type="text" label="Your message" onChange={(e) => setMessage(e.currentTarget.value)} required />
                 <TextField
@@ -188,11 +171,11 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
                   inputProps={{ step: "any" }}
                   label="How much you want to donate?"
                   id="filled-start-adornment"
-                  error={amount ? toWei(amount, project?.coin).gt(balance) : false}
-                  helperText={amount && toWei(amount, project?.coin).gt(balance) ? "Balance too low" : ""}
+                  error={amount ? toWei(amount, collection?.coin).gt(balance) : false}
+                  helperText={amount && toWei(amount, collection?.coin).gt(balance) ? "Balance too low" : ""}
                   value={amount}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">{coinName(project.coin)}</InputAdornment>,
+                    endAdornment: <InputAdornment position="end">{coinName(collection.coin)}</InputAdornment>,
                   }}
                   onChange={(e) => setAmount(e.currentTarget.value)}
                   required
@@ -202,23 +185,18 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
                     <Chip key={i} label={i === 3 ? "MAX" : o} onClick={() => setAmount(o)} variant={amount === o ? "filled" : "outlined"} />
                   ))}
                 </div>
-                <Button>
-                  Donate
-                </Button>
+                <Button>Donate</Button>
               </form>
-              {sameAddr(project.collection.owner, user.address) && (
+              {sameAddr(collection.owner?.id, user.address) && (
                 <>
                   <br />
-                  <Button onClick={endPro} secondary>
-                    End
-                  </Button>
-                  <span> </span>
-                  <Link href={`/projects/${title}/${projectId}/edit`} passHref>
+                  <Link href={`/${title}/edit`} passHref>
                     <Button secondary>Edit</Button>
                   </Link>
                   <br />
                   <br />
-                  <Button secondary
+                  <Button
+                    secondary
                     onClick={() => {
                       navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_URL}${router.asPath}/stream`);
                       setSnack!("Stream link copied to clipboard!", "success");
@@ -230,7 +208,7 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
               )}
             </div>
           ) : (
-            <p className="my-10 uppercase font-bold text-lg">{!user ? "Connect your wallet to make a donation" : "Project is not active"}</p>
+            <p className="my-10 uppercase font-bold text-lg">{!user ? "Connect your wallet to make a donation" : "Collection is not active"}</p>
           )}
         </div>
       </Layout>
@@ -239,29 +217,28 @@ const ProjectPage: NextPage<ProjectProps> = ({ initialProject, title, projectId 
 };
 
 export const getStaticPaths: GetStaticPaths<Params> = async () => {
-  const result = await apolloRequest<ProjectListQueryResult>(ProjectListDocument);
+  const result = await apolloRequest<CollectionListQueryResult>(CollectionListDocument);
 
-  const paths = result.data?.projects.map((p) => ({ params: { title: p.collection.id, projectId: p.index } })) ?? [];
+  const paths = result.data?.collections.map((p) => ({ params: { title: p.id } })) ?? [];
   return {
     paths,
     fallback: true,
   };
 };
 
-export const getStaticProps: GetStaticProps<ProjectProps, Params> = async (context) => {
+export const getStaticProps: GetStaticProps<CollectionProps, Params> = async (context) => {
   const title = context.params?.title ?? "";
-  const projectId = context.params?.projectId ?? "";
-  const result = await apolloRequest<ProjectQueryResult>(ProjectDocument, { id: getProjectId(title, projectId) });
+  const collectionId = context.params?.collectionId ?? "";
+  const result = await apolloRequest<CollectionQueryResult>(CollectionDocument, { id: title });
 
-  const initialProject = result.data?.project ? (result.data.project as Project) : null;
+  const initialCollection = result.data?.collection ? (result.data.collection as Collection) : null;
   return {
     props: {
-      initialProject,
+      initialCollection: initialCollection,
       title,
-      projectId,
     },
     revalidate: 10,
   };
 };
 
-export default ProjectPage;
+export default CollectionPage;

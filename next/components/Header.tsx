@@ -54,9 +54,6 @@ export default function Header() {
               <MenuItem>My collections</MenuItem>
             </Link>
             <Link href={`/accounts/${user?.address}?tab=1`} passHref>
-              <MenuItem>My projects</MenuItem>
-            </Link>
-            <Link href={`/accounts/${user?.address}?tab=2`} passHref>
               <MenuItem>My donations</MenuItem>
             </Link>
             <Divider />

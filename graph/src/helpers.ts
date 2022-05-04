@@ -55,8 +55,6 @@ export function getCollection(title: string): Collection {
         collection.coin = new Bytes(0);
         collection.donationsCount = 0;
         collection.ipfs = ""
-        collection.supporters = []
-        collection.donations = []
 
         collection.name = ""
         collection.description = ""
@@ -93,11 +91,8 @@ export function getDonation(title: string, id: string): Donation {
 export function getAccount(address: string): Account {
     let account = Account.load(address);
     if (!account) {
-        updateGlobal(Update.user)
+        updateGlobal(Update.user)//move to somewhere else
         account = new Account(address);
-        account.donations = []
-        account.collections = []
-        account.supportedCollections = []
 
         account.save()
     }
@@ -113,7 +108,6 @@ export function getSupporter(title: string, address: string): Supporter {
         supporter.account = address
         supporter.donated = BigInt.fromU64(0)
         supporter.donationsCount = 0
-        supporter.donations = []
 
         supporter.save()
     }

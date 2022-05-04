@@ -7,7 +7,7 @@ export const networks = [
         factory: "0xca551fEA6ea8339cfF61C75a5b3eD04E7D5fd9f3",
         graph: "https://api.thegraph.com/subgraphs/name/karelnagel/streamint",
         graphIpfs: "https://api.thegraph.com/ipfs/api/v0/",
-        ipfsGateway: "https://ipfs.io/ipfs/",
+        ipfsGateway: "https://streamint.infura-ipfs.io/ipfs/",
         opensea: "https://opensea.io/assets/matic/",
         etherscan: "https://polygonscan.com/address/",
         coins: [
@@ -25,10 +25,10 @@ export const networks = [
     {
         name: "rinkeby",
         chainId: 4,
-        factory: "0x5eF79CA6a5D3908CA9B7432b96367335E815A25F",
+        factory: "0x5031dCc9Bc5F910F271D70D9DE0307FD92B720F2",
         graph: "https://api.thegraph.com/subgraphs/name/karelnagel/streamint-dev",
         graphIpfs: "https://api.thegraph.com/ipfs/api/v0/",
-        ipfsGateway: "https://ipfs.io/ipfs/",
+        ipfsGateway: "https://streamint.infura-ipfs.io/ipfs/",
         opensea: "https://testnets.opensea.io/assets/",
         etherscan: "https://rinkeby.etherscan.io/address/",
         coins: [

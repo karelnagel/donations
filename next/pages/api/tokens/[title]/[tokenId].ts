@@ -18,15 +18,15 @@ export default async function tokenMeta(
     if (!donation) return res.status(404).json({ error: "no doantion" })
 
     const returnValue: TokenInfo = {
-        name: `${donation.project.name} #${tokenId}`,
-        description: donation.project.description,
-        external_url: donation.project.url,
-        image: getImage(donation.project.image),
+        name: `${donation.collection.name} #${tokenId}`,
+        description: donation.collection.description,
+        external_url: donation.collection.url,
+        image: getImage(donation.collection.image),
         attributes: [
             { trait_type: "Message", value: donation.message },
-            { trait_type: "Original owner", value: donation.owner },
+            { trait_type: "Donator", value: donation.donator.id },
             { trait_type: "Amount", value: ethers.utils.formatEther(donation.amount) },
-            { trait_type: "Project ID", value: donation.project.index }
+            { trait_type: "Time", value: donation.time }
         ],
     }
     res.status(200).json(returnValue)

@@ -1,8 +1,14 @@
 query accountCollections($owner: String = "") {
   collections(where: { owner_contains_nocase: $owner }, orderBy: time, orderDirection: desc) {
     id
-    address
+    donated
+    donationsCount
+    coin
+    owner {id}
+    name
+    description
+    image
+    goal
     time
-    owner
   }
 }

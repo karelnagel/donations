@@ -3,25 +3,32 @@ import React from "react";
 import Layout from "../components/Layout";
 import Link from "next/link";
 import Image from "next/image";
-import { GlobalDocument, GlobalQueryResult, LatestProjectsDocument, LatestProjectsQueryResult, Project, Global } from "../graphql/generated";
+import {
+  GlobalDocument,
+  GlobalQueryResult,
+  Global,
+  Collection,
+  LatestCollectionsQueryResult,
+  LatestCollectionsDocument,
+} from "../graphql/generated";
 import { apolloRequest } from "../idk/apollo";
-import { ProjectObject } from "../components/ProjectObject";
+import { CollectionObject } from "../components/CollectionObject";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { faqs } from "../idk/faqs";
-import { crypto, nft, streamer } from "../idk/images";
+import { crypto, nft } from "../idk/images";
 import Button from "../components/Button";
 
 interface ProjectProps {
-  projects: Project[];
+  collections: Collection[];
   global: Global | null;
 }
 
-const Home: NextPage<ProjectProps> = ({ projects, global }) => {
+const Home: NextPage<ProjectProps> = ({ collections, global }) => {
   const stats = [
-    { number: global?.streamersCount, stat: "streamers" },
-    { number: global?.usersCount, stat: "donators" },
-    { number: global?.projectsCount, stat: "projects" },
+    { number: global?.collectionsCount, stat: "collections" },
+    { number: global?.usersCount, stat: "users" },
+    { number: global?.supportersCount, stat: "supporters" },
     { number: global?.donationsCount, stat: "donations" },
   ];
   return (
@@ -103,14 +110,12 @@ const Home: NextPage<ProjectProps> = ({ projects, global }) => {
         <section id="projects" className="text-center">
           <h2 className="text-center">Latest projects</h2>
           <div className="flex flex-col  space-y-6 max-w-lg mx-auto my-10">
-            {projects.map((p, i) => (
-              <ProjectObject project={p} key={i} />
+            {collections.map((p, i) => (
+              <CollectionObject collection={p} key={i} />
             ))}
           </div>
           <Link href={"/projects"} passHref>
-            <Button>
-              Latest projects
-            </Button>
+            <Button>Latest projects</Button>
           </Link>
         </section>
         <section id="faq">
@@ -135,14 +140,14 @@ const Home: NextPage<ProjectProps> = ({ projects, global }) => {
 };
 
 export const getStaticProps: GetStaticProps<ProjectProps> = async () => {
-  const result = await apolloRequest<LatestProjectsQueryResult>(LatestProjectsDocument, { first: 4 });
-  const projects = result.data?.projects ? result.data.projects.map((p) => p as Project) : [];
+  const result = await apolloRequest<LatestCollectionsQueryResult>(LatestCollectionsDocument, { first: 4 });
+  const collections = result.data?.collections ? result.data.collections.map((c) => c as Collection) : [];
 
   const result2 = await apolloRequest<GlobalQueryResult>(GlobalDocument);
   const global = result2.data?.global ? (result2.data.global as Global) : null;
   return {
     props: {
-      projects,
+      collections,
       global,
     },
     revalidate: 60,

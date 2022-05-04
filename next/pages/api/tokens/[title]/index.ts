@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { ProjectDocument, ProjectQueryResult } from '../../../../graphql/generated'
+import { CollectionDocument, CollectionQueryResult } from '../../../../graphql/generated'
 import { apolloRequest } from '../../../../idk/apollo'
 import { getImage, getProjectId } from '../../../../idk/helpers'
 
@@ -10,18 +10,18 @@ export default async function contractMeta(
 ) {
   const { title } = req.query as { title: string }
 
-  const projectRequest = await apolloRequest<ProjectQueryResult>(ProjectDocument, { id: getProjectId(title, "1") })
+  const projectRequest = await apolloRequest<CollectionQueryResult>(CollectionDocument, { id: getProjectId(title, "1") })
   console.log(projectRequest)
-  const project = projectRequest.data?.project;
-  if (!project) return res.status(404).json({ error: " no contract" })
+  const collection = projectRequest.data?.collection;
+  if (!collection) return res.status(404).json({ error: " no contract" })
 
   const returnvalue = {
-    name: project.name,
-    description: project.description,
-    external_link: project.url,
+    name: collection.name,
+    description: collection.description,
+    external_link: collection.url,
     seller_fee_basis_points: 750,
-    fee_recipient: project.collection.owner,
-    image: getImage(project.image)
+    fee_recipient: collection.owner?.id,
+    image: getImage(collection.image)
   }
   res.status(200).json(returnvalue)
 }

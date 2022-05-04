@@ -1,22 +1,17 @@
-import { Project } from "../graphql/generated";
+import { Collection } from "../graphql/generated";
 import { create, urlSource } from 'ipfs-http-client'
-import axios from "axios";
 import { network } from "../config";
 
-const pinataJsonUrl = "https://api.pinata.cloud/pinning/pinJSONToIPFS"
-const pinataFileUrl = "https://api.pinata.cloud/pinning/pinFileToIPFS"
-const headers = {
-    pinata_api_key: process.env.NEXT_PUBLIC_PINATA_PUBLIC!,
-    pinata_secret_api_key: process.env.NEXT_PUBLIC_PINATA_PRIVATE!,
-}
-export async function ipfsUpload(project: Project, file?: any) {
-    const image = file ? await uploadImage(file) : project.image
+export async function ipfsUpload(collection: Collection, file?: any) {
+    const image = file ? await uploadImage(file) : collection.image
     if (!image) return null
+    console.log("image "+image)
 
-    const hash = await uploadJson({ name: project.name, description: project.description, goal: project.goal, url: project.url, image, socials: project.socials, donationOptions: project.donationOptions })
+    const hash = await uploadJson({ name: collection.name, description: collection.description, goal: collection.goal, url: collection.url, image, socials: collection.socials, donationOptions: collection.donationOptions })
     if (!hash) return null
+    console.log("hash "+hash)
 
-    const url = `https://gateway.pinata.cloud/ipfs/${hash}`
+    const url = `https://streamint.infura-ipfs.io/ipfs/${hash}`
     const result = await pinToGraph(url)
     return result ? hash : null;
 }
@@ -34,15 +29,18 @@ async function pinToGraph(url: string) {
     }
 }
 
+const authorization = "Basic " + btoa(process.env.NEXT_PUBLIC_IPFS_PUBLIC + ":" + process.env.NEXT_PUBLIC_IPFS_PRIVATE);
+
 async function uploadImage(file: any) {
     try {
-        const data = new FormData();
-        data.append("file", file);
-
-        const result = await axios.post(pinataFileUrl, data, { headers })
-        if (result.status !== 200) return null
-        console.log("image", result.data.IpfsHash)
-        return result.data.IpfsHash
+        const ipfs = create({
+            url: "https://ipfs.infura.io:5001/api/v0",
+            headers: {
+                authorization,
+            },
+        });
+        const result = await ipfs.add(file)
+        return result.cid.toString()
     }
     catch (e) {
         console.log(e);
@@ -51,11 +49,15 @@ async function uploadImage(file: any) {
 }
 async function uploadJson(object: {}) {
     try {
+        const ipfs = create({
+            url: "https://ipfs.infura.io:5001/api/v0",
+            headers: {
+                authorization,
+            },
+        });
         const data = JSON.stringify(object, null, 2)
-        const result = await axios.post(pinataJsonUrl, object, { headers })
-        if (result.status !== 200) return null
-        console.log("json", result.data.IpfsHash)
-        return result.data.IpfsHash
+        const result = await ipfs.add(data)
+        return result.cid.toString()
     }
     catch (e) {
         console.log(e);
