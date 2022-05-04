@@ -1,38 +1,14 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts"
 import { NewCollection, SetURI } from "../generated/Factory/Factory"
 import {
-  End,
   OwnershipTransferred,
-  NewProject,
   NewDonation,
   SetIPFS,
   Transfer
 } from "../generated/templates/collection/Collection"
 import { Title } from "../generated/schema"
 import { Collection as CollectionTemplate } from '../generated/templates'
-import { getCollection, getDonation, getGlobal, getProject, getProjectId, getTitle } from "./helpers"
+import { getCollection, getDonation, updateGlobal, getTitle, getAccount, getSupporter } from "./helpers"
 import { getIpfs } from "./ipfs"
-
-function newProject(title: string, coin: Bytes, timestamp: BigInt, owner: string, ipfs: string): void {
-  const collection = getCollection(title)
-  collection.projectsCount++
-  collection.save()
-
-  const big = BigInt.fromString(collection.projectsCount.toString())
-  const project = getProject(title, big);
-  project.coin = coin;
-  project.time = timestamp;
-  project.owner = owner;
-  project.save()
-
-  getIpfs(title, big, ipfs)
-
-  const global = getGlobal();
-  global.projectsCount++;
-  global.streamersCount++;// Todo check if already in list
-  global.save()
-}
-
 
 export function handleNewCollection(event: NewCollection): void {
   const title = new Title(event.params.collection.toHexString())
@@ -41,64 +17,45 @@ export function handleNewCollection(event: NewCollection): void {
 
   const collection = getCollection(event.params.title)
   collection.address = event.params.collection
+  collection.coin = event.params.coin
   collection.time = event.block.timestamp
-  collection.owner = event.params.owner.toHexString();
+  collection.owner = getAccount(event.params.owner.toHexString()).id
   collection.save()
 
-  newProject(event.params.title, event.params.projectCoin, event.block.timestamp, event.params.projectOwner.toHexString(), event.params.projectIpfs)
+  getIpfs(event.params.title, event.params.ipfs)
 
   CollectionTemplate.create(event.params.collection)
-
-  const global = getGlobal();
-  global.collectionsCount++;
-  global.save()
 }
 
 export function handleSetURI(event: SetURI): void {
   // Todo
 }
 
-export function handleNewProject(event: NewProject): void {
-  const title = getTitle(event.address.toHexString())
-  if (!title) return;
-
-  newProject(title.collection, event.params.coin, event.block.timestamp, event.params.owner.toHexString(), event.params.ipfs)
-}
-
-
-export function handleEnd(event: End): void {
-  const title = getTitle(event.address.toHexString())
-  if (!title) return;
-
-  const project = getProject(title.collection, event.params.id)
-  project.active = false;
-  project.save()
-}
-
-
 export function handleNewDonation(event: NewDonation): void {
   const title = getTitle(event.address.toHexString())
   if (!title) return;
 
-  const project = getProject(title.collection, event.params.projectId)
+  const project = getCollection(title.collection)
   project.donated = project.donated.plus(event.params.amount);
-  project.donationCount++;
+  project.donationsCount++;
   project.save()
+
+  const account = getAccount(event.params.owner.toHexString())
+
+  const supporter = getSupporter(title.collection, account.id)
+  supporter.donated = supporter.donated.plus(event.params.amount)
+  supporter.donationsCount++
+  supporter.donated = supporter.donated.plus(event.params.amount)
+  supporter.save()
 
   const donation = getDonation(title.collection, event.params.id.toString())
   donation.amount = event.params.amount
   donation.message = event.params.message;
-  donation.owner = event.params.owner.toHexString();
-  donation.project = getProjectId(title.collection, event.params.projectId.toString())
+  donation.donator = account.id
+  donation.collection = title.collection
+  donation.supporter = supporter.id
   donation.time = event.block.timestamp;
-  donation.originalOwner = event.params.owner.toHexString()
-
   donation.save()
-
-  const global = getGlobal();
-  global.donationsCount++;
-  global.usersCount++; // Todo check if not already user
-  global.save()
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
@@ -106,7 +63,7 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   if (!title) return;
 
   const collection = getCollection(title.collection)
-  collection.owner = event.params.newOwner.toHexString();
+  collection.owner = getAccount(event.params.newOwner.toHexString()).id;
   collection.save()
 }
 
@@ -114,7 +71,7 @@ export function handleSetIPFS(event: SetIPFS): void {
   const title = getTitle(event.address.toHexString())
   if (!title) return;
 
-  getIpfs(title.collection, event.params.id, event.params.ipfs)
+  getIpfs(title.collection, event.params.ipfs)
 }
 
 export function handleTransfer(event: Transfer): void {
@@ -122,6 +79,17 @@ export function handleTransfer(event: Transfer): void {
   if (!title) return;
 
   const donation = getDonation(title.collection, event.params.tokenId.toString())
-  donation.owner = event.params.to.toHexString();
+
+  const oldSupporter = getSupporter(title.collection, event.params.from.toHexString())
+  oldSupporter.donated = oldSupporter.donated.minus(donation.amount)
+  oldSupporter.donationsCount--
+  oldSupporter.save()
+
+  const newSupporter = getSupporter(title.collection, event.params.to.toHexString())
+  newSupporter.donated = newSupporter.donated.plus(donation.amount)
+  newSupporter.donationsCount++
+  newSupporter.save()
+
+  donation.supporter = newSupporter.id
   donation.save()
 }

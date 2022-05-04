@@ -22,98 +22,42 @@ contract Collection is ERC721, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _donationCounter;
-    Counters.Counter private _projectCounter;
 
     string public title;
+    IERC20 public coin;
+    string public ipfs;
     IFactory factory;
-
-    struct Project {
-        bool active;
-        IERC20 coin;
-        address owner;
-        string ipfs;
-    }
-
-    mapping(uint256 => Project) public projects;
-
-    modifier onlyActive(uint256 id) {
-        require(projects[id].active, "Project not active!");
-        _;
-    }
 
     constructor(
         string memory _title,
-        address projectCoin,
-        address projectOwner,
-        string memory projectIpfs
+        address _coin,
+        string memory _ipfs
     ) ERC721(_title, _title) {
         title = _title;
+        coin = IERC20(_coin);
+        ipfs = _ipfs;
         factory = IFactory(msg.sender);
-        _newProject(projectCoin, projectOwner, projectIpfs);
     }
-
-    // New project
-    function newProject(
-        address coin,
-        address owner,
-        string memory ipfs
-    ) public onlyOwner {
-        _newProject(coin, owner, ipfs);
-        emit NewProject(_projectCounter.current(), coin, owner, ipfs);
-    }
-
-    function _newProject(
-        address coin,
-        address owner,
-        string memory ipfs
-    ) private {
-        _projectCounter.increment();
-        projects[_projectCounter.current()] = Project(
-            true,
-            IERC20(coin),
-            owner,
-            ipfs
-        );
-    }
-
-    event NewProject(uint256 id, address coin, address owner, string ipfs);
 
     // Changing ipfs
-    function setIPFS(uint256 id, string memory ipfs)
-        public
-        onlyOwner
-        onlyActive(id)
-    {
-        projects[id].ipfs = ipfs;
-        emit SetIPFS(id, ipfs);
+    function setIPFS(string memory _ipfs) public onlyOwner {
+        ipfs = _ipfs;
+        emit SetIPFS(_ipfs);
     }
 
-    event SetIPFS(uint256 id, string ipfs);
-
-    // End
-    function end(uint256 id) public onlyOwner onlyActive(id) {
-        projects[id].active = false;
-        emit End(id);
-    }
-
-    event End(uint256 id);
+    event SetIPFS(string ipfs);
 
     // Donate
-    function donate(
-        uint256 id,
-        uint256 amount,
-        string memory message
-    ) public onlyActive(id) {
+    function donate(uint256 amount, string memory message) public {
         require(amount > 0, "Donation amount is 0");
 
-        projects[id].coin.transferFrom(msg.sender, projects[id].owner, amount);
+        coin.transferFrom(msg.sender, owner(), amount);
 
         _donationCounter.increment();
         _safeMint(msg.sender, _donationCounter.current());
 
         emit NewDonation(
             _donationCounter.current(),
-            id,
             msg.sender,
             amount,
             message
@@ -122,7 +66,6 @@ contract Collection is ERC721, Ownable {
 
     event NewDonation(
         uint256 id,
-        uint256 projectId,
         address owner,
         uint256 amount,
         string message

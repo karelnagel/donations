@@ -1,10 +1,6 @@
 import { BigInt, Bytes, log } from "@graphprotocol/graph-ts"
-import { Collection, Donation, Project, Title, Global } from "../generated/schema"
-
-
-export function getProjectId(title: string, projectId: string): string { return title + "_p" + projectId }
-export function getDonationId(title: string, tokenId: string): string { return title + "_t" + tokenId }
-
+import { Collection, Donation, Title, Global, Account, Supporter } from "../generated/schema"
+import { getDonationId, getSupporterId } from "./getIds"
 
 export function getTitle(address: string): Title | null {
     let title = Title.load(address)
@@ -14,75 +10,112 @@ export function getTitle(address: string): Title | null {
     }
     return title
 }
+
 export function getGlobal(): Global {
     let global = Global.load("0");
     if (!global) {
         global = new Global("0");
+
         global.donationsCount = 0
-        global.projectsCount = 0
         global.collectionsCount = 0
-
-        global.users = []
         global.usersCount = 0
-        global.streamers = []
-        global.streamersCount = 0
-
+        global.supportersCount = 0
         global.save()
     }
     return global
 }
+
+enum Update {
+    donation,
+    collection,
+    user,
+    supporter
+}
+export function updateGlobal(update: Update): void {
+    const global = getGlobal()
+
+    if (update === Update.donation) global.donationsCount++
+    if (update === Update.collection) global.collectionsCount++
+    if (update === Update.user) global.usersCount++
+    if (update === Update.supporter) global.supportersCount++
+
+    global.save()
+}
+
 export function getCollection(title: string): Collection {
     let collection = Collection.load(title);
     if (!collection) {
+        updateGlobal(Update.collection)
         collection = new Collection(title);
-        collection.owner = ""
+        collection.owner = getAccount("null").id
         collection.address = new Bytes(0)
-        collection.projectsCount = 0
         collection.time = BigInt.fromU64(0)
+
+        collection.donated = BigInt.fromU64(0)
+        collection.coin = new Bytes(0);
+        collection.donationsCount = 0;
+        collection.ipfs = ""
+        collection.supporters = []
+        collection.donations = []
+
+        collection.name = ""
+        collection.description = ""
+        collection.image = ""
+        collection.background = ""
+        collection.goal = "0"
+        collection.url = ""
+        collection.socials = []
+        collection.donationOptions = []
+
         collection.save()
     }
     return collection
 }
-export function getProject(title: string, id: BigInt): Project {
-    const projectId = getProjectId(title, id.toString())
-    let project = Project.load(projectId);
-    if (!project) {
-        project = new Project(projectId);
-        project.index = id
-        project.donated = BigInt.fromU64(0)
-        project.coin = new Bytes(0);
-        project.active = true;
-        project.collection = title;
-        project.time = BigInt.fromU64(0);
-        project.donationCount = 0;
-        project.owner = "";
-        project.ipfs = ""
 
-        project.name = ""
-        project.description = ""
-        project.image = ""
-        project.goal = "0"
-        project.url = ""
-        project.socials = []
-        project.donationOptions = []
-
-        project.save()
-    }
-    return project
-}
 export function getDonation(title: string, id: string): Donation {
     const donationId = getDonationId(title, id)
     let donation = Donation.load(donationId);
     if (!donation) {
+        updateGlobal(Update.donation)
         donation = new Donation(donationId);
         donation.amount = BigInt.fromU64(0)
         donation.message = ""
-        donation.project = ""
-        donation.originalOwner = ""
-        donation.owner = ""
+        donation.collection = title
+        donation.supporter = getAccount("null").id
+        donation.donator = getAccount("null").id
         donation.time = BigInt.fromU64(0)
 
         donation.save()
     }
     return donation
+}
+
+export function getAccount(address: string): Account {
+    let account = Account.load(address);
+    if (!account) {
+        updateGlobal(Update.user)
+        account = new Account(address);
+        account.donations = []
+        account.collections = []
+        account.supportedCollections = []
+
+        account.save()
+    }
+    return account
+}
+
+export function getSupporter(title: string, address: string): Supporter {
+    let supporter = Supporter.load(getSupporterId(title, address));
+    if (!supporter) {
+        updateGlobal(Update.supporter)
+        supporter = new Supporter(address);
+        supporter.collection = title
+        supporter.account = address
+        supporter.donated = BigInt.fromU64(0)
+        supporter.donationsCount = 0
+        supporter.donations = []
+
+        supporter.save()
+    }
+    return supporter
 }

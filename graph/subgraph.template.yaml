@@ -21,7 +21,7 @@ dataSources:
         - name: Factory
           file: ./abis/contracts/factory.sol/Factory.json
       eventHandlers:
-        - event: NewCollection(string,address,address,address,address,string)
+        - event: NewCollection(string,address,address,address,string)
           handler: handleNewCollection
         - event: SetURI(string)
           handler: handleSetURI
@@ -46,13 +46,9 @@ templates:
         - name: Collection
           file: ./abis/contracts/Collection.sol/Collection.json
       eventHandlers:
-        - event: NewProject(uint256,address,address,string)
-          handler: handleNewProject
-        - event: NewDonation(uint256,uint256,address,uint256,string)
+        - event: NewDonation(uint256,address,uint256,string)
           handler: handleNewDonation
-        - event: End(uint256)
-          handler: handleEnd
-        - event: SetIPFS(uint256,string)
+        - event: SetIPFS(string)
           handler: handleSetIPFS
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer

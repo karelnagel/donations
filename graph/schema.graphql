@@ -1,60 +1,64 @@
 type Global @entity {
-  id:ID!
-  donationsCount:Int!
-  projectsCount:Int!
-  collectionsCount:Int!
-
-  users:[String!]!
-  usersCount:Int!
-  
-  streamers:[String!]!
-  streamersCount:Int!
+  id: ID!
+  donationsCount: Int!
+  collectionsCount: Int!
+  usersCount: Int!
+  supportersCount: Int!
 }
+
 type Title @entity {
   id: ID!
   collection: String!
 }
+
 type Collection @entity {
   id: ID! # title
   address: Bytes!
-  projects: [Project!]! @derivedFrom(field: "collection")
-  projectsCount: Int!
-
-  time: BigInt!
-  owner: String!
-}
-
-type Project @entity {
-  id: ID! # title_p1
-  index: BigInt!
-  donated: BigInt!
-  donationCount: Int!
   coin: Bytes!
-  active: Boolean!
   ipfs: String!
+
+  donated: BigInt!
+  donationsCount: Int!
 
   name: String!
   description: String!
   image: String!
+  background: String!
   goal: String!
   url: String!
   socials: [String!]!
   donationOptions: [String!]!
 
-  collection: Collection!
-  donations: [Donation!]! @derivedFrom(field: "project")
+  donations: [Donation!]! @derivedFrom(field: "collection")
+  supporters: [Supporter!]! @derivedFrom(field: "collection")
 
-  owner: String!
   time: BigInt!
+  owner: Account
 }
 
 type Donation @entity {
   id: ID! # title_t1
   amount: BigInt!
   message: String!
-  project: Project!
-  originalOwner: String!
+  collection: Collection!
+  supporter: Supporter!
 
-  owner: String!
+  donator: Account!
   time: BigInt!
+}
+
+type Account @entity {
+  id: ID! # address
+  donations: [Donation!]! @derivedFrom(field: "donator")
+  collections: [Collection!]! @derivedFrom(field: "owner")
+  supportedCollections: [Supporter!]! @derivedFrom(field: "account")
+}
+
+type Supporter @entity {
+  id: ID! # title_address
+  collection: Collection!
+  account: Account!
+  donated: BigInt!
+  donationsCount: Int!
+  donations: [Donation!]! @derivedFrom(field: "supporter")
 }

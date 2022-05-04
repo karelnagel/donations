@@ -30,13 +30,12 @@ before("Start", async function () {
   await usdc.deployed();
 });
 
-describe("Start project", function () {
+describe("Start collection", function () {
   it("emits an event", async function () {
     expect(
       await factory.newCollection(
         "my_collection",
         usdc.address,
-        acc2.address,
         "my_project_ipfs"
       )
     )
@@ -46,7 +45,6 @@ describe("Start project", function () {
         "0xCafac3dD18aC6c6e92c921884f9E4176737C052c",
         acc1.address,
         "0x663F3ad617193148711d28f5334eE4Ed07016602",
-        acc2.address,
         "my_project_ipfs"
       );
   });
@@ -58,25 +56,16 @@ describe("Start project", function () {
     collection = Collection.attach(collectionAddress);
 
     expect(await collection.title()).to.equal("my_collection");
+    expect(await collection.coin()).to.equal(usdc.address);
+    expect(await collection.ipfs()).to.equal("my_project_ipfs");
     expect(await collection.owner()).to.equal(acc1.address);
     expect(await collection.tokenURI(1)).to.equal(`${url}my_collection/1`);
     expect(await collection.contractURI()).to.equal(`${url}my_collection`);
-
-    const project = await collection.projects(1);
-    expect(project.coin).to.equal(usdc.address);
-    expect(project.active).to.equal(true);
-    expect(project.owner).to.equal(acc2.address);
-    expect(project.ipfs).to.equal("my_project_ipfs");
   });
 
   it("can't create a new project with same title", async function () {
     await expect(
-      factory.newCollection(
-        "my_collection",
-        usdc.address,
-        acc2.address,
-        "my_project2_ipfs"
-      )
+      factory.newCollection("my_collection", usdc.address, "my_project2_ipfs")
     ).to.be.revertedWith("Title already exists");
   });
 });
@@ -102,19 +91,19 @@ describe("Edit uri", function () {
 describe("Edit project ipfs", function () {
   const ipfs2 = "my_project_ipfs2";
   it("not owners can't edit", async function () {
-    await expect(collection.connect(acc2).setIPFS(1, ipfs2)).to.be.revertedWith(
+    await expect(collection.connect(acc2).setIPFS(ipfs2)).to.be.revertedWith(
       "caller is not the owner"
     );
   });
   it("parameters changed", async function () {
-    await expect(collection.setIPFS(1, ipfs2))
+    await expect(collection.setIPFS(ipfs2))
       .to.emit(collection, "SetIPFS")
-      .withArgs(1, ipfs2);
-    expect((await collection.projects(1)).ipfs).to.equal(ipfs2);
+      .withArgs(ipfs2);
+    expect(await collection.ipfs()).to.equal(ipfs2);
   });
 });
 
-const Donate = (id: number, projectId: number) => {
+const Donate = (id: number) => {
   describe(`Donation #${id}`, function () {
     let senderBalance: BigNumber;
     let receiverBalance: BigNumber;
@@ -122,42 +111,34 @@ const Donate = (id: number, projectId: number) => {
     const message = `I like your project ${id}`;
     before(async function () {
       senderBalance = await usdc.balanceOf(acc3.address);
-      receiverBalance = await usdc.balanceOf(acc2.address);
+      receiverBalance = await usdc.balanceOf(acc1.address);
     });
 
     it("fails if amount == 0", async function () {
       await expect(
-        collection.connect(acc3).donate(projectId, 0, message)
+        collection.connect(acc3).donate(0, message)
       ).to.be.revertedWith("Donation amount is 0");
     });
 
     it("fails if not allowed", async function () {
-      await expect(
-        collection.donate(projectId, donation, message)
-      ).to.be.revertedWith("ERC20: insufficient allowance");
+      await expect(collection.donate(donation, message)).to.be.revertedWith(
+        "ERC20: insufficient allowance"
+      );
     });
 
     it("successful donation", async function () {
       await usdc.connect(acc3).approve(collection.address, donation);
-      expect(
-        await collection.connect(acc3).donate(projectId, donation, message)
-      )
+      expect(await collection.connect(acc3).donate(donation, message))
         .to.emit(collection, "NewDonation")
-        .withArgs(
-          id.toString(),
-          projectId.toString(),
-          acc3.address,
-          donation,
-          message
-        );
+        .withArgs(id.toString(), acc3.address, donation, message);
 
       // donator has less money
       expect(await usdc.balanceOf(acc3.address)).to.equal(
         senderBalance.sub(donation)
       );
 
-      // contract has more money
-      expect(await usdc.balanceOf(acc2.address)).to.equal(
+      // owner has more money
+      expect(await usdc.balanceOf(acc1.address)).to.equal(
         receiverBalance.add(donation)
       );
 
@@ -166,93 +147,6 @@ const Donate = (id: number, projectId: number) => {
     });
   });
 };
-Donate(1, 1);
-
-describe("New project", async function () {
-  it("emits event", async function () {
-    expect(
-      await collection.newProject(
-        usdc.address,
-        acc2.address,
-        "my_project2_ipfs"
-      )
-    )
-      .to.emit(collection, "NewProject")
-      .withArgs(2, usdc.address, acc2.address, "my_project2_ipfs");
-  });
-  it("has correct params", async function () {
-    const project = await collection.projects(2);
-    expect(project.ipfs).to.equal("my_project2_ipfs");
-    expect(project.owner).to.equal(acc2.address);
-    expect(project.coin).to.equal(usdc.address);
-    expect(project.active).to.equal(true);
-  });
-});
-
-Donate(2, 2);
-Donate(3, 2);
-Donate(4, 1);
-
-describe("acc2 ending project 1", async function () {
-  const id = 1;
-
-  it("acc3 cant end", async function () {
-    expect(collection.connect(acc3).end(id)).to.be.revertedWith(
-      "Ownable: caller is not the owner"
-    );
-  });
-  it("acc2 cant end", async function () {
-    expect(collection.connect(acc2).end(id)).to.be.revertedWith(
-      "Ownable: caller is not the owner"
-    );
-  });
-  it("success", async function () {
-    expect(await collection.connect(acc1).end(id))
-      .to.emit(collection, "End")
-      .withArgs(id);
-  });
-  it("cant end again", async function () {
-    expect(collection.connect(acc1).end(id)).to.be.revertedWith(
-      "Project not active!"
-    );
-  });
-
-  it("can't donate anymore", async function () {
-    await expect(collection.donate(id, donation, "Hello")).to.be.revertedWith(
-      "Project not active!"
-    );
-  });
-});
-
-Donate(5, 2);
-
-describe("acc1 ending project 2", async function () {
-  const id = 2;
-
-  it("acc3 cant end", async function () {
-    expect(collection.connect(acc3).end(id)).to.be.revertedWith(
-      "Ownable: caller is not the owner"
-    );
-  });
-  it("acc2 cant end", async function () {
-    expect(collection.connect(acc2).end(id)).to.be.revertedWith(
-      "Ownable: caller is not the owner"
-    );
-  });
-  it("success", async function () {
-    expect(await collection.connect(acc1).end(id))
-      .to.emit(collection, "End")
-      .withArgs(id);
-  });
-  it("cant end again", async function () {
-    expect(collection.connect(acc1).end(id)).to.be.revertedWith(
-      "Project not active!"
-    );
-  });
-
-  it("can't donate anymore", async function () {
-    await expect(collection.donate(id, donation, "Hello")).to.be.revertedWith(
-      "Project not active!"
-    );
-  });
-});
+Donate(1);
+Donate(2);
+Donate(3);

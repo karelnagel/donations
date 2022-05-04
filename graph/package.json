@@ -6,8 +6,8 @@
     "prepare:matic": "mustache networks/matic.json subgraph.template.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph codegen && graph build",
-    "deploy:main": "graph deploy --product hosted-service karelnagel/streamint",
-    "deploy:dev": "graph deploy --product hosted-service karelnagel/streamint-dev",
+    "deploy:matic": "graph deploy --product hosted-service karelnagel/streamint",
+    "deploy:rinkeby": "graph deploy --product hosted-service karelnagel/streamint-dev",
     "create-local": "graph create --node http://localhost:8020/ streamint",
     "remove-local": "graph remove --node http://localhost:8020/ streamint",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 streamint"

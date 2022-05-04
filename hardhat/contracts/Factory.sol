@@ -30,17 +30,15 @@ contract Factory is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     function newCollection(
         string memory title,
-        address projectCoin,
-        address projectOwner,
-        string memory projectIpfs
+        address coin,
+        string memory ipfs
     ) public {
         require(collections[title] == address(0), "Title already exists");
 
         Collection collection = new Collection(
             title,
-            projectCoin,
-            projectOwner,
-            projectIpfs
+            coin,
+            ipfs
         );
         collection.transferOwnership(msg.sender);
         collections[title] = address(collection);
@@ -49,9 +47,8 @@ contract Factory is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             title,
             collections[title],
             msg.sender,
-            projectCoin,
-            projectOwner,
-            projectIpfs
+            coin,
+            ipfs
         );
     }
 
@@ -59,9 +56,8 @@ contract Factory is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         string title,
         address collection,
         address owner,
-        address projectCoin,
-        address projectOwner,
-        string projectIpfs
+        address coin,
+        string ipfs
     );
 
     function getContractURI(string memory title)

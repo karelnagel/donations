@@ -1,13 +1,13 @@
 import { BigInt, JSONValueKind, log } from "@graphprotocol/graph-ts"
 import { ipfs, json } from '@graphprotocol/graph-ts'
-import { getProject } from "./helpers";
+import { getCollection } from "./helpers";
 
-export function getIpfs(title: string, projectId: BigInt, ipfsHash: string): void {
+export function getIpfs(title: string, ipfsHash: string): void {
 
-    const project = getProject(title, projectId)
-    project.ipfs = ipfsHash;
+    const collection = getCollection(title)
+    collection.ipfs = ipfsHash;
 
-    project.save()
+    collection.save()
 
     const data = ipfs.cat(ipfsHash)
     if (!data) {
@@ -23,19 +23,22 @@ export function getIpfs(title: string, projectId: BigInt, ipfsHash: string): voi
     const object = tryValue.value.toObject()
 
     const name = object.get("name")
-    if (name && name.kind === JSONValueKind.STRING) project.name = name.toString();
+    if (name && name.kind === JSONValueKind.STRING) collection.name = name.toString();
 
     const description = object.get("description")
-    if (description && description.kind === JSONValueKind.STRING) project.description = description.toString();
+    if (description && description.kind === JSONValueKind.STRING) collection.description = description.toString();
 
     const url = object.get("url")
-    if (url && url.kind === JSONValueKind.STRING) project.url = url.toString();
+    if (url && url.kind === JSONValueKind.STRING) collection.url = url.toString();
 
     const image = object.get("image")
-    if (image && image.kind === JSONValueKind.STRING) project.image = image.toString();
+    if (image && image.kind === JSONValueKind.STRING) collection.image = image.toString();
+
+    const background = object.get("background")
+    if (background && background.kind === JSONValueKind.STRING) collection.background = background.toString();
 
     const goal = object.get("goal")
-    if (goal && goal.kind === JSONValueKind.STRING) project.goal = goal.toString();
+    if (goal && goal.kind === JSONValueKind.STRING) collection.goal = goal.toString();
 
     const socials = object.get("socials")
     if (socials && socials.kind === JSONValueKind.ARRAY) {
@@ -47,7 +50,7 @@ export function getIpfs(title: string, projectId: BigInt, ipfsHash: string): voi
                 array.push(socialArray[i].toString())
             }
         }
-        project.socials = array
+        collection.socials = array
     }
 
     const donationOptions = object.get("donationOptions")
@@ -60,9 +63,9 @@ export function getIpfs(title: string, projectId: BigInt, ipfsHash: string): voi
                 array.push(optionsArray[i].toString())
             }
         }
-        project.donationOptions = array
+        collection.donationOptions = array
     }
 
 
-    project.save()
+    collection.save()
 }
