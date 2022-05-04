@@ -8,7 +8,7 @@ const EditProject: NextPage = () => {
     query: { title },
   } = useRouter();
 
-  return <EditPage title={title?.toString()} type={Type.EDIT_COLLECTION} topText="Edit project" buttonText="Edit" />;
+  return <EditPage title={title?.toString()} type={Type.EDIT_COLLECTION} topText="Edit collection" buttonText="Edit collection" />;
 };
 
 export default EditProject;

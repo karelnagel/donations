@@ -1,9 +1,7 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { ethers } from 'ethers'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { DonationDocument, DonationQueryResult } from '../../../../graphql/generated'
 import { apolloRequest } from '../../../../idk/apollo'
-import { getImage, getTokenId } from '../../../../idk/helpers'
+import { coinName, getImage, getTokenId, toCoin } from '../../../../idk/helpers'
 import { TokenInfo } from '../../../../interfaces/TokenInfo'
 
 export default async function tokenMeta(
@@ -25,8 +23,9 @@ export default async function tokenMeta(
         attributes: [
             { trait_type: "Message", value: donation.message },
             { trait_type: "Donator", value: donation.donator.id },
-            { trait_type: "Amount", value: ethers.utils.formatEther(donation.amount) },
-            { trait_type: "Time", value: donation.time }
+            { trait_type: "Amount", value: toCoin(donation.amount, donation.collection.coin) },
+            { trait_type: "Coin", value: coinName(donation.collection.coin) },
+            { trait_type: "Time", value: donation.time, display_type: "date" }
         ],
     }
     res.status(200).json(returnValue)

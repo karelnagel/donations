@@ -10,6 +10,7 @@ query donation($id: ID = "") {
       name
       description
       url
+      coin
       image
       socials
       donationOptions

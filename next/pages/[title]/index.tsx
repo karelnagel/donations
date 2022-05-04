@@ -81,7 +81,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
       setTokenId((t) => t ?? "loading");
     }, "Making donation! \n\nThis will take 2 transactions: \n1. for approving spending the coins  \n2. for donating. \n\nPlease continue to your wallet!");
   };
-
+  console.log(collection?.background);
   if (!collection) return <h1>Loading...</h1>;
   return (
     <>
@@ -96,7 +96,9 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
           <p className="uppercase font-bold my-4 text-black">Donation successful</p>
           <p className="mb-2 text-black">View your NFT on Opensea:</p>
           {tokenId && tokenId !== "loading" ? (
-            <Button href={`${network.opensea}${collection.address}/${tokenId}`} newTab>View NFT</Button>
+            <Button href={`${network.opensea}${collection.address}/${tokenId}`} newTab>
+              View NFT
+            </Button>
           ) : (
             <CircularProgress />
           )}
@@ -106,7 +108,10 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
         </div>
         <div className="max-w-screen-md mx-auto text-center">
           <h1 className="mt-20 mb-10 text-4xl  font-bold">{collection.name}</h1>
-          <div className="bg-collection bg-cover md:flex  justify-between mb-20 shadow-lg p-4 rounded-lg shadow-primary bg-zinc-800">
+          <div
+            className={`bg-project bg-cover md:flex relative overflow-hidden justify-between mb-20 shadow-lg p-4 rounded-lg shadow-primary bg-zinc-800`}
+          >
+            <Image layout="fill" alt="" src={getImage(collection.background)} />
             <div className="min-w-60 w-60 h-60 relative object-cover rounded-3xl overflow-hidden m-auto">
               {collection.image && (
                 <Image
@@ -120,7 +125,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
                 />
               )}
             </div>
-            <div className="md:text-right flex flex-col justify-between md:ml-4 md:w-[60%]">
+            <div className="md:text-right flex flex-col justify-between md:ml-4 md:w-[60%] z-10">
               <div>
                 <p className="my-2">{collection.description}</p>
                 <span className="flex justify-end items-center space-x-2">
@@ -162,9 +167,9 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
           <ProgresssBar collection={collection} />
           <br />
           {user ? (
-            <div className="mb-20">
-              <h2 className="my-6 text-lg font-bold">Make a donation to {collection.name}</h2>
-              <form onSubmit={makeDonation} className="flex-col flex max-w-xs mx-auto space-y-2">
+            <div className="mb-20 flex flex-col items-stretch max-w-sm mx-auto space-y-4">
+              <h2 className="my-4 text-lg font-bold">Make a donation to {collection.name}</h2>
+              <form onSubmit={makeDonation} className="flex-col flex space-y-2">
                 <TextField type="text" label="Your message" onChange={(e) => setMessage(e.currentTarget.value)} required />
                 <TextField
                   type="number"
@@ -189,12 +194,9 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
               </form>
               {sameAddr(collection.owner?.id, user.address) && (
                 <>
-                  <br />
                   <Link href={`/${title}/edit`} passHref>
                     <Button secondary>Edit</Button>
                   </Link>
-                  <br />
-                  <br />
                   <Button
                     secondary
                     onClick={() => {

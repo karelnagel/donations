@@ -3,14 +3,7 @@ import React from "react";
 import Layout from "../components/Layout";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  GlobalDocument,
-  GlobalQueryResult,
-  Global,
-  Collection,
-  LatestCollectionsQueryResult,
-  LatestCollectionsDocument,
-} from "../graphql/generated";
+import { GlobalDocument, GlobalQueryResult, Global, Collection, LatestCollectionsQueryResult, LatestCollectionsDocument } from "../graphql/generated";
 import { apolloRequest } from "../idk/apollo";
 import { CollectionObject } from "../components/CollectionObject";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
@@ -41,7 +34,7 @@ const Home: NextPage<ProjectProps> = ({ collections, global }) => {
               <h1 className="text-white text-5xl md:text-6xl font-bold">Crypto donations for streamers</h1>
               <p className="my-10 text-lg">Decentralized opensource platform for accepting crypto donations, with rewarding NFTs</p>
               <Button href="/new" big>
-                Start your project
+                Start your collection
               </Button>
             </div>
           </div>
@@ -93,9 +86,9 @@ const Home: NextPage<ProjectProps> = ({ collections, global }) => {
         <section>
           <h2>How does this work?</h2>
           <ol>
-            <li>Streamer creates a new Project</li>
+            <li>Streamer creates a new Collection</li>
             <li>
-              Streamer can add a overlay of their project to their stream (
+              Streamer can add a overlay of their collection to their stream (
               <a href={process.env.NEXT_PUBLIC_URL + "/projects/ethdon/1/stream"}>example</a>)
             </li>
             <li>
@@ -103,20 +96,18 @@ const Home: NextPage<ProjectProps> = ({ collections, global }) => {
             </li>
             <li>Users go to the link and can donate in crypto using their ethereum wallet</li>
             <li>After donating user receives a NFT with donation message and amount in the attributes</li>
-            <li>Streamer gets all the donated money (or if they set someone other as beneficiary then they will get the money)</li>
-            <li>Streamer can use these NFTs as a access tokens or any other way they wish</li>
+            <li>All the donated money goes to the streamer</li>
+            <li>Streamer can use these NFTs as a access tokens, for private content, as tickets or any other way they wish</li>
           </ol>
         </section>
-        <section id="projects" className="text-center">
-          <h2 className="text-center">Latest projects</h2>
-          <div className="flex flex-col  space-y-6 max-w-lg mx-auto my-10">
+        <section id="projects" className="flex flex-col items-center">
+          <h2 className="text-center">Latest collections</h2>
+          <div className="flex flex-col  space-y-6 max-w-screen-sm  w-full mx-auto my-10">
             {collections.map((p, i) => (
               <CollectionObject collection={p} key={i} />
             ))}
           </div>
-          <Link href={"/projects"} passHref>
-            <Button>Latest projects</Button>
-          </Link>
+          <Button href="/collections">Latest collections</Button>
         </section>
         <section id="faq">
           <h2 className="text-center">FAQ</h2>

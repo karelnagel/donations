@@ -18,7 +18,8 @@ export enum Type {
 const EditPage = ({ title, type, topText, buttonText }: { topText: string; buttonText: string; title?: string; type: Type }) => {
   const router = useRouter();
 
-  const fileInput = createRef<HTMLInputElement>();
+  const imageInput = createRef<HTMLInputElement>();
+  const backgroundInput = createRef<HTMLInputElement>();
   const [getTitles, titles] = useCollectionListLazyQuery();
   const [getSavedCollection, savedCollection] = useCollectionLazyQuery({ variables: { id: title } });
   const [collection, setCollection] = useState<Collection>({
@@ -36,11 +37,8 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
   const { user, setSnack, load } = useContext(Context);
 
   useEffect(() => {
-    if (type === Type.NEW_COLLECTION) {
-      getTitles();
-    } else if (title) {
-      getSavedCollection();
-    }
+    if (type === Type.NEW_COLLECTION) getTitles();
+    else if (title) getSavedCollection();
   }, [type, title, getSavedCollection, getTitles]);
 
   useEffect(() => {
@@ -62,10 +60,11 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
       if (savedCollection.data?.collection?.owner && !sameAddr(savedCollection.data.collection.owner.id, user?.address))
         return setSnack!("Not collection owner ");
 
-      const file = fileInput.current?.files![0];
+      const background = backgroundInput.current?.files![0];
+      const file = imageInput.current?.files![0];
       if (type !== Type.EDIT_COLLECTION && !file) return setSnack!("no image");
 
-      const ipfsHash = await ipfsUpload(collection, file);
+      const ipfsHash = await ipfsUpload(collection, file, background);
       if (!ipfsHash) return setSnack!("error uploading to ipfs");
 
       if (type === Type.NEW_COLLECTION) {
@@ -118,7 +117,10 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
                 </TextField>
               </>
             )}
-            <input type="file" ref={fileInput} className="" />
+            <p>image</p>
+            <input type="file" ref={imageInput} className="" />
+            <p>background</p>
+            <input type="file" ref={backgroundInput} className="" />
             <TextField
               type="text"
               label="Project name"
@@ -179,10 +181,12 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
             </div>
           </div>
           <br />
-          <Button submit>{buttonText}</Button>
+          <Button submit className="mx-auto">
+            {buttonText}
+          </Button>
         </form>
         <br />
-        <Button onClick={router.back} secondary>
+        <Button href={`/${collection.id ?? ""}`} secondary className="mx-auto">
           Back
         </Button>
       </div>

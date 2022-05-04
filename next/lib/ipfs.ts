@@ -2,12 +2,16 @@ import { Collection } from "../graphql/generated";
 import { create, urlSource } from 'ipfs-http-client'
 import { network } from "../config";
 
-export async function ipfsUpload(collection: Collection, file?: any) {
-    const image = file ? await uploadImage(file) : collection.image
+export async function ipfsUpload(collection: Collection, imageFile?: any, backgroundFile?: any) {
+    const image = imageFile ? await uploadImage(imageFile) : collection.image
     if (!image) return null
     console.log("image " + image)
 
-    const hash = await uploadJson({ name: collection.name, description: collection.description, goal: collection.goal, url: collection.url, image, socials: collection.socials, donationOptions: collection.donationOptions })
+    const background = backgroundFile ? await uploadImage(backgroundFile) : collection.background
+    if (!background) return null
+    console.log("background " + background)
+
+    const hash = await uploadJson({ name: collection.name, description: collection.description, goal: collection.goal, url: collection.url, image, background, socials: collection.socials, donationOptions: collection.donationOptions })
     if (!hash) return null
     console.log("hash " + hash)
 

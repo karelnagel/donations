@@ -10,7 +10,11 @@ export function CollectionObject({ collection }: { collection?: Collection }) {
   const router = useRouter();
 
   return collection ? (
-    <div className="shadow-md p-4 rounded-lg cursor-pointer shadow-primary bg-project bg-cover" onClick={() => router.push(`/${collection.id}`)}>
+    <div
+      className="relative overflow-hidden shadow-md p-4 rounded-lg cursor-pointer shadow-primary bg-project bg-cover"
+      onClick={() => router.push(`/${collection.id}`)}
+    >
+      <Image layout="fill" alt="" src={getImage(collection.background)} className="object-cover"/>
       <div className="flex justify-between">
         <div className="w-20 h-20 relative">
           <Image
@@ -23,7 +27,7 @@ export function CollectionObject({ collection }: { collection?: Collection }) {
           />
         </div>
 
-        <div className="text-right flex flex-col justify-evenly">
+        <div className="text-right flex flex-col justify-evenly z-10">
           <h2 className="font-bold mb-2">{collection.name}</h2>
           <AccountObject account={collection.owner?.id!} />
         </div>

@@ -1029,7 +1029,7 @@ export type DonationQueryVariables = Exact<{
 }>;
 
 
-export type DonationQuery = { __typename?: 'Query', donation?: { __typename?: 'Donation', amount: any, message: string, time: any, donator: { __typename?: 'Account', id: string }, collection: { __typename?: 'Collection', name: string, description: string, url: string, image: string, socials: Array<string>, donationOptions: Array<string>, goal: string } } | null };
+export type DonationQuery = { __typename?: 'Query', donation?: { __typename?: 'Donation', amount: any, message: string, time: any, donator: { __typename?: 'Account', id: string }, collection: { __typename?: 'Collection', name: string, description: string, url: string, coin: any, image: string, socials: Array<string>, donationOptions: Array<string>, goal: string } } | null };
 
 export type GlobalQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1255,6 +1255,7 @@ export const DonationDocument = gql`
       name
       description
       url
+      coin
       image
       socials
       donationOptions

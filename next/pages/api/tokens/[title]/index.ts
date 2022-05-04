@@ -21,7 +21,8 @@ export default async function contractMeta(
     external_link: collection.url,
     seller_fee_basis_points: 750,
     fee_recipient: collection.owner?.id,
-    image: getImage(collection.image)
+    image: getImage(collection.image),
+    background: getImage(collection.background)
   }
   res.status(200).json(returnvalue)
 }
