@@ -5,11 +5,11 @@ import { network } from "../config";
 export async function ipfsUpload(collection: Collection, file?: any) {
     const image = file ? await uploadImage(file) : collection.image
     if (!image) return null
-    console.log("image "+image)
+    console.log("image " + image)
 
     const hash = await uploadJson({ name: collection.name, description: collection.description, goal: collection.goal, url: collection.url, image, socials: collection.socials, donationOptions: collection.donationOptions })
     if (!hash) return null
-    console.log("hash "+hash)
+    console.log("hash " + hash)
 
     const url = `https://streamint.infura-ipfs.io/ipfs/${hash}`
     const result = await pinToGraph(url)
@@ -29,8 +29,7 @@ async function pinToGraph(url: string) {
     }
 }
 
-const authorization = "Basic " + btoa(process.env.NEXT_PUBLIC_IPFS_PUBLIC + ":" + process.env.NEXT_PUBLIC_IPFS_PRIVATE);
-
+const authorization = "Basic " + Buffer.from(process.env.NEXT_PUBLIC_IPFS_PUBLIC + ":" + process.env.NEXT_PUBLIC_IPFS_PRIVATE).toString("base64");
 async function uploadImage(file: any) {
     try {
         const ipfs = create({
