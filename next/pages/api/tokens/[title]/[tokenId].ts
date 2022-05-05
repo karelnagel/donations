@@ -23,8 +23,8 @@ export default async function tokenMeta(
         attributes: [
             { trait_type: "Message", value: donation.message },
             { trait_type: "Donator", value: donation.donator.id },
-            { trait_type: "Amount", value: toCoin(donation.amount, donation.collection.coin) },
-            { trait_type: "Coin", value: coinName(donation.collection.coin) },
+            { trait_type: "Amount", value: toCoin(donation.amount, donation.collection.coin.id) },
+            { trait_type: "Coin", value: coinName(donation.collection.coin.id) },
             { trait_type: "Time", value: donation.time, display_type: "date" }
         ],
     }

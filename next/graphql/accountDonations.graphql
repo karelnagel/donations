@@ -7,7 +7,7 @@ query accountDonations($owner: String = "") {
       id
     }
     collection {
-      coin
+      coin{id}
       name
       image
       id

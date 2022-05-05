@@ -1,16 +1,18 @@
 import { useRouter } from "next/router";
-import { NewDonation } from "../../components/NexDonation";
+import { NewDonation } from "../../components/NewDonation";
 import useCollection from "../../hooks/useCollection";
 import Image from "next/image";
 import { coinName, getImage, toCoin, toWeiStr } from "../../idk/helpers";
-import { Account, Donation } from "../../graphql/generated";
+import { Donation } from "../../graphql/generated";
 
 export default function Stream() {
   const { title, left } = useRouter().query;
 
   const { collection, lastDonation } = useCollection(title?.toString()!, null);
   const donationPercent =
-    collection?.donated && collection?.goal ? (Number(toCoin(collection.donated, collection.coin)) / Number(toCoin(collection.goal, collection.coin))) * 100 : 0;
+    collection?.donated && collection?.goal
+      ? (Number(toCoin(collection.donated, collection.coin.id)) / Number(toCoin(collection.goal, collection.coin.id))) * 100
+      : 0;
 
   if (!collection) return <div></div>;
   return (
@@ -20,7 +22,7 @@ export default function Stream() {
           donation={
             lastDonation ??
             ({
-              amount: toWeiStr("100", collection.coin),
+              amount: toWeiStr("100", collection.coin.id),
               message: "hello",
               donator: { id: "0xF4ABa5431B0A26E15FC50Ca03264011e8d86EaB9" },
               collection,
@@ -36,7 +38,8 @@ export default function Stream() {
           <div className="absolute left-0 w-[90%] h-full bg-stream2 shadow-md" style={{ width: `${donationPercent ?? "0"}%` }}></div>
           <p className="relative">{collection.name}</p>
           <p className="relative">
-            {toCoin(collection.donated, collection.coin).split(".")[0]} / {toCoin(collection.goal, collection.coin).split(".")[0]} {coinName(collection.coin)}
+            {toCoin(collection.donated, collection.coin.id).split(".")[0]} / {toCoin(collection.goal, collection.coin.id).split(".")[0]}{" "}
+            {coinName(collection.coin.id)}
           </p>
         </div>
       </div>

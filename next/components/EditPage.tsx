@@ -23,7 +23,7 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
   const [getTitles, titles] = useCollectionListLazyQuery();
   const [getSavedCollection, savedCollection] = useCollectionLazyQuery({ variables: { id: title } });
   const [collection, setCollection] = useState<Collection>({
-    coin: "select",
+    coin: {id:"select"},
     name: "",
     description: "",
     goal: "",
@@ -68,7 +68,7 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
       if (!ipfsHash) return setSnack!("error uploading to ipfs");
 
       if (type === Type.NEW_COLLECTION) {
-        const error = await newCollection(newTitle, collection.coin, ipfsHash);
+        const error = await newCollection(newTitle, collection.coin.id, ipfsHash);
         if (error) return setSnack!(error);
       } else if (type === Type.EDIT_COLLECTION) {
         const error = await setIPFS(ipfsHash);
@@ -105,9 +105,9 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
                   id="select"
                   label="Which ERC20 coin you want to use?"
                   select
-                  onChange={(e) => setCollection((p) => ({ ...p, coin: e.target.value }))}
+                  onChange={(e) => setCollection((p) => ({ ...p, coin: {...p.coin,id:e.target.value} }))}
                   required
-                  value={collection.coin}
+                  value={collection.coin.id}
                 >
                   {network.coins.map((c, i) => (
                     <MenuItem key={i} value={c.address}>
@@ -137,8 +137,8 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
               type="number"
               inputProps={{ step: "any" }}
               label="Project goal"
-              value={toCoin(collection.goal, collection.coin)}
-              onChange={(e) => setCollection((p) => ({ ...p, goal: toWeiStr(e.target.value, collection.coin) }))}
+              value={toCoin(collection.goal, collection.coin.id)}
+              onChange={(e) => setCollection((p) => ({ ...p, goal: toWeiStr(e.target.value, collection.coin.id) }))}
             />
             <TextField
               type="text"
@@ -168,12 +168,12 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
                     type="number"
                     inputProps={{ step: "any" }}
                     label={`Option ${i + 1}`}
-                    value={toCoin(d, collection.coin)}
+                    value={toCoin(d, collection.coin.id)}
                     required
                     onChange={(e) =>
                       setCollection((p) => ({
                         ...p,
-                        donationOptions: [...p.donationOptions.map((d2, i2) => (i2 === i ? toWeiStr(e.target.value, collection.coin) : d2))],
+                        donationOptions: [...p.donationOptions.map((d2, i2) => (i2 === i ? toWeiStr(e.target.value, collection.coin.id) : d2))],
                       }))
                     }
                   />

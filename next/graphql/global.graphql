@@ -4,5 +4,9 @@ query global {
     collectionsCount
     usersCount
     supportersCount
+    coins{
+      id
+      donated
+    }
   }
 }

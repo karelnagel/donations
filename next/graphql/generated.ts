@@ -83,11 +83,86 @@ export type Block_Height = {
   number_gte?: InputMaybe<Scalars['Int']>;
 };
 
+export type Coin = {
+  __typename?: 'Coin';
+  collections: Array<Collection>;
+  donated: Scalars['BigInt'];
+  donationsCount: Scalars['Int'];
+  global: Global;
+  id: Scalars['ID'];
+};
+
+
+export type CoinCollectionsArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Collection_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Collection_Filter>;
+};
+
+export type Coin_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  donated?: InputMaybe<Scalars['BigInt']>;
+  donated_gt?: InputMaybe<Scalars['BigInt']>;
+  donated_gte?: InputMaybe<Scalars['BigInt']>;
+  donated_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  donated_lt?: InputMaybe<Scalars['BigInt']>;
+  donated_lte?: InputMaybe<Scalars['BigInt']>;
+  donated_not?: InputMaybe<Scalars['BigInt']>;
+  donated_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  donationsCount?: InputMaybe<Scalars['Int']>;
+  donationsCount_gt?: InputMaybe<Scalars['Int']>;
+  donationsCount_gte?: InputMaybe<Scalars['Int']>;
+  donationsCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  donationsCount_lt?: InputMaybe<Scalars['Int']>;
+  donationsCount_lte?: InputMaybe<Scalars['Int']>;
+  donationsCount_not?: InputMaybe<Scalars['Int']>;
+  donationsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  global?: InputMaybe<Scalars['String']>;
+  global_contains?: InputMaybe<Scalars['String']>;
+  global_contains_nocase?: InputMaybe<Scalars['String']>;
+  global_ends_with?: InputMaybe<Scalars['String']>;
+  global_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  global_gt?: InputMaybe<Scalars['String']>;
+  global_gte?: InputMaybe<Scalars['String']>;
+  global_in?: InputMaybe<Array<Scalars['String']>>;
+  global_lt?: InputMaybe<Scalars['String']>;
+  global_lte?: InputMaybe<Scalars['String']>;
+  global_not?: InputMaybe<Scalars['String']>;
+  global_not_contains?: InputMaybe<Scalars['String']>;
+  global_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  global_not_ends_with?: InputMaybe<Scalars['String']>;
+  global_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  global_not_in?: InputMaybe<Array<Scalars['String']>>;
+  global_not_starts_with?: InputMaybe<Scalars['String']>;
+  global_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  global_starts_with?: InputMaybe<Scalars['String']>;
+  global_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+export enum Coin_OrderBy {
+  Collections = 'collections',
+  Donated = 'donated',
+  DonationsCount = 'donationsCount',
+  Global = 'global',
+  Id = 'id'
+}
+
 export type Collection = {
   __typename?: 'Collection';
   address: Scalars['Bytes'];
   background: Scalars['String'];
-  coin: Scalars['Bytes'];
+  coin: Coin;
   description: Scalars['String'];
   donated: Scalars['BigInt'];
   donationOptions: Array<Scalars['String']>;
@@ -152,12 +227,26 @@ export type Collection_Filter = {
   background_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
   background_starts_with?: InputMaybe<Scalars['String']>;
   background_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  coin?: InputMaybe<Scalars['Bytes']>;
-  coin_contains?: InputMaybe<Scalars['Bytes']>;
-  coin_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  coin_not?: InputMaybe<Scalars['Bytes']>;
-  coin_not_contains?: InputMaybe<Scalars['Bytes']>;
-  coin_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  coin?: InputMaybe<Scalars['String']>;
+  coin_contains?: InputMaybe<Scalars['String']>;
+  coin_contains_nocase?: InputMaybe<Scalars['String']>;
+  coin_ends_with?: InputMaybe<Scalars['String']>;
+  coin_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  coin_gt?: InputMaybe<Scalars['String']>;
+  coin_gte?: InputMaybe<Scalars['String']>;
+  coin_in?: InputMaybe<Array<Scalars['String']>>;
+  coin_lt?: InputMaybe<Scalars['String']>;
+  coin_lte?: InputMaybe<Scalars['String']>;
+  coin_not?: InputMaybe<Scalars['String']>;
+  coin_not_contains?: InputMaybe<Scalars['String']>;
+  coin_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  coin_not_ends_with?: InputMaybe<Scalars['String']>;
+  coin_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  coin_not_in?: InputMaybe<Array<Scalars['String']>>;
+  coin_not_starts_with?: InputMaybe<Scalars['String']>;
+  coin_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  coin_starts_with?: InputMaybe<Scalars['String']>;
+  coin_starts_with_nocase?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   description_contains?: InputMaybe<Scalars['String']>;
   description_contains_nocase?: InputMaybe<Scalars['String']>;
@@ -374,6 +463,7 @@ export type Donation = {
   message: Scalars['String'];
   supporter: Supporter;
   time: Scalars['BigInt'];
+  tokenId: Scalars['String'];
 };
 
 export type Donation_Filter = {
@@ -483,6 +573,26 @@ export type Donation_Filter = {
   time_lte?: InputMaybe<Scalars['BigInt']>;
   time_not?: InputMaybe<Scalars['BigInt']>;
   time_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  tokenId?: InputMaybe<Scalars['String']>;
+  tokenId_contains?: InputMaybe<Scalars['String']>;
+  tokenId_contains_nocase?: InputMaybe<Scalars['String']>;
+  tokenId_ends_with?: InputMaybe<Scalars['String']>;
+  tokenId_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  tokenId_gt?: InputMaybe<Scalars['String']>;
+  tokenId_gte?: InputMaybe<Scalars['String']>;
+  tokenId_in?: InputMaybe<Array<Scalars['String']>>;
+  tokenId_lt?: InputMaybe<Scalars['String']>;
+  tokenId_lte?: InputMaybe<Scalars['String']>;
+  tokenId_not?: InputMaybe<Scalars['String']>;
+  tokenId_not_contains?: InputMaybe<Scalars['String']>;
+  tokenId_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  tokenId_not_ends_with?: InputMaybe<Scalars['String']>;
+  tokenId_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  tokenId_not_in?: InputMaybe<Array<Scalars['String']>>;
+  tokenId_not_starts_with?: InputMaybe<Scalars['String']>;
+  tokenId_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  tokenId_starts_with?: InputMaybe<Scalars['String']>;
+  tokenId_starts_with_nocase?: InputMaybe<Scalars['String']>;
 };
 
 export enum Donation_OrderBy {
@@ -492,16 +602,27 @@ export enum Donation_OrderBy {
   Id = 'id',
   Message = 'message',
   Supporter = 'supporter',
-  Time = 'time'
+  Time = 'time',
+  TokenId = 'tokenId'
 }
 
 export type Global = {
   __typename?: 'Global';
+  coins: Array<Coin>;
   collectionsCount: Scalars['Int'];
   donationsCount: Scalars['Int'];
   id: Scalars['ID'];
   supportersCount: Scalars['Int'];
   usersCount: Scalars['Int'];
+};
+
+
+export type GlobalCoinsArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Coin_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Coin_Filter>;
 };
 
 export type Global_Filter = {
@@ -550,6 +671,7 @@ export type Global_Filter = {
 };
 
 export enum Global_OrderBy {
+  Coins = 'coins',
   CollectionsCount = 'collectionsCount',
   DonationsCount = 'donationsCount',
   Id = 'id',
@@ -569,6 +691,8 @@ export type Query = {
   _meta?: Maybe<_Meta_>;
   account?: Maybe<Account>;
   accounts: Array<Account>;
+  coin?: Maybe<Coin>;
+  coins: Array<Coin>;
   collection?: Maybe<Collection>;
   collections: Array<Collection>;
   donation?: Maybe<Donation>;
@@ -602,6 +726,24 @@ export type QueryAccountsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<Account_Filter>;
+};
+
+
+export type QueryCoinArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryCoinsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Coin_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Coin_Filter>;
 };
 
 
@@ -700,6 +842,8 @@ export type Subscription = {
   _meta?: Maybe<_Meta_>;
   account?: Maybe<Account>;
   accounts: Array<Account>;
+  coin?: Maybe<Coin>;
+  coins: Array<Coin>;
   collection?: Maybe<Collection>;
   collections: Array<Collection>;
   donation?: Maybe<Donation>;
@@ -733,6 +877,24 @@ export type SubscriptionAccountsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<Account_Filter>;
+};
+
+
+export type SubscriptionCoinArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionCoinsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Coin_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Coin_Filter>;
 };
 
 
@@ -1003,21 +1165,21 @@ export type AccountCollectionsQueryVariables = Exact<{
 }>;
 
 
-export type AccountCollectionsQuery = { __typename?: 'Query', collections: Array<{ __typename?: 'Collection', id: string, donated: any, donationsCount: number, coin: any, name: string, description: string, image: string, goal: string, time: any, owner?: { __typename?: 'Account', id: string } | null }> };
+export type AccountCollectionsQuery = { __typename?: 'Query', collections: Array<{ __typename?: 'Collection', id: string, donated: any, donationsCount: number, name: string, description: string, image: string, goal: string, time: any, coin: { __typename?: 'Coin', id: string }, owner?: { __typename?: 'Account', id: string } | null }> };
 
 export type AccountDonationsQueryVariables = Exact<{
   owner?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type AccountDonationsQuery = { __typename?: 'Query', donations: Array<{ __typename?: 'Donation', id: string, message: string, amount: any, time: any, donator: { __typename?: 'Account', id: string }, collection: { __typename?: 'Collection', coin: any, name: string, image: string, id: string } }> };
+export type AccountDonationsQuery = { __typename?: 'Query', donations: Array<{ __typename?: 'Donation', id: string, message: string, amount: any, time: any, donator: { __typename?: 'Account', id: string }, collection: { __typename?: 'Collection', name: string, image: string, id: string, coin: { __typename?: 'Coin', id: string } } }> };
 
 export type CollectionQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
 }>;
 
 
-export type CollectionQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', donated: any, donationsCount: number, coin: any, time: any, id: string, name: string, description: string, image: string, background: string, url: string, goal: string, socials: Array<string>, donationOptions: Array<string>, address: any, owner?: { __typename?: 'Account', id: string } | null, donations: Array<{ __typename?: 'Donation', id: string, message: string, amount: any, time: any, donator: { __typename?: 'Account', id: string }, collection: { __typename?: 'Collection', coin: any } }> } | null };
+export type CollectionQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', donated: any, donationsCount: number, time: any, id: string, name: string, description: string, image: string, background: string, url: string, goal: string, socials: Array<string>, donationOptions: Array<string>, address: any, coin: { __typename?: 'Coin', id: string }, owner?: { __typename?: 'Account', id: string } | null, donations: Array<{ __typename?: 'Donation', id: string, message: string, amount: any, time: any, donator: { __typename?: 'Account', id: string }, collection: { __typename?: 'Collection', coin: { __typename?: 'Coin', id: string } } }> } | null };
 
 export type CollectionListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1029,19 +1191,19 @@ export type DonationQueryVariables = Exact<{
 }>;
 
 
-export type DonationQuery = { __typename?: 'Query', donation?: { __typename?: 'Donation', amount: any, message: string, time: any, donator: { __typename?: 'Account', id: string }, collection: { __typename?: 'Collection', name: string, description: string, url: string, coin: any, image: string, socials: Array<string>, donationOptions: Array<string>, goal: string } } | null };
+export type DonationQuery = { __typename?: 'Query', donation?: { __typename?: 'Donation', amount: any, message: string, time: any, donator: { __typename?: 'Account', id: string }, collection: { __typename?: 'Collection', name: string, description: string, url: string, image: string, socials: Array<string>, donationOptions: Array<string>, goal: string, coin: { __typename?: 'Coin', id: string } } } | null };
 
 export type GlobalQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GlobalQuery = { __typename?: 'Query', global?: { __typename?: 'Global', donationsCount: number, collectionsCount: number, usersCount: number, supportersCount: number } | null };
+export type GlobalQuery = { __typename?: 'Query', global?: { __typename?: 'Global', donationsCount: number, collectionsCount: number, usersCount: number, supportersCount: number, coins: Array<{ __typename?: 'Coin', id: string, donated: any }> } | null };
 
 export type LatestCollectionsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type LatestCollectionsQuery = { __typename?: 'Query', collections: Array<{ __typename?: 'Collection', donated: any, time: any, coin: any, name: string, description: string, image: string, background: string, goal: string, donationsCount: number, id: string, owner?: { __typename?: 'Account', id: string } | null }> };
+export type LatestCollectionsQuery = { __typename?: 'Query', collections: Array<{ __typename?: 'Collection', donated: any, time: any, name: string, description: string, image: string, background: string, goal: string, donationsCount: number, id: string, coin: { __typename?: 'Coin', id: string }, owner?: { __typename?: 'Account', id: string } | null }> };
 
 
 export const AccountCollectionsDocument = gql`
@@ -1054,7 +1216,9 @@ export const AccountCollectionsDocument = gql`
     id
     donated
     donationsCount
-    coin
+    coin {
+      id
+    }
     owner {
       id
     }
@@ -1108,7 +1272,9 @@ export const AccountDonationsDocument = gql`
       id
     }
     collection {
-      coin
+      coin {
+        id
+      }
       name
       image
       id
@@ -1150,7 +1316,9 @@ export const CollectionDocument = gql`
   collection(id: $id) {
     donated
     donationsCount
-    coin
+    coin {
+      id
+    }
     time
     id
     owner {
@@ -1174,7 +1342,9 @@ export const CollectionDocument = gql`
       amount
       time
       collection {
-        coin
+        coin {
+          id
+        }
       }
     }
   }
@@ -1255,7 +1425,9 @@ export const DonationDocument = gql`
       name
       description
       url
-      coin
+      coin {
+        id
+      }
       image
       socials
       donationOptions
@@ -1299,6 +1471,10 @@ export const GlobalDocument = gql`
     collectionsCount
     usersCount
     supportersCount
+    coins {
+      id
+      donated
+    }
   }
 }
     `;
@@ -1334,7 +1510,9 @@ export const LatestCollectionsDocument = gql`
   collections(first: $first, orderBy: time, orderDirection: desc) {
     donated
     time
-    coin
+    coin {
+      id
+    }
     name
     description
     image

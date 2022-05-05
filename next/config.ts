@@ -9,6 +9,7 @@ export const networks = [
         graphIpfs: "https://api.thegraph.com/ipfs/api/v0/",
         ipfsGateway: "https://streamint.infura-ipfs.io/ipfs/",
         opensea: "https://opensea.io/assets/matic/",
+        gecko: "polygon-pos",
         etherscan: "https://polygonscan.com/address/",
         coins: [
             { coin: "Select", address: "select", decimals: 18 },
@@ -31,6 +32,7 @@ export const networks = [
         ipfsGateway: "https://streamint.infura-ipfs.io/ipfs/",
         opensea: "https://testnets.opensea.io/assets/",
         etherscan: "https://rinkeby.etherscan.io/address/",
+        gecko: null,
         coins: [
             { coin: "Select", address: "select", decimals: 18 },
             { coin: "DAI", address: "0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735", decimals: 18 }

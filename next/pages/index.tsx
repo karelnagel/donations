@@ -1,7 +1,6 @@
 import type { GetStaticProps, NextPage } from "next";
 import React from "react";
 import Layout from "../components/Layout";
-import Link from "next/link";
 import Image from "next/image";
 import { GlobalDocument, GlobalQueryResult, Global, Collection, LatestCollectionsQueryResult, LatestCollectionsDocument } from "../graphql/generated";
 import { apolloRequest } from "../idk/apollo";
@@ -11,18 +10,20 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { faqs } from "../idk/faqs";
 import { crypto, nft } from "../idk/images";
 import Button from "../components/Button";
+import { getTotalRaised } from "../lib/getTotalRaised";
 
 interface ProjectProps {
   collections: Collection[];
   global: Global | null;
+  total: number;
 }
 
-const Home: NextPage<ProjectProps> = ({ collections, global }) => {
+const Home: NextPage<ProjectProps> = ({ collections, global, total }) => {
   const stats = [
     { number: global?.collectionsCount, stat: "collections" },
     { number: global?.usersCount, stat: "users" },
-    { number: global?.supportersCount, stat: "supporters" },
-    { number: global?.donationsCount, stat: "donations" },
+    { number: global?.supportersCount, stat: "donations" },
+    { number: `${total} $`, stat: "donated usd" },
   ];
   return (
     <Layout className="flex flex-col items-center space-y-4" noMargin>
@@ -136,10 +137,13 @@ export const getStaticProps: GetStaticProps<ProjectProps> = async () => {
 
   const result2 = await apolloRequest<GlobalQueryResult>(GlobalDocument);
   const global = result2.data?.global ? (result2.data.global as Global) : null;
+  const total = global?.coins ? await getTotalRaised(global?.coins) : 0;
+
   return {
     props: {
       collections,
       global,
+      total,
     },
     revalidate: 60,
   };

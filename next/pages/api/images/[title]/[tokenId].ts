@@ -25,7 +25,7 @@ export default async function tokenImage(
     logo.resize(140, 140)
     image.composite(logo, 0, 0)
     image.print(font, 0, 0, {
-        text: `${toCoin(donation.amount)} ${coinName(donation.collection.coin)}`,
+        text: `${toCoin(donation.amount)} ${coinName(donation.collection.coin.id)}`,
         alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
     }, 1000, 1000);
 

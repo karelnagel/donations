@@ -18,7 +18,7 @@ import LinkIcon from "@mui/icons-material/Link";
 import { useRouter } from "next/router";
 import { Context } from "../../idk/context";
 import { ProgresssBar } from "../../components/ProgressBar";
-import { NewDonation } from "../../components/NexDonation";
+import { NewDonation } from "../../components/NewDonation";
 import Link from "next/link";
 import Modal from "../../components/Modal";
 import { network } from "../../config";
@@ -42,17 +42,17 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
   const [message, setMessage] = useState("");
   const [tokenId, setTokenId] = useState("");
 
-  const { balance } = useBalance(collection?.coin);
+  const { balance } = useBalance(collection?.coin.id);
   const { donate, getAllowance, approve } = useChain({
     contractAddress: collection?.address,
-    coinAddress: collection?.coin,
+    coinAddress: collection?.coin.id,
   });
 
   const donationOptions = [
-    toCoin(collection?.donationOptions[0] ?? "0", collection?.coin),
-    toCoin(collection?.donationOptions[1] ?? "0", collection?.coin),
-    toCoin(collection?.donationOptions[2] ?? "0", collection?.coin),
-    toCoin(balance.toString(), collection?.coin),
+    toCoin(collection?.donationOptions[0] ?? "0", collection?.coin.id),
+    toCoin(collection?.donationOptions[1] ?? "0", collection?.coin.id),
+    toCoin(collection?.donationOptions[2] ?? "0", collection?.coin.id),
+    toCoin(balance.toString(), collection?.coin.id),
   ];
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
   const makeDonation = async (e: any) => {
     e.preventDefault();
     load!(async () => {
-      const amountInWei = toWei(amount, collection?.coin);
+      const amountInWei = toWei(amount, collection?.coin.id);
 
       const allowance = await getAllowance();
       if (amountInWei.gt(balance)) {
@@ -176,11 +176,11 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
                   inputProps={{ step: "any" }}
                   label="How much you want to donate?"
                   id="filled-start-adornment"
-                  error={amount ? toWei(amount, collection?.coin).gt(balance) : false}
-                  helperText={amount && toWei(amount, collection?.coin).gt(balance) ? "Balance too low" : ""}
+                  error={amount ? toWei(amount, collection?.coin.id).gt(balance) : false}
+                  helperText={amount && toWei(amount, collection?.coin.id).gt(balance) ? "Balance too low" : ""}
                   value={amount}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">{coinName(collection.coin)}</InputAdornment>,
+                    endAdornment: <InputAdornment position="end">{coinName(collection.coin.id)}</InputAdornment>,
                   }}
                   onChange={(e) => setAmount(e.currentTarget.value)}
                   required

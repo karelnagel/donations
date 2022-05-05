@@ -2,7 +2,7 @@ query latestCollections($first: Int = 10) {
   collections(first: $first, orderBy: time, orderDirection: desc) {
     donated
     time
-    coin
+    coin{id}
     name
     description
     image

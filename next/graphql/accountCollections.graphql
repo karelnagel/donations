@@ -3,7 +3,7 @@ query accountCollections($owner: String = "") {
     id
     donated
     donationsCount
-    coin
+    coin{id}
     owner {id}
     name
     description

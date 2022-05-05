@@ -2,7 +2,9 @@ query collection($id: ID = "") {
   collection(id: $id) {
     donated
     donationsCount
-    coin
+    coin {
+      id
+    }
     time
     id
     owner {
@@ -26,7 +28,7 @@ query collection($id: ID = "") {
       amount
       time
       collection {
-        coin
+        coin{id}
       }
     }
   }
