@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { CollectionDocument, CollectionQueryResult } from '../../../../graphql/generated'
 import { apolloRequest } from '../../../../idk/apollo'
-import { getImage, getProjectId } from '../../../../idk/helpers'
+import { getImage } from '../../../../idk/helpers'
 
 export default async function contractMeta(
   req: NextApiRequest,

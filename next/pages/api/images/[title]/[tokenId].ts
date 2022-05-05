@@ -21,7 +21,7 @@ export default async function tokenImage(
     // const font = await Jimp.loadFont(Jimp.FONT_SANS_128_WHITE);
     const font = await Jimp.loadFont(`${process.env.NEXT_PUBLIC_URL}/open-sans-128-white/open-sans-128-white.fnt`);
 
-    const logo = await Jimp.read(`${process.env.NEXT_PUBLIC_URL}/favicon.png`);
+    const logo = await Jimp.read(`${process.env.NEXT_PUBLIC_URL}/logo.png`);
     logo.resize(140, 140)
     image.composite(logo, 0, 0)
     image.print(font, 0, 0, {

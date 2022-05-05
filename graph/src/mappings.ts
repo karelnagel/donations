@@ -7,7 +7,7 @@ import {
 } from "../generated/templates/collection/Collection"
 import { Title } from "../generated/schema"
 import { Collection as CollectionTemplate } from '../generated/templates'
-import { getCollection, getDonation, updateGlobal, getTitle, getAccount, getSupporter } from "./helpers"
+import { getCollection, getDonation, getTitle, getAccount, getSupporter, getCoin } from "./helpers"
 import { getIpfs } from "./ipfs"
 
 export function handleNewCollection(event: NewCollection): void {
@@ -17,7 +17,7 @@ export function handleNewCollection(event: NewCollection): void {
 
   const collection = getCollection(event.params.title)
   collection.address = event.params.collection
-  collection.coin = event.params.coin
+  collection.coin = getCoin(event.params.coin.toHexString()).id
   collection.time = event.block.timestamp
   collection.owner = getAccount(event.params.owner.toHexString()).id
   collection.save()
@@ -35,17 +35,16 @@ export function handleNewDonation(event: NewDonation): void {
   const title = getTitle(event.address.toHexString())
   if (!title) return;
 
-  const project = getCollection(title.collection)
-  project.donated = project.donated.plus(event.params.amount);
-  project.donationsCount++;
-  project.save()
+  const collection = getCollection(title.collection)
+  collection.donated = collection.donated.plus(event.params.amount);
+  collection.donationsCount++;
+  collection.save()
 
   const account = getAccount(event.params.owner.toHexString())
 
   const supporter = getSupporter(title.collection, account.id)
   supporter.donated = supporter.donated.plus(event.params.amount)
   supporter.donationsCount++
-  supporter.donated = supporter.donated.plus(event.params.amount)
   supporter.save()
 
   const donation = getDonation(title.collection, event.params.id.toString())
@@ -56,9 +55,16 @@ export function handleNewDonation(event: NewDonation): void {
   donation.supporter = supporter.id
   donation.time = event.block.timestamp;
   donation.save()
+
+  const coin = getCoin(collection.coin)
+  coin.donationsCount++;
+  coin.donated = coin.donated.plus(event.params.amount)
+  coin.save()
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
+  if (event.params.previousOwner.toHexString() == "0x0000000000000000000000000000000000000000") return // First ownership transfre not needed
+
   const title = getTitle(event.address.toHexString())
   if (!title) return;
 
@@ -75,6 +81,8 @@ export function handleSetIPFS(event: SetIPFS): void {
 }
 
 export function handleTransfer(event: Transfer): void {
+  if (event.params.from.toHexString() == "0x0000000000000000000000000000000000000000") return // If minting the token then no need to change supporters
+
   const title = getTitle(event.address.toHexString())
   if (!title) return;
 

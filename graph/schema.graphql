@@ -4,6 +4,7 @@ type Global @entity {
   collectionsCount: Int!
   usersCount: Int!
   supportersCount: Int!
+  coins: [Coin!]! @derivedFrom(field: "global")
 }
 
 type Title @entity {
@@ -14,7 +15,7 @@ type Title @entity {
 type Collection @entity {
   id: ID! # title
   address: Bytes!
-  coin: Bytes!
+  coin: Coin!
   ipfs: String!
 
   donated: BigInt!
@@ -38,6 +39,7 @@ type Collection @entity {
 
 type Donation @entity {
   id: ID! # title_t1
+  tokenId: String!
   amount: BigInt!
   message: String!
   collection: Collection!
@@ -61,4 +63,11 @@ type Supporter @entity {
   donated: BigInt!
   donationsCount: Int!
   donations: [Donation!]! @derivedFrom(field: "supporter")
+}
+type Coin @entity {
+  id: ID! # coin address
+  collections: [Collection!]! @derivedFrom(field: "coin")
+  global: Global!
+  donated: BigInt!
+  donationsCount: Int!
 }
