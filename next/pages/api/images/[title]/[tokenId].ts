@@ -1,9 +1,8 @@
-import Jimp from 'jimp'
+const Jimp = require('jimp');
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { DonationDocument, DonationQueryResult } from '../../../../graphql/generated'
 import { apolloRequest } from '../../../../idk/apollo'
 import { coinName, getImage, getTokenId, toCoin } from '../../../../idk/helpers'
-import { TokenInfo } from '../../../../interfaces/TokenInfo'
 
 export default async function tokenImage(
     req: NextApiRequest,
@@ -20,7 +19,7 @@ export default async function tokenImage(
     const image = await Jimp.read(getImage(donation.collection.image));
     image.resize(1000, 1000)
     const font = await Jimp.loadFont(Jimp.FONT_SANS_128_WHITE);
-    // const font = await Jimp.loadFont(`${process.env.NEXT_PUBLIC_URL}/font.fnt`);
+    // const font = await Jimp.loadFont(`${process.env.NEXT_PUBLIC_URL}/6SITIR8cBUj_TAtJu5osKfed.ttf_0.fnt`);
 
     const logo = await Jimp.read(`${process.env.NEXT_PUBLIC_URL}/favicon.png`);
     logo.resize(140, 140)
