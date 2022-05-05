@@ -1174,6 +1174,13 @@ export type AccountDonationsQueryVariables = Exact<{
 
 export type AccountDonationsQuery = { __typename?: 'Query', donations: Array<{ __typename?: 'Donation', id: string, message: string, amount: any, time: any, donator: { __typename?: 'Account', id: string }, collection: { __typename?: 'Collection', name: string, image: string, id: string, coin: { __typename?: 'Coin', id: string } } }> };
 
+export type AccountSupportedQueryVariables = Exact<{
+  owner?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type AccountSupportedQuery = { __typename?: 'Query', supporters: Array<{ __typename?: 'Supporter', id: string, donated: any, donationsCount: number, collection: { __typename?: 'Collection', image: string, name: string, id: string, coin: { __typename?: 'Coin', id: string } } }> };
+
 export type CollectionQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
 }>;
@@ -1185,6 +1192,13 @@ export type CollectionListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CollectionListQuery = { __typename?: 'Query', collections: Array<{ __typename?: 'Collection', id: string }> };
+
+export type CollectionSupportersQueryVariables = Exact<{
+  title?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type CollectionSupportersQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', name: string, coin: { __typename?: 'Coin', id: string }, supporters: Array<{ __typename?: 'Supporter', id: string, donated: any, donationsCount: number, account: { __typename?: 'Account', id: string } }> } | null };
 
 export type DonationQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
@@ -1311,6 +1325,55 @@ export function useAccountDonationsLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type AccountDonationsQueryHookResult = ReturnType<typeof useAccountDonationsQuery>;
 export type AccountDonationsLazyQueryHookResult = ReturnType<typeof useAccountDonationsLazyQuery>;
 export type AccountDonationsQueryResult = Apollo.QueryResult<AccountDonationsQuery, AccountDonationsQueryVariables>;
+export const AccountSupportedDocument = gql`
+    query accountSupported($owner: String = "") {
+  supporters(
+    where: {account_contains_nocase: $owner}
+    orderBy: donated
+    orderDirection: desc
+  ) {
+    id
+    donated
+    donationsCount
+    collection {
+      image
+      name
+      id
+      coin {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAccountSupportedQuery__
+ *
+ * To run a query within a React component, call `useAccountSupportedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountSupportedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountSupportedQuery({
+ *   variables: {
+ *      owner: // value for 'owner'
+ *   },
+ * });
+ */
+export function useAccountSupportedQuery(baseOptions?: Apollo.QueryHookOptions<AccountSupportedQuery, AccountSupportedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccountSupportedQuery, AccountSupportedQueryVariables>(AccountSupportedDocument, options);
+      }
+export function useAccountSupportedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountSupportedQuery, AccountSupportedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccountSupportedQuery, AccountSupportedQueryVariables>(AccountSupportedDocument, options);
+        }
+export type AccountSupportedQueryHookResult = ReturnType<typeof useAccountSupportedQuery>;
+export type AccountSupportedLazyQueryHookResult = ReturnType<typeof useAccountSupportedLazyQuery>;
+export type AccountSupportedQueryResult = Apollo.QueryResult<AccountSupportedQuery, AccountSupportedQueryVariables>;
 export const CollectionDocument = gql`
     query collection($id: ID = "") {
   collection(id: $id) {
@@ -1412,6 +1475,52 @@ export function useCollectionListLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type CollectionListQueryHookResult = ReturnType<typeof useCollectionListQuery>;
 export type CollectionListLazyQueryHookResult = ReturnType<typeof useCollectionListLazyQuery>;
 export type CollectionListQueryResult = Apollo.QueryResult<CollectionListQuery, CollectionListQueryVariables>;
+export const CollectionSupportersDocument = gql`
+    query collectionSupporters($title: ID = "") {
+  collection(id: $title) {
+    name
+    coin {
+      id
+    }
+    supporters(orderBy: donated, orderDirection: desc) {
+      id
+      donated
+      donationsCount
+      account {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCollectionSupportersQuery__
+ *
+ * To run a query within a React component, call `useCollectionSupportersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollectionSupportersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollectionSupportersQuery({
+ *   variables: {
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useCollectionSupportersQuery(baseOptions?: Apollo.QueryHookOptions<CollectionSupportersQuery, CollectionSupportersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CollectionSupportersQuery, CollectionSupportersQueryVariables>(CollectionSupportersDocument, options);
+      }
+export function useCollectionSupportersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CollectionSupportersQuery, CollectionSupportersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CollectionSupportersQuery, CollectionSupportersQueryVariables>(CollectionSupportersDocument, options);
+        }
+export type CollectionSupportersQueryHookResult = ReturnType<typeof useCollectionSupportersQuery>;
+export type CollectionSupportersLazyQueryHookResult = ReturnType<typeof useCollectionSupportersLazyQuery>;
+export type CollectionSupportersQueryResult = Apollo.QueryResult<CollectionSupportersQuery, CollectionSupportersQueryVariables>;
 export const DonationDocument = gql`
     query donation($id: ID = "") {
   donation(id: $id) {

@@ -56,6 +56,9 @@ export default function Header() {
             <Link href={`/accounts/${user?.address}?tab=1`} passHref>
               <MenuItem>My donations</MenuItem>
             </Link>
+            <Link href={`/accounts/${user?.address}?tab=2`} passHref>
+              <MenuItem>My supported collections</MenuItem>
+            </Link>
             <Divider />
 
             <Link href={`/new`} passHref>

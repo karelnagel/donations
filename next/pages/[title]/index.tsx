@@ -107,9 +107,10 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
           <NewDonation donation={lastDonation} />
         </div>
         <div className="max-w-screen-md mx-auto text-center">
-          <h1 className="mt-20 mb-10 text-4xl  font-bold">{collection.name}</h1>
+          <h1 className="mt-20 mb-10 text-4xl  font-bold">Donate to {collection.name}</h1>
+
           <div
-            className={`bg-project bg-cover md:flex relative overflow-hidden justify-between mb-20 shadow-lg p-4 rounded-lg shadow-primary bg-zinc-800`}
+            className={`bg-project bg-cover md:flex relative overflow-hidden justify-between mb-6 shadow-lg p-4 rounded-lg shadow-primary bg-zinc-800`}
           >
             <Image layout="fill" alt="" src={getImage(collection.background)} />
             <div className="min-w-60 w-60 h-60 relative object-cover rounded-3xl overflow-hidden m-auto">
@@ -125,7 +126,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
                 />
               )}
             </div>
-            <div className="md:text-right flex flex-col justify-between md:ml-4 md:w-[60%] z-10">
+            <div className="md:text-right flex flex-col justify-between md:ml-4 md:w-[60%] z-10 relative">
               <div>
                 <p className="my-2">{collection.description}</p>
                 <span className="flex justify-end items-center space-x-2">
@@ -163,7 +164,17 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
               </div>
             </div>
           </div>
-
+          <div className="flex justify-evenly mb-12">
+            <Button text href={`/${collection.id}/private`}>
+              Private content
+            </Button>
+            <Button text href={`/${collection.id}/voting`}>
+              Voting
+            </Button>
+            <Button text href={`/${collection.id}/supporters`}>
+              Leaderboard
+            </Button>
+          </div>
           <ProgresssBar collection={collection} />
           <br />
           {user ? (

@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
-import { Collection, Donation, useAccountCollectionsLazyQuery, useAccountDonationsLazyQuery } from "../../graphql/generated";
+import {
+  Collection,
+  Donation,
+  Supporter,
+  useAccountCollectionsLazyQuery,
+  useAccountDonationsLazyQuery,
+  useAccountSupportedLazyQuery,
+} from "../../graphql/generated";
 import { useRouter } from "next/router";
 import { CircularProgress, Tab, Tabs } from "@mui/material";
 import { TokenObject } from "../../components/TokenObject";
 import { CollectionObject } from "../../components/CollectionObject";
 import { NextPage } from "next";
 import useENS from "../../hooks/useENS";
+import { coinName, getImage, toCoin } from "../../idk/helpers";
+import Image from "next/image";
+import Link from "next/link";
 
 const AccountPage: NextPage = () => {
   const router = useRouter();
@@ -14,6 +24,7 @@ const AccountPage: NextPage = () => {
   const [value, setValue] = useState(0);
   const [getDonations, donations] = useAccountDonationsLazyQuery({ variables: { owner: account } });
   const [getCollections, collections] = useAccountCollectionsLazyQuery({ variables: { owner: account } });
+  const [getSupported, supported] = useAccountSupportedLazyQuery({ variables: { owner: account } });
   const { name, avatar } = useENS(account);
   useEffect(() => {
     if (tab) setValue(Number(tab));
@@ -22,7 +33,8 @@ const AccountPage: NextPage = () => {
   useEffect(() => {
     if (value === 0) getCollections();
     else if (value === 1) getDonations();
-  }, [getCollections, getDonations, value]);
+    else if (value === 2) getSupported();
+  }, [getCollections, getDonations, getSupported, value]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -37,8 +49,8 @@ const AccountPage: NextPage = () => {
           <p className="uppercase font-bold text-lg">{name}</p>
           <Tabs value={value} onChange={handleChange} centered variant="fullWidth" className="w-full">
             <Tab label="Collections" />
-            <Tab label="Projects" />
             <Tab label="Donations" />
+            <Tab label="Supported collections" />
           </Tabs>
           <div className="max-w-md flex flex-col space-y-4">
             {value === 0 &&
@@ -49,6 +61,12 @@ const AccountPage: NextPage = () => {
               ))}
             {value === 1 &&
               (donations.loading ? <CircularProgress /> : donations.data?.donations.map((d, i) => <TokenObject key={i} token={d as Donation} />))}
+            {value === 2 &&
+              (supported.loading ? (
+                <CircularProgress />
+              ) : (
+                supported.data?.supporters.map((s, i) => <SupporterObject key={i} supporter={s as Supporter} />)
+              ))}
           </div>
         </div>
       </Layout>
@@ -57,3 +75,22 @@ const AccountPage: NextPage = () => {
 };
 
 export default AccountPage;
+
+function SupporterObject({ supporter }: { supporter: Supporter }) {
+  return (
+    <Link href={`/${supporter.collection.id}`} passHref>
+      <div className="flex justify-center items-center bg-project space-x-10 p-4 rounded-lg cursor-pointer">
+        <div className="relative w-20 h-20">
+          <Image alt="" src={getImage(supporter.collection.image)} layout="fill" />
+        </div>
+        <div>
+          <p>{supporter.collection.name}</p>
+          <p>
+            {toCoin(supporter.donated)} {coinName(supporter.collection.coin.id)}
+          </p>
+          <p>{supporter.donationsCount} times</p>
+        </div>
+      </div>
+    </Link>
+  );
+}

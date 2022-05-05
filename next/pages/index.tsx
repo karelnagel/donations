@@ -23,7 +23,7 @@ const Home: NextPage<ProjectProps> = ({ collections, global, total }) => {
     { number: global?.collectionsCount, stat: "collections" },
     { number: global?.usersCount, stat: "users" },
     { number: global?.supportersCount, stat: "donations" },
-    { number: `${total} $`, stat: "donated usd" },
+    { number: `${total} $`, stat: "donated" },
   ];
   return (
     <Layout className="flex flex-col items-center space-y-4" noMargin>

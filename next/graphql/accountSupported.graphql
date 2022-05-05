@@ -1,0 +1,15 @@
+query accountSupported($owner: String = "") {
+  supporters(where: { account_contains_nocase: $owner }, orderBy: donated, orderDirection: desc) {
+    id
+    donated
+    donationsCount
+    collection {
+      image
+      name
+      id
+      coin {
+        id
+      }
+    }
+  }
+}
