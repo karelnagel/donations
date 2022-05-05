@@ -1,9 +1,8 @@
-import Jimp from 'jimp'
+const Jimp = require('jimp');
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { DonationDocument, DonationQueryResult } from '../../../../graphql/generated'
 import { apolloRequest } from '../../../../idk/apollo'
 import { coinName, getImage, getTokenId, toCoin } from '../../../../idk/helpers'
-import { TokenInfo } from '../../../../interfaces/TokenInfo'
 
 export default async function tokenImage(
     req: NextApiRequest,
