@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { DonationDocument, DonationQueryResult } from '../../../../graphql/generated'
 import { apolloRequest } from '../../../../idk/apollo'
-import { coinName, getImage, getTokenId, toCoin } from '../../../../idk/helpers'
+import { coinName, getTokenId, toCoin } from '../../../../idk/helpers'
 import { TokenInfo } from '../../../../interfaces/TokenInfo'
 
 export default async function tokenMeta(
@@ -19,7 +19,7 @@ export default async function tokenMeta(
         name: `${donation.collection.name} #${tokenId}`,
         description: donation.collection.description,
         external_url: donation.collection.url,
-        image: getImage(donation.collection.image),
+        image: `${process.env.NEXT_PUBLIC_URL}/api/images/${title}/${tokenId}`,
         attributes: [
             { trait_type: "Message", value: donation.message },
             { trait_type: "Donator", value: donation.donator.id },
