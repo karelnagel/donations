@@ -18,8 +18,8 @@ export default async function tokenImage(
 
     const image = await Jimp.read(getImage(donation.collection.image));
     image.resize(1000, 1000)
-    const font = await Jimp.loadFont(Jimp.FONT_SANS_128_WHITE);
-    // const font = await Jimp.loadFont(`${process.env.NEXT_PUBLIC_URL}/font.fnt`);
+    // const font = await Jimp.loadFont(Jimp.FONT_SANS_128_WHITE);
+    const font = await Jimp.loadFont(`${process.env.NEXT_PUBLIC_URL}/open-sans-128-white/open-sans-128-white.fnt`);
 
     const logo = await Jimp.read(`${process.env.NEXT_PUBLIC_URL}/favicon.png`);
     logo.resize(140, 140)
