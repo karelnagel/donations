@@ -21,11 +21,11 @@ dataSources:
         - name: Factory
           file: ./abis/contracts/factory.sol/Factory.json
       eventHandlers:
-        - event: NewCollection(string,address,address,address,string)
+        - event: NewCollection(string,address,address,string,address)
           handler: handleNewCollection
         - event: SetURI(string)
           handler: handleSetURI
-      file: ./src/mappings.ts
+      file: ./src/mappings/factory.ts
 
 templates:
   - name: Collection
@@ -37,7 +37,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/mappings.ts
+      file: ./src/mappings/collection.ts
       entities:
         - Collection
         - Project
@@ -46,7 +46,7 @@ templates:
         - name: Collection
           file: ./abis/contracts/Collection.sol/Collection.json
       eventHandlers:
-        - event: NewDonation(uint256,address,uint256,string)
+        - event: NewDonation(uint256,uint256,string,address)
           handler: handleNewDonation
         - event: SetIPFS(string)
           handler: handleSetIPFS

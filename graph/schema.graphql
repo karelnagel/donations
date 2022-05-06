@@ -63,11 +63,37 @@ type Supporter @entity {
   donated: BigInt!
   donationsCount: Int!
   donations: [Donation!]! @derivedFrom(field: "supporter")
+  votes: [Vote!]! @derivedFrom(field: "supporter")
 }
+
 type Coin @entity {
   id: ID! # coin address
   collections: [Collection!]! @derivedFrom(field: "coin")
   global: Global!
   donated: BigInt!
   donationsCount: Int!
+}
+
+type Question @entity {
+  id: ID! # title_q1
+  index: BigInt!
+  endTime: BigInt!
+  collections: Collection!
+  question: String!
+  answers: [Answer!]! @derivedFrom(field: "question")
+  voters: Int!
+}
+type Answer @entity {
+  id: ID! #title_q1_a0
+  index: BigInt!
+  answer: String!
+  votesCount: Int!
+  donationAmount: BigInt!
+  question: Question!
+  votes: [Vote!]! @derivedFrom(field: "answer")
+}
+type Vote @entity {
+  id: ID! #title_q1_account
+  answer: Answer!
+  supporter: Supporter!
 }
