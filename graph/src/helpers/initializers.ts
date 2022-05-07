@@ -1,15 +1,6 @@
-import { BigInt, Bytes, log } from "@graphprotocol/graph-ts"
-import { Collection, Donation, Title, Global, Account, Supporter, Coin } from "../../generated/schema"
+import { BigInt } from "@graphprotocol/graph-ts"
+import { Collection, Donation, CollectionAddress, Global, Account, Supporter, Coin } from "../../generated/schema"
 import { getDonationId, getSupporterId } from "./getIds"
-
-export function getTitle(address: string): Title | null {
-    let title = Title.load(address)
-    if (!title) {
-        log.error("No title with {}", [address])
-        return null
-    }
-    return title
-}
 
 export function getGlobal(): Global {
     let global = Global.load("0");
@@ -42,14 +33,29 @@ export function updateGlobal(update: Update): void {
     global.save()
 }
 
+export function getCollectionAddress(address: string): CollectionAddress {
+    let collectionAddress = CollectionAddress.load(address)
+    if (!collectionAddress) {
+        collectionAddress = new CollectionAddress(address)
+        collectionAddress.save()
+    }
+    return collectionAddress
+}
+
+export function getCollectionByAddress(address: string): Collection | null {
+    const title = getCollectionAddress(address)
+    if (!title) return null
+
+    return getCollection(title.collection)
+}
+
+
 export function getCollection(title: string): Collection {
     let collection = Collection.load(title);
     if (!collection) {
         updateGlobal(Update.collection)
         collection = new Collection(title);
-        collection.address = new Bytes(0)
         collection.time = BigInt.fromU64(0)
-
         collection.donated = BigInt.fromU64(0)
         collection.donationsCount = 0;
         collection.ipfs = ""

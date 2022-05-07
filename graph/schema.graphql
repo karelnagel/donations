@@ -7,14 +7,14 @@ type Global @entity {
   coins: [Coin!]! @derivedFrom(field: "global")
 }
 
-type Title @entity {
+type CollectionAddress @entity {
   id: ID!
-  collection: String!
+  collection: Collection! 
 }
 
 type Collection @entity {
   id: ID! # title
-  address: Bytes!
+  address: CollectionAddress!
   coin: Coin!
   ipfs: String!
 

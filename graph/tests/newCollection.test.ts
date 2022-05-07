@@ -1,7 +1,22 @@
 import { clearStore, test, assert, logStore, mockIpfsFile } from 'matchstick-as/assembly/index'
-import { addresses } from "../helpers"
-import { createNewCollectinEvent } from './utils';
-import { handleNewCollection } from "../../src/mappings/factory"
+import { addresses, testCollectionIpfs } from "./helpers"
+import { handleNewCollection } from "../src/mappings/factory"
+import { NewCollection } from "../generated/Factory/Factory"
+import { param, addr, str } from "./helpers"
+import { newMockEvent } from "matchstick-as/assembly/index"
+
+function createNewCollectinEvent(sender: string, title: string, coin: string, collection: string, ipfs: string): NewCollection {
+  let newCollection = changetype<NewCollection>(newMockEvent())
+
+  newCollection.parameters =
+    [param('title', str(title)),
+    param('collection', addr(collection)),
+    param('coin', addr(coin)),
+    param('ipfs', str(ipfs)),
+    param("sender", addr(sender))]
+
+  return newCollection
+}
 
 test('Create new collection', () => {
   const title = "good title"
@@ -15,8 +30,8 @@ test('Create new collection', () => {
   handleNewCollection(event)
   // logStore()
 
-  assert.fieldEquals("Title", collection, "id", collection)
-  assert.fieldEquals("Title", collection, "collection", title)
+  assert.fieldEquals("CollectionAddress", collection, "id", collection)
+  assert.fieldEquals("CollectionAddress", collection, "collection", title)
 
   assert.fieldEquals("Collection", title, "id", title)
   assert.fieldEquals("Collection", title, "address", collection)
@@ -26,15 +41,8 @@ test('Create new collection', () => {
   assert.fieldEquals("Collection", title, "donated", "0")
   assert.fieldEquals("Collection", title, "donationsCount", "0")
 
-  assert.fieldEquals("Collection", title, "name", "This is name")
-  assert.fieldEquals("Collection", title, "description", "This is description")
-  assert.fieldEquals("Collection", title, "image", "This is image")
-  assert.fieldEquals("Collection", title, "background", "This is background")
-  assert.fieldEquals("Collection", title, "goal", "1230000000000000000000")
-  assert.fieldEquals("Collection", title, "url", "This is url")
-  assert.fieldEquals("Collection", title, "socials", "[https://twitter.com, https://facbook.com, , a]")
-  assert.fieldEquals("Collection", title, "donationOptions", "[10000000000000000000, 20000000000000000000, 30000000000000000000]")
- 
+  testCollectionIpfs(title)
+
   assert.fieldEquals("Account", sender, "id", sender)
 
   assert.fieldEquals("Coin", coin, "id", coin)
@@ -49,8 +57,4 @@ test('Create new collection', () => {
 
 
   clearStore()
-})
-
-test('Next test', () => {
-  //...
 })

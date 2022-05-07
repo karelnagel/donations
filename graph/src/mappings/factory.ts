@@ -1,19 +1,18 @@
 import { NewCollection, SetURI } from "../../generated/Factory/Factory"
-import { Title } from "../../generated/schema"
 import { Collection as CollectionTemplate } from '../../generated/templates'
-import { getCollection, getAccount, getCoin } from "../helpers/initializers"
+import { getCollection, getAccount, getCoin, getCollectionAddress } from "../helpers/initializers"
 import { getIpfs } from "../helpers/ipfs"
 
 export function handleNewCollection(event: NewCollection): void {
-  const title = new Title(event.params.collection.toHexString())
-  title.collection = event.params.title;
-  title.save()
+  const address = getCollectionAddress(event.params.collection.toHexString())
+  address.collection = event.params.title;
+  address.save()
 
-  const collection = getCollection(event.params.title)
-  collection.address = event.params.collection
+  const collection = getCollection(event.params.title,)
   collection.coin = getCoin(event.params.coin.toHexString()).id
   collection.time = event.block.timestamp
   collection.ipfs = event.params.ipfs
+  collection.address = address.id
   collection.owner = getAccount(event.params.sender.toHexString()).id
   collection.save()
 
