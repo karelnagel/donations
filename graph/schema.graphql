@@ -9,7 +9,7 @@ type Global @entity {
 
 type CollectionAddress @entity {
   id: ID!
-  collection: Collection! 
+  collection: Collection!
 }
 
 type Collection @entity {
@@ -29,9 +29,12 @@ type Collection @entity {
   url: String!
   socials: [String!]!
   donationOptions: [String!]!
+  questionsCount: Int!
 
+  content: [Content!]! @derivedFrom(field: "collection")
   donations: [Donation!]! @derivedFrom(field: "collection")
   supporters: [Supporter!]! @derivedFrom(field: "collection")
+  questions: [Question!]! @derivedFrom(field: "collection")
 
   time: BigInt!
   owner: Account
@@ -77,23 +80,38 @@ type Coin @entity {
 type Question @entity {
   id: ID! # title_q1
   index: BigInt!
+  ipfs: String!
   endTime: BigInt!
-  collections: Collection!
+  collection: Collection!
   question: String!
   answers: [Answer!]! @derivedFrom(field: "question")
-  voters: Int!
+  votes: [Vote!]! @derivedFrom(field: "question")
+  votesCount: Int!
+  votesAmount: BigInt!
+  time: BigInt!
 }
 type Answer @entity {
   id: ID! #title_q1_a0
   index: BigInt!
   answer: String!
   votesCount: Int!
-  donationAmount: BigInt!
+  votesAmount: BigInt!
   question: Question!
   votes: [Vote!]! @derivedFrom(field: "answer")
 }
 type Vote @entity {
   id: ID! #title_q1_account
   answer: Answer!
+  question: Question!
   supporter: Supporter!
+}
+
+type Content @entity {
+  id: ID! #title_ipfs
+  ipfs: String!
+  collection: Collection!
+  description: String!
+  content: String!
+  price: BigInt!
+  time: BigInt!
 }

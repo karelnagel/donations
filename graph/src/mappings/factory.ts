@@ -1,7 +1,7 @@
 import { NewCollection, SetURI } from "../../generated/Factory/Factory"
 import { Collection as CollectionTemplate } from '../../generated/templates'
 import { getCollection, getAccount, getCoin, getCollectionAddress } from "../helpers/initializers"
-import { getIpfs } from "../helpers/ipfs"
+import { getCollectionIpfs } from "../helpers/getCollectionIpfs"
 
 export function handleNewCollection(event: NewCollection): void {
   const address = getCollectionAddress(event.params.collection.toHexString())
@@ -16,7 +16,7 @@ export function handleNewCollection(event: NewCollection): void {
   collection.owner = getAccount(event.params.sender.toHexString()).id
   collection.save()
 
-  getIpfs(event.params.title, event.params.ipfs)
+  getCollectionIpfs(event.params.title, event.params.ipfs)
 
   CollectionTemplate.create(event.params.collection)
 }

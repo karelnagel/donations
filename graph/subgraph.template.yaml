@@ -54,3 +54,9 @@ templates:
           handler: handleTransfer
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
+        - event: AddContent(string)
+          handler: handleAddContent
+        - event: StartVote(uint256,uint256,string)
+          handler: handleStartVote
+        - event: NewVote(uint256,uint256,address)
+          handler: handleNewVote

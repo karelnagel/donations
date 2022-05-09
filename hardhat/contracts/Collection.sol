@@ -50,9 +50,9 @@ contract Collection is ERC721, Ownable {
         coin.transferFrom(msg.sender, owner(), amount);
 
         _dc.increment();
-        _safeMint(msg.sender, _dc.current());
 
         emit NewDonation(_dc.current(), amount, message, msg.sender);
+        _safeMint(msg.sender, _dc.current());
     }
 
     event NewDonation(
@@ -79,10 +79,10 @@ contract Collection is ERC721, Ownable {
 
     function newVote(uint256 voteId, uint256 answer) public {
         require(block.timestamp <= voteEndTime[voteId], "Voting ended");
-        emit NewVote(voteId, answer);
+        emit NewVote(voteId, answer, msg.sender);
     }
 
-    event NewVote(uint256 voteId, uint256 answer);
+    event NewVote(uint256 voteId, uint256 answer, address sender);
 
     // URI
     function contractURI() public view virtual returns (string memory) {

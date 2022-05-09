@@ -20,7 +20,7 @@ function createSetIPFSEvent(address: string, ipfs: string): SetIPFS {
 test('Set IPFS', () => {
   const ipfs = "This is ipfs hash"
 
-  const collection = createCollection(ipfs)
+  const collection = createCollection()
 
   const event = createSetIPFSEvent(collection.address, ipfs)
 

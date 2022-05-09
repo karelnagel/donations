@@ -26,7 +26,7 @@ export const networks = [
     {
         name: "rinkeby",
         chainId: 4,
-        factory: "0x5031dCc9Bc5F910F271D70D9DE0307FD92B720F2",
+        factory: "0x97a8485B5a1C3cCd156bbDE61C19F926110Eb63f",
         graph: "https://api.thegraph.com/subgraphs/name/karelnagel/streamint-dev",
         graphIpfs: "https://api.thegraph.com/ipfs/api/v0/",
         ipfsGateway: "https://streamint.infura-ipfs.io/ipfs/",

@@ -44,7 +44,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
 
   const { balance } = useBalance(collection?.coin.id);
   const { donate, getAllowance, approve } = useChain({
-    contractAddress: collection?.address,
+    contractAddress: collection?.address.id,
     coinAddress: collection?.coin.id,
   });
 

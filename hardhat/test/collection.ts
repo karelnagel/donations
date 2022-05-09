@@ -113,12 +113,12 @@ describe("Collection", function () {
       const answer = 1
 
       it("Successful vote", async () => {
-        await expect(collection.connect(acc1).newVote(voteId, answer)).to.emit(collection, "NewVote").withArgs(voteId, answer)
+        await expect(collection.connect(acc1).newVote(voteId, answer)).to.emit(collection, "NewVote").withArgs(voteId, answer, acc1.address)
       })
       it("Successful vote right before close", async () => {
 
         await ethers.provider.send('evm_increaseTime', [time - 1]);
-        await expect(collection.connect(acc2).newVote(voteId, answer)).to.emit(collection, "NewVote").withArgs(voteId, answer)
+        await expect(collection.connect(acc2).newVote(voteId, answer)).to.emit(collection, "NewVote").withArgs(voteId, answer, acc2.address)
       })
 
       it("Failed when time passed", async () => {

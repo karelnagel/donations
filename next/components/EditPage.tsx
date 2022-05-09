@@ -33,7 +33,7 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
   } as Collection);
   const [newTitle, setNewTitle] = useState("");
 
-  const { newCollection, setIPFS } = useChain({ contractAddress: savedCollection.data?.collection?.address });
+  const { newCollection, setIPFS } = useChain({ contractAddress: savedCollection.data?.collection?.address.id });
   const { user, setSnack, load } = useContext(Context);
 
   useEffect(() => {
