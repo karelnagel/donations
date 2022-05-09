@@ -10,7 +10,10 @@ export const factoryAbi = [
 
 export const contractAbi = [
   "function donate(uint256 amount,string memory message)",
-  "function setIPFS(string memory ipfs)",
+  "function setIPFS(string memory _ipfs)",
+  "function addContent(string memory _ipfs)",
+  "function startVote(uint256 time, string memory data)",
+  "function newVote(uint256 voteId, uint256 answer)",
   "event NewDonation(uint256 id,address owner,uint256 amount,string message)"
 ];
 
@@ -70,6 +73,42 @@ export default function useChain({ contractAddress, coinAddress }: { contractAdd
     }
     return "Error with donating!"
   }
+  async function startVote(time: ethers.BigNumber, data: string) {
+    try {
+      const result = await contract()!.startVote(time, data)
+      await result.wait(1);
+      return
+    }
+    catch (e) {
+      console.log(e)
+    }
+    return "Error with starting vote!"
+  }
+
+  async function newVote(voteId: ethers.BigNumber, answer: ethers.BigNumber) {
+    try {
+      const result = await contract()!.newVote(voteId, answer)
+      await result.wait(1);
+      return
+    }
+    catch (e) {
+      console.log(e)
+    }
+    return "Error with new vote!"
+  }
+
+  async function addContent(data: string) {
+    try {
+      const result = await contract()!.addContent(data)
+      await result.wait(1);
+      return
+    }
+    catch (e) {
+      console.log(e)
+    }
+    return "Error with adding content!"
+  }
+
   async function getAllowance() {
     if (user) {
       try {
@@ -107,5 +146,5 @@ export default function useChain({ contractAddress, coinAddress }: { contractAdd
     }
     return ethers.BigNumber.from("0")
   }
-  return { newCollection, donate, getBalance, approve, getAllowance, setIPFS }
+  return { startVote, newVote, addContent, newCollection, donate, getBalance, approve, getAllowance, setIPFS }
 }

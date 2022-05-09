@@ -1921,6 +1921,13 @@ export type LatestCollectionsQueryVariables = Exact<{
 
 export type LatestCollectionsQuery = { __typename?: 'Query', collections: Array<{ __typename?: 'Collection', donated: any, time: any, name: string, description: string, image: string, background: string, goal: string, donationsCount: number, id: string, coin: { __typename?: 'Coin', id: string }, owner?: { __typename?: 'Account', id: string } | null }> };
 
+export type QuestionsQueryVariables = Exact<{
+  title?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type QuestionsQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, name: string, owner?: { __typename?: 'Account', id: string } | null, address: { __typename?: 'CollectionAddress', id: string }, questions: Array<{ __typename?: 'Question', id: string, endTime: any, question: string, votesAmount: any, votesCount: number, index: any, collection: { __typename?: 'Collection', coin: { __typename?: 'Coin', id: string } }, answers: Array<{ __typename?: 'Answer', id: string, answer: string, votesAmount: any, votesCount: number, index: any }> }> } | null };
+
 
 export const AccountCollectionsDocument = gql`
     query accountCollections($owner: String = "") {
@@ -2367,3 +2374,65 @@ export function useLatestCollectionsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type LatestCollectionsQueryHookResult = ReturnType<typeof useLatestCollectionsQuery>;
 export type LatestCollectionsLazyQueryHookResult = ReturnType<typeof useLatestCollectionsLazyQuery>;
 export type LatestCollectionsQueryResult = Apollo.QueryResult<LatestCollectionsQuery, LatestCollectionsQueryVariables>;
+export const QuestionsDocument = gql`
+    query questions($title: ID = "") {
+  collection(id: $title) {
+    id
+    owner {
+      id
+    }
+    name
+    address {
+      id
+    }
+    questions(orderBy: index, orderDirection: desc) {
+      id
+      endTime
+      question
+      votesAmount
+      votesCount
+      index
+      collection {
+        coin {
+          id
+        }
+      }
+      answers {
+        id
+        answer
+        votesAmount
+        votesCount
+        index
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useQuestionsQuery__
+ *
+ * To run a query within a React component, call `useQuestionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuestionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQuestionsQuery({
+ *   variables: {
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useQuestionsQuery(baseOptions?: Apollo.QueryHookOptions<QuestionsQuery, QuestionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<QuestionsQuery, QuestionsQueryVariables>(QuestionsDocument, options);
+      }
+export function useQuestionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QuestionsQuery, QuestionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<QuestionsQuery, QuestionsQueryVariables>(QuestionsDocument, options);
+        }
+export type QuestionsQueryHookResult = ReturnType<typeof useQuestionsQuery>;
+export type QuestionsLazyQueryHookResult = ReturnType<typeof useQuestionsLazyQuery>;
+export type QuestionsQueryResult = Apollo.QueryResult<QuestionsQuery, QuestionsQueryVariables>;

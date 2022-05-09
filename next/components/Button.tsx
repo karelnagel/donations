@@ -49,7 +49,7 @@ export default function Button({
       </Link>
     );
   return (
-    <button onClick={onClick} className={classes} type={submit ? "submit" : undefined}>
+    <button onClick={onClick} className={classes} type={submit ? "submit" : "button"}>
       {children}
     </button>
   );

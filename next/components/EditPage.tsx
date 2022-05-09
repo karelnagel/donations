@@ -7,7 +7,7 @@ import { Context } from "../idk/context";
 import { useRouter } from "next/router";
 import { sameAddr, toCoin, toWeiStr } from "../idk/helpers";
 import { Collection, useCollectionLazyQuery, useCollectionListLazyQuery } from "../graphql/generated";
-import { ipfsUpload } from "../lib/ipfs";
+import { collectionIpfsUpload } from "../lib/ipfs";
 import { network } from "../config";
 import Button from "./Button";
 
@@ -64,7 +64,7 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
       const file = imageInput.current?.files![0];
       if (type !== Type.EDIT_COLLECTION && !file) return setSnack!("no image");
 
-      const ipfsHash = await ipfsUpload(collection, file, background);
+      const ipfsHash = await collectionIpfsUpload(collection, file, background);
       if (!ipfsHash) return setSnack!("error uploading to ipfs");
 
       if (type === Type.NEW_COLLECTION) {

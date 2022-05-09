@@ -1,0 +1,32 @@
+query questions($title: ID = "") {
+  collection(id: $title) {
+    id
+    owner {
+      id
+    }
+    name
+    address {
+      id
+    }
+    questions(orderBy: index, orderDirection: desc) {
+      id
+      endTime
+      question
+      votesAmount
+      votesCount
+      index
+      collection {
+        coin {
+          id
+        }
+      }
+      answers {
+        id
+        answer
+        votesAmount
+        votesCount
+        index
+      }
+    }
+  }
+}

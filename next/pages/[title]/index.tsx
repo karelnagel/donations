@@ -96,7 +96,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
           <p className="uppercase font-bold my-4 text-black">Donation successful</p>
           <p className="mb-2 text-black">View your NFT on Opensea:</p>
           {tokenId && tokenId !== "loading" ? (
-            <Button href={`${network.opensea}${collection.address}/${tokenId}`} newTab>
+            <Button href={`${network.opensea}${collection.address.id}/${tokenId}`} newTab>
               View NFT
             </Button>
           ) : (
@@ -168,7 +168,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
             <Button text href={`/${collection.id}/private`}>
               Private content
             </Button>
-            <Button text href={`/${collection.id}/voting`}>
+            <Button text href={`/${collection.id}/vote`}>
               Voting
             </Button>
             <Button text href={`/${collection.id}/supporters`}>
@@ -201,7 +201,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
                     <Chip key={i} label={i === 3 ? "MAX" : o} onClick={() => setAmount(o)} variant={amount === o ? "filled" : "outlined"} />
                   ))}
                 </div>
-                <Button>Donate</Button>
+                <Button submit>Donate</Button>
               </form>
               {sameAddr(collection.owner?.id, user.address) && (
                 <>
