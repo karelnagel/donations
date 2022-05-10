@@ -11,15 +11,17 @@ import { uploadJson } from "../../lib/ipfs";
 import useChain from "../../hooks/useChain";
 import { BigNumber, ethers } from "ethers";
 import QuestionObject from "../../components/Question";
+import { useAccount } from "wagmi";
 
 const ProjectVote: NextPage = () => {
   const { title } = useRouter().query;
-  const { user, load, setSnack } = useContext(Context);
+  const { load, setSnack } = useContext(Context);
   const { data } = useQuestionsQuery({ variables: { title: title?.toString() }, pollInterval: 1000 });
   const { startVote, newVote } = useChain({ contractAddress: data?.collection?.address.id });
   const [question, setQuestion] = useState("");
   const [hours, setHours] = useState("1");
   const [answers, setAnswers] = useState(["", ""]);
+  const { data: account } = useAccount();
 
   const startVoteForm = async (e: any) => {
     e.preventDefault();
@@ -43,7 +45,7 @@ const ProjectVote: NextPage = () => {
       <h1 className="text-3xl">Voting</h1>
       {data?.collection && (
         <div className="w-full max-w-screen-sm mx-auto">
-          {sameAddr(data.collection.owner?.id, user?.address) && (
+          {sameAddr(data.collection.owner?.id, account?.address) && (
             <div className="">
               <h3>Create new vote</h3>
               <form action="" onSubmit={startVoteForm}>

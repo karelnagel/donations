@@ -6,7 +6,6 @@ import { CustomHead } from "../../components/CustomHead";
 import Layout from "../../components/Layout";
 import { coinName, getImage, sameAddr, toCoin, toWei } from "../../idk/helpers";
 import useChain from "../../hooks/useChain";
-import useBalance from "../../hooks/useBalance";
 import { Chip, CircularProgress, InputAdornment, TextField } from "@mui/material";
 import Image from "next/image";
 import { AccountObject } from "../../components/AccountObject";
@@ -25,6 +24,8 @@ import { network } from "../../config";
 import Button from "../../components/Button";
 import { Collection, CollectionDocument, CollectionListDocument, CollectionListQueryResult, CollectionQueryResult } from "../../graphql/generated";
 import useCollection from "../../hooks/useCollection";
+import { useBalance, useAccount } from "wagmi";
+import { BigNumber } from "@ethersproject/bignumber";
 
 interface Params extends ParsedUrlQuery {
   title: string;
@@ -35,14 +36,15 @@ interface CollectionProps {
 }
 const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialCollection, title }) => {
   const router = useRouter();
+  const { data: account } = useAccount();
   const { collection, lastDonation } = useCollection(title, initialCollection);
-  const { user, setSnack, load } = useContext(Context);
+  const { setSnack, load } = useContext(Context);
 
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
   const [tokenId, setTokenId] = useState("");
 
-  const { balance } = useBalance(collection?.coin.id);
+  const { data: balance } = useBalance({ addressOrName: collection?.coin.id });
   const { donate, getAllowance, approve } = useChain({
     contractAddress: collection?.address.id,
     coinAddress: collection?.coin.id,
@@ -52,11 +54,11 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
     toCoin(collection?.donationOptions[0] ?? "0", collection?.coin.id),
     toCoin(collection?.donationOptions[1] ?? "0", collection?.coin.id),
     toCoin(collection?.donationOptions[2] ?? "0", collection?.coin.id),
-    toCoin(balance.toString(), collection?.coin.id),
+    toCoin(balance?.value.toString() ?? "0", collection?.coin.id),
   ];
 
   useEffect(() => {
-    if (sameAddr(lastDonation?.donator.id, user?.address)) {
+    if (sameAddr(lastDonation?.donator.id, account?.address)) {
       setTokenId(lastDonation?.id.split("_t")[1]!);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,7 +70,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
       const amountInWei = toWei(amount, collection?.coin.id);
 
       const allowance = await getAllowance();
-      if (amountInWei.gt(balance)) {
+      if (amountInWei.gt(balance?.value ?? BigNumber.from(0))) {
         return setSnack!("Balance too low");
       }
       if (amountInWei.gt(allowance)) {
@@ -177,7 +179,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
           </div>
           <ProgresssBar collection={collection} />
           <br />
-          {user ? (
+          {account ? (
             <div className="mb-20 flex flex-col items-stretch max-w-sm mx-auto space-y-4">
               <h2 className="my-4 text-lg font-bold">Make a donation to {collection.name}</h2>
               <form onSubmit={makeDonation} className="flex-col flex space-y-2">
@@ -187,8 +189,8 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
                   inputProps={{ step: "any" }}
                   label="How much you want to donate?"
                   id="filled-start-adornment"
-                  error={amount ? toWei(amount, collection?.coin.id).gt(balance) : false}
-                  helperText={amount && toWei(amount, collection?.coin.id).gt(balance) ? "Balance too low" : ""}
+                  error={amount ? toWei(amount, collection?.coin.id).gt(balance?.value ?? BigNumber.from(0)) : false}
+                  helperText={amount && toWei(amount, collection?.coin.id).gt(balance?.value ?? BigNumber.from(0)) ? "Balance too low" : ""}
                   value={amount}
                   InputProps={{
                     endAdornment: <InputAdornment position="end">{coinName(collection.coin.id)}</InputAdornment>,
@@ -203,7 +205,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
                 </div>
                 <Button submit>Donate</Button>
               </form>
-              {sameAddr(collection.owner?.id, user.address) && (
+              {sameAddr(collection.owner?.id, account.address) && (
                 <>
                   <Link href={`/${title}/edit`} passHref>
                     <Button secondary>Edit</Button>
@@ -221,7 +223,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
               )}
             </div>
           ) : (
-            <p className="my-10 uppercase font-bold text-lg">{!user ? "Connect your wallet to make a donation" : "Collection is not active"}</p>
+            <p className="my-10 uppercase font-bold text-lg">{!account ? "Connect your wallet to make a donation" : "Collection is not active"}</p>
           )}
         </div>
       </Layout>

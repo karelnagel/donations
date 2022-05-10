@@ -10,6 +10,7 @@ import { Collection, useCollectionLazyQuery, useCollectionListLazyQuery } from "
 import { collectionIpfsUpload } from "../lib/ipfs";
 import { network } from "../config";
 import Button from "./Button";
+import { useAccount } from "wagmi";
 
 export enum Type {
   NEW_COLLECTION,
@@ -23,7 +24,7 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
   const [getTitles, titles] = useCollectionListLazyQuery();
   const [getSavedCollection, savedCollection] = useCollectionLazyQuery({ variables: { id: title } });
   const [collection, setCollection] = useState<Collection>({
-    coin: {id:"select"},
+    coin: { id: "select" },
     name: "",
     description: "",
     goal: "",
@@ -34,7 +35,8 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
   const [newTitle, setNewTitle] = useState("");
 
   const { newCollection, setIPFS } = useChain({ contractAddress: savedCollection.data?.collection?.address.id });
-  const { user, setSnack, load } = useContext(Context);
+  const { setSnack, load } = useContext(Context);
+  const { data: account } = useAccount();
 
   useEffect(() => {
     if (type === Type.NEW_COLLECTION) getTitles();
@@ -55,9 +57,9 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
   const newPro = async (e: any) => {
     e.preventDefault();
     load!(async () => {
-      if (!user) return setSnack!("User not logged in");
+      if (!account) return setSnack!("User not logged in");
       if (titles.data?.collections.find((c) => c.id === newTitle)) return setSnack!("title exists ");
-      if (savedCollection.data?.collection?.owner && !sameAddr(savedCollection.data.collection.owner.id, user?.address))
+      if (savedCollection.data?.collection?.owner && !sameAddr(savedCollection.data.collection.owner.id, account?.address))
         return setSnack!("Not collection owner ");
 
       const background = backgroundInput.current?.files![0];
@@ -80,8 +82,8 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
     }, "Editing project! \nPlease continue to your wallet  ");
   };
 
-  if (!user) return <Layout>Connect wallet to edit project</Layout>;
-  else if (savedCollection.data?.collection?.owner && !sameAddr(savedCollection.data.collection.owner.id, user.address))
+  if (!account) return <Layout>Connect wallet to edit project</Layout>;
+  else if (savedCollection.data?.collection?.owner && !sameAddr(savedCollection.data.collection.owner.id, account.address))
     return <Layout>Not owner</Layout>;
   return (
     <Layout>
@@ -105,7 +107,7 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
                   id="select"
                   label="Which ERC20 coin you want to use?"
                   select
-                  onChange={(e) => setCollection((p) => ({ ...p, coin: {...p.coin,id:e.target.value} }))}
+                  onChange={(e) => setCollection((p) => ({ ...p, coin: { ...p.coin, id: e.target.value } }))}
                   required
                   value={collection.coin.id}
                 >

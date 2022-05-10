@@ -4,21 +4,37 @@ import React, { useState } from "react";
 import Head from "next/head";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../idk/apollo";
-import { Context, User } from "../idk/context";
-import { Web3Provider } from "@ethersproject/providers";
+import { Context } from "../idk/context";
 import { ThemeProvider } from "@mui/material/styles";
 import { materialTheme } from "../idk/materialTheme";
-import { Alert, AlertColor, CircularProgress, IconButton, Snackbar } from "@mui/material";
+import { Alert, AlertColor, CircularProgress, Snackbar } from "@mui/material";
 import Modal from "../components/Modal";
+import { createClient, Provider } from "wagmi";
+import { InjectedConnector } from "wagmi/connectors/injected";
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+import { providers } from "ethers";
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  provider(config) {
+    return new providers.InfuraProvider(config.chainId, process.env.NEXT_PUBLIC_INFURA_ID);
+  },
+  connectors: [
+    new InjectedConnector(),
+    new WalletConnectConnector({
+      options: {
+        qrcode: true,
+      },
+    }),
+  ],
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   const name = "Streamint - Donations for streamers";
   const description = "Crypto donations for streamers";
-  const url = "https://streamint.xyz";
+  const url = process.env.NEXT_PUBLIC_URL ?? "https://streamint.xyz";
   const image = `${url}/logo.png`;
 
-  const [provider, setProvider] = useState<Web3Provider>();
-  const [user, setUser] = useState<User>();
   const [snackBar, setSnackBar] = useState<{ message: string; severity: AlertColor }>();
   const [loading, setLoading] = useState("");
 
@@ -59,23 +75,24 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
       </Head>
-
-      <Context.Provider value={{ provider, user, setUser, setProvider, setSnack, load }}>
-        <ApolloProvider client={client}>
-          <ThemeProvider theme={materialTheme}>
-            <Component {...pageProps} />
-            <Snackbar open={!!snackBar} autoHideDuration={10000} onClose={handleClose}>
-              <Alert onClose={handleClose} severity={snackBar?.severity} sx={{ width: "100%" }}>
-                {snackBar?.message}
-              </Alert>
-            </Snackbar>
-            <Modal visible={!!loading} onClose={() => setLoading("")}>
-              <p className="whitespace-pre-line mb-6 text-md font-bold text-black">{loading}</p>
-              <CircularProgress />
-            </Modal>
-          </ThemeProvider>
-        </ApolloProvider>
-      </Context.Provider>
+      <Provider client={wagmiClient}>
+        <Context.Provider value={{ setSnack, load }}>
+          <ApolloProvider client={client}>
+            <ThemeProvider theme={materialTheme}>
+              <Component {...pageProps} />
+              <Snackbar open={!!snackBar} autoHideDuration={10000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity={snackBar?.severity} sx={{ width: "100%" }}>
+                  {snackBar?.message}
+                </Alert>
+              </Snackbar>
+              <Modal visible={!!loading} onClose={() => setLoading("")}>
+                <p className="whitespace-pre-line mb-6 text-md font-bold text-black">{loading}</p>
+                <CircularProgress />
+              </Modal>
+            </ThemeProvider>
+          </ApolloProvider>
+        </Context.Provider>
+      </Provider>
     </>
   );
 }

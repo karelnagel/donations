@@ -13,10 +13,10 @@ import { CircularProgress, Tab, Tabs } from "@mui/material";
 import { TokenObject } from "../../components/TokenObject";
 import { CollectionObject } from "../../components/CollectionObject";
 import { NextPage } from "next";
-import useENS from "../../hooks/useENS";
 import { coinName, getImage, toCoin } from "../../idk/helpers";
 import Image from "next/image";
 import Link from "next/link";
+import { useEnsName, useEnsAvatar } from "wagmi";
 
 const AccountPage: NextPage = () => {
   const router = useRouter();
@@ -25,7 +25,8 @@ const AccountPage: NextPage = () => {
   const [getDonations, donations] = useAccountDonationsLazyQuery({ variables: { owner: account } });
   const [getCollections, collections] = useAccountCollectionsLazyQuery({ variables: { owner: account } });
   const [getSupported, supported] = useAccountSupportedLazyQuery({ variables: { owner: account } });
-  const { name, avatar } = useENS(account);
+  const { data: name } = useEnsName({ address: account });
+  const { data: avatar } = useEnsAvatar({ addressOrName: account });
   useEffect(() => {
     if (tab) setValue(Number(tab));
   }, [tab]);
@@ -45,7 +46,7 @@ const AccountPage: NextPage = () => {
       <Layout>
         <div className="max-w-screen-md mx-auto flex flex-col space-y-10 my-10 items-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <div className="w-32 h-32">{avatar && <img className="rounded-full shadow-lg" src={avatar} alt={name} />}</div>
+          <div className="w-32 h-32">{avatar && <img className="rounded-full shadow-lg" src={avatar} alt={name ?? account} />}</div>
           <p className="uppercase font-bold text-lg">{name}</p>
           <Tabs value={value} onChange={handleChange} centered variant="fullWidth" className="w-full">
             <Tab label="Collections" />

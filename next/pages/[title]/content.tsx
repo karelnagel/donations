@@ -10,13 +10,14 @@ import Button from "../../components/Button";
 import { uploadJson } from "../../lib/ipfs";
 import useChain from "../../hooks/useChain";
 import { publicKey } from "../../config";
+import { useAccount } from "wagmi";
 
 const ProjectContent: NextPage = () => {
   const { title } = useRouter().query;
-  const { user, load, setSnack } = useContext(Context);
+  const { load, setSnack } = useContext(Context);
   const { data } = useContentQuery({ variables: { title: title?.toString() }, pollInterval: 10000 });
   const { addContent } = useChain({ contractAddress: data?.collection?.address.id });
-
+  const { data: account } = useAccount();
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("0");
   const [content, setContent] = useState("");
@@ -42,7 +43,7 @@ const ProjectContent: NextPage = () => {
       <h1 className="text-3xl">Content</h1>
       {data?.collection && (
         <div className="w-full max-w-screen-sm mx-auto">
-          {sameAddr(data.collection.owner?.id, user?.address) && (
+          {sameAddr(data.collection.owner?.id, account?.address) && (
             <div className="">
               <h3>Add content</h3>
               <form action="" onSubmit={startVoteForm}>
