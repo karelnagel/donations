@@ -1,0 +1,27 @@
+query content($title: ID = "") {
+  collection(id: $title) {
+    id
+    owner {
+      id
+    }
+    name
+    address {
+      id
+    }
+    coin{
+      id
+    }
+    content(orderBy: time, orderDirection: desc) {
+      id
+      description
+      content
+      price
+      time
+      collection {
+        coin {
+          id
+        }
+      }
+    }
+  }
+}

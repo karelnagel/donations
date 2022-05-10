@@ -165,7 +165,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
             </div>
           </div>
           <div className="flex justify-evenly mb-12">
-            <Button text href={`/${collection.id}/private`}>
+            <Button text href={`/${collection.id}/content`}>
               Private content
             </Button>
             <Button text href={`/${collection.id}/vote`}>

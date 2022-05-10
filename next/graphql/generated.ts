@@ -1902,6 +1902,13 @@ export type CollectionSupportersQueryVariables = Exact<{
 
 export type CollectionSupportersQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', name: string, coin: { __typename?: 'Coin', id: string }, supporters: Array<{ __typename?: 'Supporter', id: string, donated: any, donationsCount: number, account: { __typename?: 'Account', id: string } }> } | null };
 
+export type ContentQueryVariables = Exact<{
+  title?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type ContentQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, name: string, owner?: { __typename?: 'Account', id: string } | null, address: { __typename?: 'CollectionAddress', id: string }, coin: { __typename?: 'Coin', id: string }, content: Array<{ __typename?: 'Content', id: string, description: string, content: string, price: any, time: any, collection: { __typename?: 'Collection', coin: { __typename?: 'Coin', id: string } } }> } | null };
+
 export type DonationQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
 }>;
@@ -2232,6 +2239,63 @@ export function useCollectionSupportersLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type CollectionSupportersQueryHookResult = ReturnType<typeof useCollectionSupportersQuery>;
 export type CollectionSupportersLazyQueryHookResult = ReturnType<typeof useCollectionSupportersLazyQuery>;
 export type CollectionSupportersQueryResult = Apollo.QueryResult<CollectionSupportersQuery, CollectionSupportersQueryVariables>;
+export const ContentDocument = gql`
+    query content($title: ID = "") {
+  collection(id: $title) {
+    id
+    owner {
+      id
+    }
+    name
+    address {
+      id
+    }
+    coin {
+      id
+    }
+    content(orderBy: time, orderDirection: desc) {
+      id
+      description
+      content
+      price
+      time
+      collection {
+        coin {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useContentQuery__
+ *
+ * To run a query within a React component, call `useContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContentQuery({
+ *   variables: {
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useContentQuery(baseOptions?: Apollo.QueryHookOptions<ContentQuery, ContentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ContentQuery, ContentQueryVariables>(ContentDocument, options);
+      }
+export function useContentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ContentQuery, ContentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ContentQuery, ContentQueryVariables>(ContentDocument, options);
+        }
+export type ContentQueryHookResult = ReturnType<typeof useContentQuery>;
+export type ContentLazyQueryHookResult = ReturnType<typeof useContentLazyQuery>;
+export type ContentQueryResult = Apollo.QueryResult<ContentQuery, ContentQueryVariables>;
 export const DonationDocument = gql`
     query donation($id: ID = "") {
   donation(id: $id) {
