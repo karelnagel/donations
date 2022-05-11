@@ -1,4 +1,4 @@
-import { Crypt } from 'hybrid-crypto-js';
+const Crypt = require("hybrid-crypto-js").Crypt
 
 export function encrypt(message: string) {
     try {
