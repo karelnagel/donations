@@ -1904,10 +1904,11 @@ export type CollectionSupportersQuery = { __typename?: 'Query', collection?: { _
 
 export type ContentQueryVariables = Exact<{
   title?: InputMaybe<Scalars['ID']>;
+  account?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type ContentQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, name: string, owner?: { __typename?: 'Account', id: string } | null, address: { __typename?: 'CollectionAddress', id: string }, coin: { __typename?: 'Coin', id: string }, content: Array<{ __typename?: 'Content', id: string, description: string, content: string, price: any, time: any, collection: { __typename?: 'Collection', coin: { __typename?: 'Coin', id: string } } }> } | null };
+export type ContentQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, name: string, owner?: { __typename?: 'Account', id: string } | null, address: { __typename?: 'CollectionAddress', id: string }, coin: { __typename?: 'Coin', id: string }, content: Array<{ __typename?: 'Content', id: string, description: string, content: string, price: any, time: any, collection: { __typename?: 'Collection', coin: { __typename?: 'Coin', id: string } } }>, supporters: Array<{ __typename?: 'Supporter', id: string, donated: any, account: { __typename?: 'Account', id: string } }> } | null };
 
 export type DonationQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
@@ -2240,7 +2241,7 @@ export type CollectionSupportersQueryHookResult = ReturnType<typeof useCollectio
 export type CollectionSupportersLazyQueryHookResult = ReturnType<typeof useCollectionSupportersLazyQuery>;
 export type CollectionSupportersQueryResult = Apollo.QueryResult<CollectionSupportersQuery, CollectionSupportersQueryVariables>;
 export const ContentDocument = gql`
-    query content($title: ID = "") {
+    query content($title: ID = "", $account: String = "") {
   collection(id: $title) {
     id
     owner {
@@ -2265,6 +2266,13 @@ export const ContentDocument = gql`
         }
       }
     }
+    supporters(where: {account_contains_nocase: $account}) {
+      id
+      donated
+      account {
+        id
+      }
+    }
   }
 }
     `;
@@ -2282,6 +2290,7 @@ export const ContentDocument = gql`
  * const { data, loading, error } = useContentQuery({
  *   variables: {
  *      title: // value for 'title'
+ *      account: // value for 'account'
  *   },
  * });
  */

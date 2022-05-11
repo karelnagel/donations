@@ -13,17 +13,17 @@ import { createClient, Provider } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { providers } from "ethers";
+import { network } from "../config";
 
 const wagmiClient = createClient({
   autoConnect: true,
-  provider(config) {
-    return new providers.InfuraProvider(config.chainId, process.env.NEXT_PUBLIC_INFURA_ID);
-  },
+  provider: new providers.InfuraProvider(network.chainId, process.env.NEXT_PUBLIC_INFURA_ID),
   connectors: [
     new InjectedConnector(),
     new WalletConnectConnector({
       options: {
         qrcode: true,
+        chainId: network.chainId,
       },
     }),
   ],

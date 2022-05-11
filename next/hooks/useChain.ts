@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { network } from "../config";
-import { useContract, erc20ABI, useAccount } from 'wagmi'
+import { useContract, erc20ABI, useAccount, useSigner } from 'wagmi'
 
 export const factoryAbi = [
   "function newCollection(string memory title,address coin,string memory ipfs)",
@@ -17,13 +17,14 @@ export const contractAbi = [
 
 export default function useChain({ contractAddress, coinAddress }: { contractAddress?: string, coinAddress?: string }) {
   const { data: account } = useAccount()
-  const factory = useContract({ addressOrName: network.factory, contractInterface: factoryAbi })
-  const contract = useContract({ addressOrName: contractAddress ?? ethers.constants.AddressZero, contractInterface: contractAbi })
-  const coin = useContract({ addressOrName: coinAddress ?? ethers.constants.AddressZero, contractInterface: erc20ABI })
+  const { data: signer } = useSigner()
+  const factory = useContract({ addressOrName: network.factory, contractInterface: factoryAbi, signerOrProvider: signer })
+  const contract = useContract({ addressOrName: contractAddress ?? ethers.constants.AddressZero, contractInterface: contractAbi, signerOrProvider: signer })
+  const coin = useContract({ addressOrName: coinAddress ?? ethers.constants.AddressZero, contractInterface: erc20ABI, signerOrProvider: signer })
 
   async function newCollection(title: string, coin: string, ipfs: string) {
     try {
-      const result = await factory().newCollection(title, coin, ipfs);
+      const result = await factory.newCollection(title, coin, ipfs);
       await result.wait(1);
       return
     }
@@ -34,7 +35,7 @@ export default function useChain({ contractAddress, coinAddress }: { contractAdd
   }
   async function setIPFS(ipfs: string) {
     try {
-      const result = await contract().setIPFS(ipfs);
+      const result = await contract.setIPFS(ipfs);
       await result.wait(1)
       return
     }
@@ -46,7 +47,7 @@ export default function useChain({ contractAddress, coinAddress }: { contractAdd
 
   async function donate(amount: ethers.BigNumber, message: string) {
     try {
-      const result = await contract().donate(amount, message)
+      const result = await contract.donate(amount, message)
       await result.wait(1);
       return
     }
@@ -57,7 +58,7 @@ export default function useChain({ contractAddress, coinAddress }: { contractAdd
   }
   async function startVote(time: ethers.BigNumber, data: string) {
     try {
-      const result = await contract().startVote(time, data)
+      const result = await contract.startVote(time, data)
       await result.wait(1);
       return
     }
@@ -69,7 +70,7 @@ export default function useChain({ contractAddress, coinAddress }: { contractAdd
 
   async function newVote(voteId: ethers.BigNumber, answer: ethers.BigNumber) {
     try {
-      const result = await contract().newVote(voteId, answer)
+      const result = await contract.newVote(voteId, answer)
       await result.wait(1);
       return
     }
@@ -81,7 +82,7 @@ export default function useChain({ contractAddress, coinAddress }: { contractAdd
 
   async function addContent(data: string) {
     try {
-      const result = await contract().addContent(data)
+      const result = await contract.addContent(data)
       await result.wait(1);
       return
     }
@@ -94,7 +95,7 @@ export default function useChain({ contractAddress, coinAddress }: { contractAdd
   async function getAllowance() {
     if (account) {
       try {
-        const result = await coin().allowance(account.address, contractAddress)
+        const result = await coin.allowance(account.address, contractAddress)
         return result as ethers.BigNumber
       }
       catch (e) {
@@ -106,7 +107,7 @@ export default function useChain({ contractAddress, coinAddress }: { contractAdd
   async function approve(amount: ethers.BigNumber) {
     if (account && contractAddress) {
       try {
-        const result = await coin().approve(contractAddress, amount)
+        const result = await coin.approve(contractAddress, amount)
         await result.wait(1)
         return
       }
@@ -119,7 +120,7 @@ export default function useChain({ contractAddress, coinAddress }: { contractAdd
   async function getBalance() {
     if (account) {
       try {
-        const result = await coin().balanceOf(account.address)
+        const result = await coin.balanceOf(account.address)
         return result as ethers.BigNumber
       }
       catch (e) {

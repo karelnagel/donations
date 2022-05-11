@@ -1,4 +1,4 @@
-query content($title: ID = "") {
+query content($title: ID = "", $account: String = "") {
   collection(id: $title) {
     id
     owner {
@@ -8,7 +8,7 @@ query content($title: ID = "") {
     address {
       id
     }
-    coin{
+    coin {
       id
     }
     content(orderBy: time, orderDirection: desc) {
@@ -21,6 +21,13 @@ query content($title: ID = "") {
         coin {
           id
         }
+      }
+    }
+    supporters(where: { account_contains_nocase: $account }) {
+      id
+      donated
+      account {
+        id
       }
     }
   }
