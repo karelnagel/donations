@@ -9,24 +9,26 @@ import { ThemeProvider } from "@mui/material/styles";
 import { materialTheme } from "../idk/materialTheme";
 import { Alert, AlertColor, CircularProgress, Snackbar } from "@mui/material";
 import Modal from "../components/Modal";
-import { createClient, Provider } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
-import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
-import { providers } from "ethers";
-import { network } from "../config";
+import { createClient, WagmiProvider, chain } from "wagmi";
+import "@rainbow-me/rainbowkit/styles.css";
+import { apiProvider, configureChains, darkTheme, getDefaultWallets, midnightTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+
+import { theme } from "./../tailwind.config";
+
+const { chains, provider } = configureChains(
+  [chain.polygon, chain.rinkeby],
+  [apiProvider.infura(process.env.NEXT_PUBLIC_INFURA_ID), apiProvider.fallback()]
+);
+
+const { connectors } = getDefaultWallets({
+  appName: "My RainbowKit App",
+  chains,
+});
 
 const wagmiClient = createClient({
   autoConnect: true,
-  provider: new providers.InfuraProvider(network.chainId, process.env.NEXT_PUBLIC_INFURA_ID),
-  connectors: [
-    new InjectedConnector(),
-    new WalletConnectConnector({
-      options: {
-        qrcode: true,
-        chainId: network.chainId,
-      },
-    }),
-  ],
+  connectors,
+  provider,
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -75,24 +77,33 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
       </Head>
-      <Provider client={wagmiClient}>
-        <Context.Provider value={{ setSnack, load }}>
-          <ApolloProvider client={client}>
-            <ThemeProvider theme={materialTheme}>
-              <Component {...pageProps} />
-              <Snackbar open={!!snackBar} autoHideDuration={10000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity={snackBar?.severity} sx={{ width: "100%" }}>
-                  {snackBar?.message}
-                </Alert>
-              </Snackbar>
-              <Modal visible={!!loading} onClose={() => setLoading("")}>
-                <p className="whitespace-pre-line mb-6 text-md font-bold text-black">{loading}</p>
-                <CircularProgress />
-              </Modal>
-            </ThemeProvider>
-          </ApolloProvider>
-        </Context.Provider>
-      </Provider>
+      <WagmiProvider client={wagmiClient}>
+        <RainbowKitProvider
+          chains={chains}
+          theme={darkTheme({
+            accentColor: theme.extend.colors.primary,
+          })}
+          appInfo={{ appName: "Streamint" }}
+          coolMode
+        >
+          <Context.Provider value={{ setSnack, load }}>
+            <ApolloProvider client={client}>
+              <ThemeProvider theme={materialTheme}>
+                <Component {...pageProps} />
+                <Snackbar open={!!snackBar} autoHideDuration={10000} onClose={handleClose}>
+                  <Alert onClose={handleClose} severity={snackBar?.severity} sx={{ width: "100%" }}>
+                    {snackBar?.message}
+                  </Alert>
+                </Snackbar>
+                <Modal visible={!!loading} onClose={() => setLoading("")}>
+                  <p className="whitespace-pre-line mb-6 text-md font-bold text-black">{loading}</p>
+                  <CircularProgress />
+                </Modal>
+              </ThemeProvider>
+            </ApolloProvider>
+          </Context.Provider>
+        </RainbowKitProvider>
+      </WagmiProvider>
     </>
   );
 }
