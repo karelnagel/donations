@@ -1,14 +1,14 @@
 import { useRouter } from "next/router";
-import { NewDonation } from "../../components/NewDonation";
-import useCollection from "../../hooks/useCollection";
+import { NewDonation } from "../../../components/NewDonation";
+import useCollection from "../../../hooks/useCollection";
 import Image from "next/image";
-import { coinName, getImage, toCoin, toWeiStr } from "../../idk/helpers";
-import { Donation } from "../../graphql/generated";
+import { coinName, getImage, toCoin, toWeiStr } from "../../../idk/helpers";
+import { Donation } from "../../../graphql/generated";
 
 export default function Stream() {
-  const { title, left } = useRouter().query;
+  const { title, left, network } = useRouter().query;
 
-  const { collection, lastDonation } = useCollection(title?.toString()!, null);
+  const { collection, lastDonation } = useCollection(title?.toString()!, network?.toString() ?? "", null);
   const donationPercent =
     collection?.donated && collection?.goal
       ? (Number(toCoin(collection.donated, collection.coin.id)) / Number(toCoin(collection.goal, collection.coin.id))) * 100

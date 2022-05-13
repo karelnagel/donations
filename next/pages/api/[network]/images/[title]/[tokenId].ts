@@ -1,17 +1,16 @@
 const Jimp = require('jimp');
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { DonationDocument, DonationQueryResult } from '../../../../graphql/generated'
-import { apolloRequest } from '../../../../idk/apollo'
-import { coinName, getImage, getTokenId, toCoin } from '../../../../idk/helpers'
+import { DonationDocument, DonationQueryResult } from '../../../../../graphql/generated'
+import { apolloRequest } from '../../../../../idk/apollo'
+import { coinName, getImage, getTokenId, toCoin } from '../../../../../idk/helpers'
 
 export default async function tokenImage(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const { title, tokenId } = req.query
+    const { title, tokenId, network } = req.query
 
-    const donationRequest = await apolloRequest<DonationQueryResult>(DonationDocument, { id: getTokenId(title.toString(), tokenId.toString()) });
-    console.log(donationRequest)
+    const donationRequest = await apolloRequest<DonationQueryResult>(DonationDocument, network.toString(), { id: getTokenId(title.toString(), tokenId.toString()) });
     const donation = donationRequest.data?.donation
     if (!donation) return res.status(404).json({ error: "no doantion" })
 

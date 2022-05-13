@@ -1,25 +1,24 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { DonationDocument, DonationQueryResult } from '../../../../graphql/generated'
-import { apolloRequest } from '../../../../idk/apollo'
-import { coinName, getTokenId, toCoin } from '../../../../idk/helpers'
-import { TokenInfo } from '../../../../interfaces/TokenInfo'
+import { DonationDocument, DonationQueryResult } from '../../../../../graphql/generated'
+import { apolloRequest } from '../../../../../idk/apollo'
+import { coinName, getTokenId, toCoin } from '../../../../../idk/helpers'
+import { TokenInfo } from '../../../../../interfaces/TokenInfo'
 
 export default async function tokenMeta(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const { title, tokenId } = req.query
+    const { title, tokenId, network } = req.query
 
-    const donationRequest = await apolloRequest<DonationQueryResult>(DonationDocument, { id: getTokenId(title.toString(), tokenId.toString()) });
-    console.log(donationRequest)
+    const donationRequest = await apolloRequest<DonationQueryResult>(DonationDocument, network.toString(), { id: getTokenId(title.toString(), tokenId.toString()) });
     const donation = donationRequest.data?.donation
-    if (!donation) return res.status(404).json({ error: "no doantion" })
+    if (!donation) return res.status(404).json({ error: "no donation" })
 
     const returnValue: TokenInfo = {
         name: `${donation.collection.name} #${tokenId}`,
         description: donation.collection.description,
         external_url: donation.collection.url,
-        image: `${process.env.NEXT_PUBLIC_URL}/api/images/${title}/${tokenId}`,
+        image: `${process.env.NEXT_PUBLIC_URL}/api/${network}/images/${title}/${tokenId}`,
         attributes: [
             { trait_type: "Message", value: donation.message },
             { trait_type: "Donator", value: donation.donator.id },

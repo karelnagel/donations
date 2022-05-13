@@ -1,12 +1,12 @@
 import axios from "axios"
-import { network } from "../config"
+import { getNetwork } from "../config"
 import { Coin } from "../graphql/generated"
 import { toCoin } from "../idk/helpers"
 
-export async function getTotalRaised(coins: Coin[]) {
-    if (!network.gecko) return 0
-    
-    const uri = `https://api.coingecko.com/api/v3/simple/token_price/${network.gecko}`
+export async function getTotalRaised(coins: Coin[], chainId?: number) {
+    if (!getNetwork(chainId).gecko) return 0
+
+    const uri = `https://api.coingecko.com/api/v3/simple/token_price/${getNetwork(chainId).gecko}`
     const params = {
         contract_addresses: coins.map(c => c.id.toLowerCase()).join(","),
         vs_currencies: "usd"

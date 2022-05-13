@@ -1,19 +1,16 @@
 import { useEffect, useState } from "react";
+import { useEnsAvatar, useEnsName } from "wagmi";
 import { Donation } from "../graphql/generated";
 import { coinName, short, toCoin } from "../idk/helpers";
-import { getENS } from "../lib/ethers";
 
 export function NewDonation({ donation }: { donation?: Donation }) {
   const [visible, setVisible] = useState(false);
-  const [name, setName] = useState<string>();
-  const [avatar, setAvatar] = useState<string>();
+  const {data:name} = useEnsName({ address: donation?.donator.id });
+  const {data:avatar} = useEnsAvatar({ addressOrName: donation?.donator.id });
 
   useEffect(() => {
     const effect = async () => {
       if (donation) {
-        const { name, avatar } = await getENS(donation.donator.id);
-        setName(name);
-        setAvatar(avatar);
         setVisible(true);
         setTimeout(() => setVisible(false), 20000);
       }

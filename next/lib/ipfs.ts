@@ -1,20 +1,18 @@
 import { Collection } from "../graphql/generated";
 import { create, urlSource } from 'ipfs-http-client'
-import { network } from "../config";
+import { graphIpfs } from "../config";
 
 export async function collectionIpfsUpload(collection: Collection, imageFile?: any, backgroundFile?: any) {
     const image = imageFile ? await uploadImage(imageFile) : collection.image
     if (!image) return null
     console.log("image " + image)
 
-    const background = backgroundFile ? await uploadImage(backgroundFile) : collection.background
-    if (!background) return null
+    const background = (backgroundFile ? await uploadImage(backgroundFile) : collection.background) ?? ""
     console.log("background " + background)
 
     const hash = await uploadJson({ name: collection.name, description: collection.description, goal: collection.goal, url: collection.url, image, background, socials: collection.socials, donationOptions: collection.donationOptions })
     return hash
 }
-
 
 const authorization = "Basic " + Buffer.from(process.env.NEXT_PUBLIC_IPFS_PUBLIC + ":" + process.env.NEXT_PUBLIC_IPFS_PRIVATE).toString("base64");
 export async function uploadImage(file: any) {
@@ -33,6 +31,7 @@ export async function uploadImage(file: any) {
         return null
     }
 }
+
 export async function uploadJson(object: {}) {
     try {
         const ipfs = create({
@@ -58,7 +57,7 @@ export async function uploadJson(object: {}) {
 
 async function pinToGraph(url: string) {
     try {
-        const client = create({ url: network.graphIpfs })
+        const client = create({ url: graphIpfs })
         const file = await client.add(urlSource(url))
         console.log("Pinned to graph!", url)
         return true

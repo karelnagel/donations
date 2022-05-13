@@ -1,16 +1,16 @@
 import React from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useCollectionSupportersQuery } from "../../graphql/generated";
-import Layout from "../../components/Layout";
-import { coinName, toCoin } from "../../idk/helpers";
-import { AccountObject } from "../../components/AccountObject";
-import Button from "../../components/Button";
+import { useCollectionSupportersQuery } from "../../../graphql/generated";
+import Layout from "../../../components/Layout";
+import { coinName, toCoin } from "../../../idk/helpers";
+import { AccountObject } from "../../../components/AccountObject";
+import Button from "../../../components/Button";
+import { collectionUrl } from "../../../idk/urls";
 
 const ProjectSupporters: NextPage = () => {
-  const { title } = useRouter().query;
-  const { data } = useCollectionSupportersQuery({ variables: { title: title?.toString() } });
-  console.log(title);
+  const { title, network } = useRouter().query;
+  const { data } = useCollectionSupportersQuery({ variables: { title: title?.toString() }, context: { network } });
   return (
     <Layout className="flex flex-col space-y-20 items-center">
       <h3 className="text-3xl font-bold">Top supporters of {data?.collection?.name}</h3>
@@ -32,7 +32,7 @@ const ProjectSupporters: NextPage = () => {
           ))}
         </div>
       )}
-      <Button href={`/${title}`}>Back</Button>
+      <Button href={collectionUrl(title?.toString(), network?.toString())}>Back</Button>
     </Layout>
   );
 };

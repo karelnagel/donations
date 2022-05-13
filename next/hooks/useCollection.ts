@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import { Donation, useCollectionQuery,Collection} from "../graphql/generated";
+import { Donation, useCollectionQuery, Collection } from "../graphql/generated";
 
-export default function useCollection(title: string, initialCollection: Collection | null) {
+export default function useCollection(title: string, network: string, initialCollection: Collection | null) {
     const [collection, setCollection] = useState(initialCollection);
 
     const [lastDonationId, setLastDonationId] = useState("");
     const [lastDonation, setLastDonation] = useState<Donation>();
-    const { data, networkStatus } = useCollectionQuery({ variables: { id: title }, pollInterval: 1000 });
+    const { data, networkStatus } = useCollectionQuery({ variables: { id: title }, pollInterval: 1000, context: { network } });
 
     useEffect(() => {
-        console.log("network status:", networkStatus)
         if (data?.collection) {
 
             setCollection(data.collection as Collection);

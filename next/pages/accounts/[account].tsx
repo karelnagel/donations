@@ -16,15 +16,17 @@ import { NextPage } from "next";
 import { coinName, getImage, toCoin } from "../../idk/helpers";
 import Image from "next/image";
 import Link from "next/link";
-import { useEnsName, useEnsAvatar } from "wagmi";
+import { useEnsName, useEnsAvatar, useNetwork } from "wagmi";
 
 const AccountPage: NextPage = () => {
   const router = useRouter();
   const { account, tab } = router.query as { account: string; tab?: string };
   const [value, setValue] = useState(0);
-  const [getDonations, donations] = useAccountDonationsLazyQuery({ variables: { owner: account } });
-  const [getCollections, collections] = useAccountCollectionsLazyQuery({ variables: { owner: account } });
-  const [getSupported, supported] = useAccountSupportedLazyQuery({ variables: { owner: account } });
+
+  const { activeChain: chain } = useNetwork();
+  const [getDonations, donations] = useAccountDonationsLazyQuery({ variables: { owner: account }, context: { network: chain?.name } });
+  const [getCollections, collections] = useAccountCollectionsLazyQuery({ variables: { owner: account }, context: { network: chain?.name } });
+  const [getSupported, supported] = useAccountSupportedLazyQuery({ variables: { owner: account }, context: { network: chain?.name } });
   const { data: name } = useEnsName({ address: account });
   const { data: avatar } = useEnsAvatar({ addressOrName: account });
   useEffect(() => {
@@ -58,7 +60,9 @@ const AccountPage: NextPage = () => {
               (collections.loading ? (
                 <CircularProgress />
               ) : (
-                collections.data?.collections.map((c, i) => <CollectionObject collection={c as Collection} key={i} />)
+                collections.data?.collections.map((c, i) => (
+                  <CollectionObject collection={c as Collection} key={i} network={chain?.name ?? "polygon"} />
+                ))
               ))}
             {value === 1 &&
               (donations.loading ? <CircularProgress /> : donations.data?.donations.map((d, i) => <TokenObject key={i} token={d as Donation} />))}

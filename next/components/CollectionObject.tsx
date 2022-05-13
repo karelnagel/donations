@@ -5,16 +5,17 @@ import { AccountObject } from "./AccountObject";
 import { ProgresssBar } from "./ProgressBar";
 import Image from "next/image";
 import { Collection } from "../graphql/generated";
+import { collectionUrl } from "../idk/urls";
 
-export function CollectionObject({ collection }: { collection?: Collection }) {
+export function CollectionObject({ collection, network }: { collection?: Collection; network: string }) {
   const router = useRouter();
 
   return collection ? (
     <div
       className="relative overflow-hidden shadow-md p-4 rounded-lg cursor-pointer shadow-primary bg-project bg-cover"
-      onClick={() => router.push(`/${collection.id}`)}
+      onClick={() => router.push(collectionUrl(collection.id, network))}
     >
-      <Image layout="fill" alt="" src={getImage(collection.background)} className="object-cover"/>
+      <Image layout="fill" alt="" src={getImage(collection.background)} className="object-cover" />
       <div className="flex justify-between">
         <div className="w-20 h-20 relative">
           <Image

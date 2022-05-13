@@ -1,16 +1,16 @@
+import { Chain, chain } from "@wagmi/core";
 import { discord, etherscan, github, twitter } from "./idk/images";
 
-export const networks = [
+export const ipfsGateway = "https://streamint.infura-ipfs.io/ipfs/";
+export const graphIpfs = "https://api.thegraph.com/ipfs/api/v0/";
+interface Network { chain: Chain, factory: string, graph: string, opensea: string, gecko: string | null, coins: { coin: string, address: string, decimals: number }[] }
+export const networks: Network[] = [
     {
-        name: "matic",
-        chainId: 137,
-        factory: "0xca551fEA6ea8339cfF61C75a5b3eD04E7D5fd9f3",
+        chain: chain.polygon,
+        factory: "0xD6E1C31667d2eB29A3721848fb3ca1b7c9e7A5A0",
         graph: "https://api.thegraph.com/subgraphs/name/karelnagel/streamint",
-        graphIpfs: "https://api.thegraph.com/ipfs/api/v0/",
-        ipfsGateway: "https://streamint.infura-ipfs.io/ipfs/",
         opensea: "https://opensea.io/assets/matic/",
         gecko: "polygon-pos",
-        etherscan: "https://polygonscan.com/address/",
         coins: [
             { coin: "Select", address: "select", decimals: 18 },
             { coin: "WETH", address: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619", decimals: 18 },
@@ -24,14 +24,10 @@ export const networks = [
         ]
     },
     {
-        name: "rinkeby",
-        chainId: 4,
+        chain: chain.rinkeby,
         factory: "0x97a8485B5a1C3cCd156bbDE61C19F926110Eb63f",
         graph: "https://api.thegraph.com/subgraphs/name/karelnagel/streamint-dev",
-        graphIpfs: "https://api.thegraph.com/ipfs/api/v0/",
-        ipfsGateway: "https://streamint.infura-ipfs.io/ipfs/",
         opensea: "https://testnets.opensea.io/assets/",
-        etherscan: "https://rinkeby.etherscan.io/address/",
         gecko: null,
         coins: [
             { coin: "Select", address: "select", decimals: 18 },
@@ -39,12 +35,24 @@ export const networks = [
         ]
     }
 ]
-
-export const network = networks[Number(process.env.NEXT_PUBLIC_NETWORK) ?? 0]
+export const getNetwork = (chainId?: number): Network => {
+    if (chainId) {
+        const net = networks.find(c => c.chain.id === chainId)
+        if (net) return net
+    }
+    return networks[0]
+}
+export const getNetworkByName = (name?: string): Network => {
+    if (name) {
+        const net = networks.find(c => c.chain.name.toLowerCase() === name.toLowerCase())
+        if (net) return net
+    }
+    return networks[0]
+}
 
 export const links = [
     { link: "https://discord.gg/gAK73yAjJ6", image: discord },
     { link: "https://twitter.com/Streamint_", image: twitter },
     { link: "https://github.com/karelnagel/streamint", image: github },
-    { link: `${network.etherscan}${network.factory}`, image: etherscan },
+    { link: `todo`, image: etherscan },
 ]

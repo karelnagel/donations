@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
-import { network } from "../config";
-import { useContract, erc20ABI, useAccount, useSigner } from 'wagmi'
+import { getNetwork } from "../config";
+import { useContract, erc20ABI, useAccount, useSigner, useNetwork } from 'wagmi'
 
 export const factoryAbi = [
   "function newCollection(string memory title,address coin,string memory ipfs)",
@@ -18,7 +18,8 @@ export const contractAbi = [
 export default function useChain({ contractAddress, coinAddress }: { contractAddress?: string, coinAddress?: string }) {
   const { data: account } = useAccount()
   const { data: signer } = useSigner()
-  const factory = useContract({ addressOrName: network.factory, contractInterface: factoryAbi, signerOrProvider: signer })
+  const { activeChain: chain } = useNetwork()
+  const factory = useContract({ addressOrName: getNetwork(chain?.id).factory, contractInterface: factoryAbi, signerOrProvider: signer })
   const contract = useContract({ addressOrName: contractAddress ?? ethers.constants.AddressZero, contractInterface: contractAbi, signerOrProvider: signer })
   const coin = useContract({ addressOrName: coinAddress ?? ethers.constants.AddressZero, contractInterface: erc20ABI, signerOrProvider: signer })
 

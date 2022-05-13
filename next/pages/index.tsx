@@ -105,7 +105,7 @@ const Home: NextPage<ProjectProps> = ({ collections, global, total }) => {
           <h2 className="text-center">Latest collections</h2>
           <div className="flex flex-col  space-y-6 max-w-screen-sm  w-full mx-auto my-10">
             {collections.map((p, i) => (
-              <CollectionObject collection={p} key={i} />
+              <CollectionObject collection={p} key={i} network={"Polygon"} />
             ))}
           </div>
           <Button href="/collections">Latest collections</Button>
@@ -113,7 +113,6 @@ const Home: NextPage<ProjectProps> = ({ collections, global, total }) => {
         <section id="faq">
           <h2 className="text-center">FAQ</h2>
           <div>
-            {/* Todo material accordion */}
             {faqs.map((f, i) => (
               <Accordion key={i}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
@@ -132,10 +131,10 @@ const Home: NextPage<ProjectProps> = ({ collections, global, total }) => {
 };
 
 export const getStaticProps: GetStaticProps<ProjectProps> = async () => {
-  const result = await apolloRequest<LatestCollectionsQueryResult>(LatestCollectionsDocument, { first: 4 });
+  const result = await apolloRequest<LatestCollectionsQueryResult>(LatestCollectionsDocument, "polygon", { first: 4 });
   const collections = result.data?.collections ? result.data.collections.map((c) => c as Collection) : [];
 
-  const result2 = await apolloRequest<GlobalQueryResult>(GlobalDocument);
+  const result2 = await apolloRequest<GlobalQueryResult>(GlobalDocument, "polygon");
   const global = result2.data?.global ? (result2.data.global as Global) : null;
   const total = global?.coins ? await getTotalRaised(global?.coins) : 0;
 

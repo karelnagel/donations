@@ -1,55 +1,59 @@
 import React, { useContext, useEffect, useState } from "react";
-import { apolloRequest } from "../../idk/apollo";
+import { apolloRequest } from "../../../idk/apollo";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
-import { CustomHead } from "../../components/CustomHead";
-import Layout from "../../components/Layout";
-import { coinName, getImage, sameAddr, toCoin, toWei } from "../../idk/helpers";
-import useChain from "../../hooks/useChain";
+import { CustomHead } from "../../../components/CustomHead";
+import Layout from "../../../components/Layout";
+import { coinName, getImage, sameAddr, toCoin, toWei } from "../../../idk/helpers";
+import useChain from "../../../hooks/useChain";
 import { Chip, CircularProgress, InputAdornment, TextField } from "@mui/material";
 import Image from "next/image";
-import { AccountObject } from "../../components/AccountObject";
+import { AccountObject } from "../../../components/AccountObject";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkIcon from "@mui/icons-material/Link";
 import { useRouter } from "next/router";
-import { Context } from "../../idk/context";
-import { ProgresssBar } from "../../components/ProgressBar";
-import { NewDonation } from "../../components/NewDonation";
+import { Context } from "../../../idk/context";
+import { ProgresssBar } from "../../../components/ProgressBar";
+import { NewDonation } from "../../../components/NewDonation";
 import Link from "next/link";
-import Modal from "../../components/Modal";
-import { network } from "../../config";
-import Button from "../../components/Button";
-import { Collection, CollectionDocument, CollectionListDocument, CollectionListQueryResult, CollectionQueryResult } from "../../graphql/generated";
-import useCollection from "../../hooks/useCollection";
+import Modal from "../../../components/Modal";
+import { networks } from "../../../config";
+import Button from "../../../components/Button";
+import { Collection, CollectionDocument, CollectionListDocument, CollectionListQueryResult, CollectionQueryResult } from "../../../graphql/generated";
+import useCollection from "../../../hooks/useCollection";
 import { useBalance, useAccount } from "wagmi";
 import { BigNumber } from "@ethersproject/bignumber";
+import CheckNetwork from "../../../components/CheckNetwork";
+import CheckOwner from "../../../components/CheckOwner";
+import { collectionUrl, openseaUrl } from "../../../idk/urls";
 
 interface Params extends ParsedUrlQuery {
   title: string;
+  network: string;
 }
 interface CollectionProps {
   initialCollection: Collection | null;
   title: string;
+  network: string;
 }
-const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialCollection, title }) => {
+const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialCollection, title, network }) => {
   const router = useRouter();
   const { data: account } = useAccount();
-  const { collection, lastDonation } = useCollection(title, initialCollection);
+  const { collection, lastDonation } = useCollection(title, network, initialCollection);
   const { setSnack, load } = useContext(Context);
 
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
   const [tokenId, setTokenId] = useState("");
 
-  const { data: balance } = useBalance({ addressOrName: collection?.coin.id });
+  const { data: balance } = useBalance({ token: collection?.coin.id, addressOrName: account?.address });
   const { donate, getAllowance, approve } = useChain({
     contractAddress: collection?.address.id,
     coinAddress: collection?.coin.id,
   });
-
   const donationOptions = [
     toCoin(collection?.donationOptions[0] ?? "0", collection?.coin.id),
     toCoin(collection?.donationOptions[1] ?? "0", collection?.coin.id),
@@ -83,10 +87,9 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
       setTokenId((t) => t ?? "loading");
     }, "Making donation! \n\nThis will take 2 transactions: \n1. for approving spending the coins  \n2. for donating. \n\nPlease continue to your wallet!");
   };
-  console.log(collection?.background);
   if (!collection) return <h1>Loading...</h1>;
   return (
-    <>
+    <div>
       <CustomHead name={collection.name} description={collection.description} image={getImage(collection.image)} />
       <Layout>
         <Modal
@@ -98,7 +101,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
           <p className="uppercase font-bold my-4 text-black">Donation successful</p>
           <p className="mb-2 text-black">View your NFT on Opensea:</p>
           {tokenId && tokenId !== "loading" ? (
-            <Button href={`${network.opensea}${collection.address.id}/${tokenId}`} newTab>
+            <Button href={openseaUrl(network, collection.address.id, tokenId)} newTab>
               View NFT
             </Button>
           ) : (
@@ -167,19 +170,19 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
             </div>
           </div>
           <div className="flex justify-evenly mb-12">
-            <Button text href={`/${collection.id}/content`}>
+            <Button text href={collectionUrl(title, network, "content")}>
               Private content
             </Button>
-            <Button text href={`/${collection.id}/vote`}>
+            <Button text href={collectionUrl(title, network, "vote")}>
               Voting
             </Button>
-            <Button text href={`/${collection.id}/supporters`}>
-              Leaderboard
+            <Button text href={collectionUrl(title, network, "supporters")}>
+              Supporters
             </Button>
           </div>
           <ProgresssBar collection={collection} />
           <br />
-          {account ? (
+          <CheckNetwork>
             <div className="mb-20 flex flex-col items-stretch max-w-sm mx-auto space-y-4">
               <h2 className="my-4 text-lg font-bold">Make a donation to {collection.name}</h2>
               <form onSubmit={makeDonation} className="flex-col flex space-y-2">
@@ -205,36 +208,38 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
                 </div>
                 <Button submit>Donate</Button>
               </form>
-              {sameAddr(collection.owner?.id, account.address) && (
-                <>
-                  <Link href={`/${title}/edit`} passHref>
+              <CheckOwner owner={collection.owner?.id}>
+                <div>
+                  <Link href={collectionUrl(title, network, "edit")} passHref>
                     <Button secondary>Edit</Button>
                   </Link>
                   <Button
                     secondary
                     onClick={() => {
-                      navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_URL}${router.asPath}/stream`);
+                      navigator.clipboard.writeText(collectionUrl(title, network, "stream", true));
                       setSnack!("Stream link copied to clipboard!", "success");
                     }}
                   >
                     Copy stream link
                   </Button>
-                </>
-              )}
+                </div>
+              </CheckOwner>
             </div>
-          ) : (
-            <p className="my-10 uppercase font-bold text-lg">{!account ? "Connect your wallet to make a donation" : "Collection is not active"}</p>
-          )}
+          </CheckNetwork>
         </div>
       </Layout>
-    </>
+    </div>
   );
 };
 
 export const getStaticPaths: GetStaticPaths<Params> = async () => {
-  const result = await apolloRequest<CollectionListQueryResult>(CollectionListDocument);
+  const paths: { params: Params }[] = [];
 
-  const paths = result.data?.collections.map((p) => ({ params: { title: p.id } })) ?? [];
+  for (const network of networks) {
+    const result = await apolloRequest<CollectionListQueryResult>(CollectionListDocument, network.chain.name);
+    const params = result.data?.collections.map((p) => ({ params: { title: p.id, network: network.chain.name.toLowerCase() } }));
+    if (params) paths.push(...params);
+  }
   return {
     paths,
     fallback: true,
@@ -243,14 +248,15 @@ export const getStaticPaths: GetStaticPaths<Params> = async () => {
 
 export const getStaticProps: GetStaticProps<CollectionProps, Params> = async (context) => {
   const title = context.params?.title ?? "";
-  const collectionId = context.params?.collectionId ?? "";
-  const result = await apolloRequest<CollectionQueryResult>(CollectionDocument, { id: title });
+  const network = context.params?.network ?? "";
+  const result = await apolloRequest<CollectionQueryResult>(CollectionDocument, network, { id: title });
 
   const initialCollection = result.data?.collection ? (result.data.collection as Collection) : null;
   return {
     props: {
       initialCollection: initialCollection,
       title,
+      network,
     },
     revalidate: 10,
   };
