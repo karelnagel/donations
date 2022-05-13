@@ -4,7 +4,7 @@ import { Coin } from "../graphql/generated"
 import { toCoin } from "../idk/helpers"
 
 export async function getTotalRaised(coins: Coin[], chainId?: number) {
-    if (!getNetwork(chainId).gecko) return 0
+    if (!getNetwork(chainId).gecko) return "0"
 
     const uri = `https://api.coingecko.com/api/v3/simple/token_price/${getNetwork(chainId).gecko}`
     const params = {
@@ -24,5 +24,5 @@ export async function getTotalRaised(coins: Coin[], chainId?: number) {
     catch (e) {
         console.log("error getting coin price " + e)
     }
-    return 0
+    return "0"
 }

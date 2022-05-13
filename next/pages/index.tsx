@@ -15,7 +15,7 @@ import { getTotalRaised } from "../lib/getTotalRaised";
 interface ProjectProps {
   collections: Collection[];
   global: Global | null;
-  total: number;
+  total: string;
 }
 
 const Home: NextPage<ProjectProps> = ({ collections, global, total }) => {
@@ -136,7 +136,7 @@ export const getStaticProps: GetStaticProps<ProjectProps> = async () => {
 
   const result2 = await apolloRequest<GlobalQueryResult>(GlobalDocument, "polygon");
   const global = result2.data?.global ? (result2.data.global as Global) : null;
-  const total = global?.coins ? await getTotalRaised(global?.coins) : 0;
+  const total = global?.coins ? await getTotalRaised(global?.coins) :"0";
 
   return {
     props: {
