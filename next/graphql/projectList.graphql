@@ -1,9 +1,0 @@
-query projectList {
-  projects {
-    index
-    collection {
-      id
-      projectsCount
-    }
-  }
-}

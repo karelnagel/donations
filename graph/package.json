@@ -2,12 +2,13 @@
   "name": "streamint",
   "license": "UNLICENSED",
   "scripts": {
+    "test": "graph test -v 0.4.1",
     "prepare:rinkeby": "mustache networks/rinkeby.json subgraph.template.yaml > subgraph.yaml",
     "prepare:matic": "mustache networks/matic.json subgraph.template.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph codegen && graph build",
-    "deploy:main": "graph deploy --product hosted-service karelnagel/streamint",
-    "deploy:dev": "graph deploy --product hosted-service karelnagel/streamint-dev",
+    "deploy:matic": "graph deploy --product hosted-service karelnagel/streamint",
+    "deploy:rinkeby": "graph deploy --product hosted-service karelnagel/streamint-dev",
     "create-local": "graph create --node http://localhost:8020/ streamint",
     "remove-local": "graph remove --node http://localhost:8020/ streamint",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 streamint"
@@ -17,6 +18,7 @@
     "@graphprotocol/graph-ts": "0.26.0"
   },
   "devDependencies": {
+    "matchstick-as": "^0.4.2",
     "mustache": "^4.2.0"
   }
 }

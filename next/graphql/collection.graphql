@@ -1,22 +1,39 @@
-query collection($id: ID = "", $first: Int = 10) {
+query collection($id: ID = "") {
   collection(id: $id) {
+    donated
+    donationsCount
+    coin {
+      id
+    }
+    time
     id
-    address
-    owner
-    projectsCount
-    projects(first: $first, orderBy: time, orderDirection: desc) {
-      donated
-      index
-      coin
-      active
-      name
-      description
-      image
-      goal
-      collection {
+    owner {
+      id
+    }
+    name
+    description
+    image
+    background
+    url
+    goal
+    socials
+    donationOptions
+    address {
+      id
+    }
+    donations(first: 1, orderBy: time, orderDirection: desc) {
+      id
+      message
+      donator {
         id
       }
-      owner
+      amount
+      time
+      collection {
+        coin {
+          id
+        }
+      }
     }
   }
 }

@@ -1,0 +1,16 @@
+query collectionSupporters($title: ID = "") {
+  collection(id: $title) {
+    name
+    coin {
+      id
+    }
+    supporters(orderBy: donated, orderDirection: desc) {
+      id
+      donated
+      donationsCount
+      account {
+        id
+      }
+    }
+  }
+}

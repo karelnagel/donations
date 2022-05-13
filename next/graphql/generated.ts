@@ -18,6 +18,168 @@ export type Scalars = {
   Bytes: any;
 };
 
+export type Account = {
+  __typename?: 'Account';
+  collections: Array<Collection>;
+  donations: Array<Donation>;
+  id: Scalars['ID'];
+  supportedCollections: Array<Supporter>;
+};
+
+
+export type AccountCollectionsArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Collection_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Collection_Filter>;
+};
+
+
+export type AccountDonationsArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Donation_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Donation_Filter>;
+};
+
+
+export type AccountSupportedCollectionsArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Supporter_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Supporter_Filter>;
+};
+
+export type Account_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+export enum Account_OrderBy {
+  Collections = 'collections',
+  Donations = 'donations',
+  Id = 'id',
+  SupportedCollections = 'supportedCollections'
+}
+
+export type Answer = {
+  __typename?: 'Answer';
+  answer: Scalars['String'];
+  id: Scalars['ID'];
+  index: Scalars['BigInt'];
+  question: Question;
+  votes: Array<Vote>;
+  votesAmount: Scalars['BigInt'];
+  votesCount: Scalars['Int'];
+};
+
+
+export type AnswerVotesArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Vote_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Vote_Filter>;
+};
+
+export type Answer_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  answer?: InputMaybe<Scalars['String']>;
+  answer_contains?: InputMaybe<Scalars['String']>;
+  answer_contains_nocase?: InputMaybe<Scalars['String']>;
+  answer_ends_with?: InputMaybe<Scalars['String']>;
+  answer_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  answer_gt?: InputMaybe<Scalars['String']>;
+  answer_gte?: InputMaybe<Scalars['String']>;
+  answer_in?: InputMaybe<Array<Scalars['String']>>;
+  answer_lt?: InputMaybe<Scalars['String']>;
+  answer_lte?: InputMaybe<Scalars['String']>;
+  answer_not?: InputMaybe<Scalars['String']>;
+  answer_not_contains?: InputMaybe<Scalars['String']>;
+  answer_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  answer_not_ends_with?: InputMaybe<Scalars['String']>;
+  answer_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  answer_not_in?: InputMaybe<Array<Scalars['String']>>;
+  answer_not_starts_with?: InputMaybe<Scalars['String']>;
+  answer_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  answer_starts_with?: InputMaybe<Scalars['String']>;
+  answer_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  index?: InputMaybe<Scalars['BigInt']>;
+  index_gt?: InputMaybe<Scalars['BigInt']>;
+  index_gte?: InputMaybe<Scalars['BigInt']>;
+  index_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  index_lt?: InputMaybe<Scalars['BigInt']>;
+  index_lte?: InputMaybe<Scalars['BigInt']>;
+  index_not?: InputMaybe<Scalars['BigInt']>;
+  index_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  question?: InputMaybe<Scalars['String']>;
+  question_contains?: InputMaybe<Scalars['String']>;
+  question_contains_nocase?: InputMaybe<Scalars['String']>;
+  question_ends_with?: InputMaybe<Scalars['String']>;
+  question_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  question_gt?: InputMaybe<Scalars['String']>;
+  question_gte?: InputMaybe<Scalars['String']>;
+  question_in?: InputMaybe<Array<Scalars['String']>>;
+  question_lt?: InputMaybe<Scalars['String']>;
+  question_lte?: InputMaybe<Scalars['String']>;
+  question_not?: InputMaybe<Scalars['String']>;
+  question_not_contains?: InputMaybe<Scalars['String']>;
+  question_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  question_not_ends_with?: InputMaybe<Scalars['String']>;
+  question_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  question_not_in?: InputMaybe<Array<Scalars['String']>>;
+  question_not_starts_with?: InputMaybe<Scalars['String']>;
+  question_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  question_starts_with?: InputMaybe<Scalars['String']>;
+  question_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  votesAmount?: InputMaybe<Scalars['BigInt']>;
+  votesAmount_gt?: InputMaybe<Scalars['BigInt']>;
+  votesAmount_gte?: InputMaybe<Scalars['BigInt']>;
+  votesAmount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  votesAmount_lt?: InputMaybe<Scalars['BigInt']>;
+  votesAmount_lte?: InputMaybe<Scalars['BigInt']>;
+  votesAmount_not?: InputMaybe<Scalars['BigInt']>;
+  votesAmount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  votesCount?: InputMaybe<Scalars['Int']>;
+  votesCount_gt?: InputMaybe<Scalars['Int']>;
+  votesCount_gte?: InputMaybe<Scalars['Int']>;
+  votesCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  votesCount_lt?: InputMaybe<Scalars['Int']>;
+  votesCount_lte?: InputMaybe<Scalars['Int']>;
+  votesCount_not?: InputMaybe<Scalars['Int']>;
+  votesCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+};
+
+export enum Answer_OrderBy {
+  Answer = 'answer',
+  Id = 'id',
+  Index = 'index',
+  Question = 'question',
+  Votes = 'votes',
+  VotesAmount = 'votesAmount',
+  VotesCount = 'votesCount'
+}
+
 export type BlockChangedFilter = {
   number_gte: Scalars['Int'];
 };
@@ -28,242 +190,35 @@ export type Block_Height = {
   number_gte?: InputMaybe<Scalars['Int']>;
 };
 
-export type Collection = {
-  __typename?: 'Collection';
-  address: Scalars['Bytes'];
+export type Coin = {
+  __typename?: 'Coin';
+  collections: Array<Collection>;
+  donated: Scalars['BigInt'];
+  donationsCount: Scalars['Int'];
+  global: Global;
   id: Scalars['ID'];
-  owner: Scalars['String'];
-  projects: Array<Project>;
-  projectsCount: Scalars['Int'];
-  time: Scalars['BigInt'];
 };
 
 
-export type CollectionProjectsArgs = {
+export type CoinCollectionsArgs = {
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Project_OrderBy>;
+  orderBy?: InputMaybe<Collection_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   skip?: InputMaybe<Scalars['Int']>;
-  where?: InputMaybe<Project_Filter>;
+  where?: InputMaybe<Collection_Filter>;
 };
 
-export type Collection_Filter = {
+export type Coin_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
-  address?: InputMaybe<Scalars['Bytes']>;
-  address_contains?: InputMaybe<Scalars['Bytes']>;
-  address_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  address_not?: InputMaybe<Scalars['Bytes']>;
-  address_not_contains?: InputMaybe<Scalars['Bytes']>;
-  address_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  owner?: InputMaybe<Scalars['String']>;
-  owner_contains?: InputMaybe<Scalars['String']>;
-  owner_contains_nocase?: InputMaybe<Scalars['String']>;
-  owner_ends_with?: InputMaybe<Scalars['String']>;
-  owner_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  owner_gt?: InputMaybe<Scalars['String']>;
-  owner_gte?: InputMaybe<Scalars['String']>;
-  owner_in?: InputMaybe<Array<Scalars['String']>>;
-  owner_lt?: InputMaybe<Scalars['String']>;
-  owner_lte?: InputMaybe<Scalars['String']>;
-  owner_not?: InputMaybe<Scalars['String']>;
-  owner_not_contains?: InputMaybe<Scalars['String']>;
-  owner_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  owner_not_ends_with?: InputMaybe<Scalars['String']>;
-  owner_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  owner_not_in?: InputMaybe<Array<Scalars['String']>>;
-  owner_not_starts_with?: InputMaybe<Scalars['String']>;
-  owner_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  owner_starts_with?: InputMaybe<Scalars['String']>;
-  owner_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  projectsCount?: InputMaybe<Scalars['Int']>;
-  projectsCount_gt?: InputMaybe<Scalars['Int']>;
-  projectsCount_gte?: InputMaybe<Scalars['Int']>;
-  projectsCount_in?: InputMaybe<Array<Scalars['Int']>>;
-  projectsCount_lt?: InputMaybe<Scalars['Int']>;
-  projectsCount_lte?: InputMaybe<Scalars['Int']>;
-  projectsCount_not?: InputMaybe<Scalars['Int']>;
-  projectsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  time?: InputMaybe<Scalars['BigInt']>;
-  time_gt?: InputMaybe<Scalars['BigInt']>;
-  time_gte?: InputMaybe<Scalars['BigInt']>;
-  time_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  time_lt?: InputMaybe<Scalars['BigInt']>;
-  time_lte?: InputMaybe<Scalars['BigInt']>;
-  time_not?: InputMaybe<Scalars['BigInt']>;
-  time_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-};
-
-export enum Collection_OrderBy {
-  Address = 'address',
-  Id = 'id',
-  Owner = 'owner',
-  Projects = 'projects',
-  ProjectsCount = 'projectsCount',
-  Time = 'time'
-}
-
-export type Donation = {
-  __typename?: 'Donation';
-  amount: Scalars['BigInt'];
-  id: Scalars['ID'];
-  message: Scalars['String'];
-  originalOwner: Scalars['String'];
-  owner: Scalars['String'];
-  project: Project;
-  time: Scalars['BigInt'];
-};
-
-export type Donation_Filter = {
-  /** Filter for the block changed event. */
-  _change_block?: InputMaybe<BlockChangedFilter>;
-  amount?: InputMaybe<Scalars['BigInt']>;
-  amount_gt?: InputMaybe<Scalars['BigInt']>;
-  amount_gte?: InputMaybe<Scalars['BigInt']>;
-  amount_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  amount_lt?: InputMaybe<Scalars['BigInt']>;
-  amount_lte?: InputMaybe<Scalars['BigInt']>;
-  amount_not?: InputMaybe<Scalars['BigInt']>;
-  amount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  id?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  message?: InputMaybe<Scalars['String']>;
-  message_contains?: InputMaybe<Scalars['String']>;
-  message_contains_nocase?: InputMaybe<Scalars['String']>;
-  message_ends_with?: InputMaybe<Scalars['String']>;
-  message_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  message_gt?: InputMaybe<Scalars['String']>;
-  message_gte?: InputMaybe<Scalars['String']>;
-  message_in?: InputMaybe<Array<Scalars['String']>>;
-  message_lt?: InputMaybe<Scalars['String']>;
-  message_lte?: InputMaybe<Scalars['String']>;
-  message_not?: InputMaybe<Scalars['String']>;
-  message_not_contains?: InputMaybe<Scalars['String']>;
-  message_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  message_not_ends_with?: InputMaybe<Scalars['String']>;
-  message_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  message_not_in?: InputMaybe<Array<Scalars['String']>>;
-  message_not_starts_with?: InputMaybe<Scalars['String']>;
-  message_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  message_starts_with?: InputMaybe<Scalars['String']>;
-  message_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  originalOwner?: InputMaybe<Scalars['String']>;
-  originalOwner_contains?: InputMaybe<Scalars['String']>;
-  originalOwner_contains_nocase?: InputMaybe<Scalars['String']>;
-  originalOwner_ends_with?: InputMaybe<Scalars['String']>;
-  originalOwner_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  originalOwner_gt?: InputMaybe<Scalars['String']>;
-  originalOwner_gte?: InputMaybe<Scalars['String']>;
-  originalOwner_in?: InputMaybe<Array<Scalars['String']>>;
-  originalOwner_lt?: InputMaybe<Scalars['String']>;
-  originalOwner_lte?: InputMaybe<Scalars['String']>;
-  originalOwner_not?: InputMaybe<Scalars['String']>;
-  originalOwner_not_contains?: InputMaybe<Scalars['String']>;
-  originalOwner_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  originalOwner_not_ends_with?: InputMaybe<Scalars['String']>;
-  originalOwner_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  originalOwner_not_in?: InputMaybe<Array<Scalars['String']>>;
-  originalOwner_not_starts_with?: InputMaybe<Scalars['String']>;
-  originalOwner_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  originalOwner_starts_with?: InputMaybe<Scalars['String']>;
-  originalOwner_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  owner?: InputMaybe<Scalars['String']>;
-  owner_contains?: InputMaybe<Scalars['String']>;
-  owner_contains_nocase?: InputMaybe<Scalars['String']>;
-  owner_ends_with?: InputMaybe<Scalars['String']>;
-  owner_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  owner_gt?: InputMaybe<Scalars['String']>;
-  owner_gte?: InputMaybe<Scalars['String']>;
-  owner_in?: InputMaybe<Array<Scalars['String']>>;
-  owner_lt?: InputMaybe<Scalars['String']>;
-  owner_lte?: InputMaybe<Scalars['String']>;
-  owner_not?: InputMaybe<Scalars['String']>;
-  owner_not_contains?: InputMaybe<Scalars['String']>;
-  owner_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  owner_not_ends_with?: InputMaybe<Scalars['String']>;
-  owner_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  owner_not_in?: InputMaybe<Array<Scalars['String']>>;
-  owner_not_starts_with?: InputMaybe<Scalars['String']>;
-  owner_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  owner_starts_with?: InputMaybe<Scalars['String']>;
-  owner_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  project?: InputMaybe<Scalars['String']>;
-  project_contains?: InputMaybe<Scalars['String']>;
-  project_contains_nocase?: InputMaybe<Scalars['String']>;
-  project_ends_with?: InputMaybe<Scalars['String']>;
-  project_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  project_gt?: InputMaybe<Scalars['String']>;
-  project_gte?: InputMaybe<Scalars['String']>;
-  project_in?: InputMaybe<Array<Scalars['String']>>;
-  project_lt?: InputMaybe<Scalars['String']>;
-  project_lte?: InputMaybe<Scalars['String']>;
-  project_not?: InputMaybe<Scalars['String']>;
-  project_not_contains?: InputMaybe<Scalars['String']>;
-  project_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  project_not_ends_with?: InputMaybe<Scalars['String']>;
-  project_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  project_not_in?: InputMaybe<Array<Scalars['String']>>;
-  project_not_starts_with?: InputMaybe<Scalars['String']>;
-  project_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  project_starts_with?: InputMaybe<Scalars['String']>;
-  project_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  time?: InputMaybe<Scalars['BigInt']>;
-  time_gt?: InputMaybe<Scalars['BigInt']>;
-  time_gte?: InputMaybe<Scalars['BigInt']>;
-  time_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  time_lt?: InputMaybe<Scalars['BigInt']>;
-  time_lte?: InputMaybe<Scalars['BigInt']>;
-  time_not?: InputMaybe<Scalars['BigInt']>;
-  time_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-};
-
-export enum Donation_OrderBy {
-  Amount = 'amount',
-  Id = 'id',
-  Message = 'message',
-  OriginalOwner = 'originalOwner',
-  Owner = 'owner',
-  Project = 'project',
-  Time = 'time'
-}
-
-export type Global = {
-  __typename?: 'Global';
-  collectionsCount: Scalars['Int'];
-  donationsCount: Scalars['Int'];
-  id: Scalars['ID'];
-  projectsCount: Scalars['Int'];
-  streamers: Array<Scalars['String']>;
-  streamersCount: Scalars['Int'];
-  users: Array<Scalars['String']>;
-  usersCount: Scalars['Int'];
-};
-
-export type Global_Filter = {
-  /** Filter for the block changed event. */
-  _change_block?: InputMaybe<BlockChangedFilter>;
-  collectionsCount?: InputMaybe<Scalars['Int']>;
-  collectionsCount_gt?: InputMaybe<Scalars['Int']>;
-  collectionsCount_gte?: InputMaybe<Scalars['Int']>;
-  collectionsCount_in?: InputMaybe<Array<Scalars['Int']>>;
-  collectionsCount_lt?: InputMaybe<Scalars['Int']>;
-  collectionsCount_lte?: InputMaybe<Scalars['Int']>;
-  collectionsCount_not?: InputMaybe<Scalars['Int']>;
-  collectionsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  donated?: InputMaybe<Scalars['BigInt']>;
+  donated_gt?: InputMaybe<Scalars['BigInt']>;
+  donated_gte?: InputMaybe<Scalars['BigInt']>;
+  donated_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  donated_lt?: InputMaybe<Scalars['BigInt']>;
+  donated_lte?: InputMaybe<Scalars['BigInt']>;
+  donated_not?: InputMaybe<Scalars['BigInt']>;
+  donated_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
   donationsCount?: InputMaybe<Scalars['Int']>;
   donationsCount_gt?: InputMaybe<Scalars['Int']>;
   donationsCount_gte?: InputMaybe<Scalars['Int']>;
@@ -272,6 +227,26 @@ export type Global_Filter = {
   donationsCount_lte?: InputMaybe<Scalars['Int']>;
   donationsCount_not?: InputMaybe<Scalars['Int']>;
   donationsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  global?: InputMaybe<Scalars['String']>;
+  global_contains?: InputMaybe<Scalars['String']>;
+  global_contains_nocase?: InputMaybe<Scalars['String']>;
+  global_ends_with?: InputMaybe<Scalars['String']>;
+  global_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  global_gt?: InputMaybe<Scalars['String']>;
+  global_gte?: InputMaybe<Scalars['String']>;
+  global_in?: InputMaybe<Array<Scalars['String']>>;
+  global_lt?: InputMaybe<Scalars['String']>;
+  global_lte?: InputMaybe<Scalars['String']>;
+  global_not?: InputMaybe<Scalars['String']>;
+  global_not_contains?: InputMaybe<Scalars['String']>;
+  global_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  global_not_ends_with?: InputMaybe<Scalars['String']>;
+  global_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  global_not_in?: InputMaybe<Array<Scalars['String']>>;
+  global_not_starts_with?: InputMaybe<Scalars['String']>;
+  global_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  global_starts_with?: InputMaybe<Scalars['String']>;
+  global_starts_with_nocase?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
   id_gte?: InputMaybe<Scalars['ID']>;
@@ -280,85 +255,52 @@ export type Global_Filter = {
   id_lte?: InputMaybe<Scalars['ID']>;
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  projectsCount?: InputMaybe<Scalars['Int']>;
-  projectsCount_gt?: InputMaybe<Scalars['Int']>;
-  projectsCount_gte?: InputMaybe<Scalars['Int']>;
-  projectsCount_in?: InputMaybe<Array<Scalars['Int']>>;
-  projectsCount_lt?: InputMaybe<Scalars['Int']>;
-  projectsCount_lte?: InputMaybe<Scalars['Int']>;
-  projectsCount_not?: InputMaybe<Scalars['Int']>;
-  projectsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  streamers?: InputMaybe<Array<Scalars['String']>>;
-  streamersCount?: InputMaybe<Scalars['Int']>;
-  streamersCount_gt?: InputMaybe<Scalars['Int']>;
-  streamersCount_gte?: InputMaybe<Scalars['Int']>;
-  streamersCount_in?: InputMaybe<Array<Scalars['Int']>>;
-  streamersCount_lt?: InputMaybe<Scalars['Int']>;
-  streamersCount_lte?: InputMaybe<Scalars['Int']>;
-  streamersCount_not?: InputMaybe<Scalars['Int']>;
-  streamersCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  streamers_contains?: InputMaybe<Array<Scalars['String']>>;
-  streamers_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
-  streamers_not?: InputMaybe<Array<Scalars['String']>>;
-  streamers_not_contains?: InputMaybe<Array<Scalars['String']>>;
-  streamers_not_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
-  users?: InputMaybe<Array<Scalars['String']>>;
-  usersCount?: InputMaybe<Scalars['Int']>;
-  usersCount_gt?: InputMaybe<Scalars['Int']>;
-  usersCount_gte?: InputMaybe<Scalars['Int']>;
-  usersCount_in?: InputMaybe<Array<Scalars['Int']>>;
-  usersCount_lt?: InputMaybe<Scalars['Int']>;
-  usersCount_lte?: InputMaybe<Scalars['Int']>;
-  usersCount_not?: InputMaybe<Scalars['Int']>;
-  usersCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  users_contains?: InputMaybe<Array<Scalars['String']>>;
-  users_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
-  users_not?: InputMaybe<Array<Scalars['String']>>;
-  users_not_contains?: InputMaybe<Array<Scalars['String']>>;
-  users_not_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export enum Global_OrderBy {
-  CollectionsCount = 'collectionsCount',
+export enum Coin_OrderBy {
+  Collections = 'collections',
+  Donated = 'donated',
   DonationsCount = 'donationsCount',
-  Id = 'id',
-  ProjectsCount = 'projectsCount',
-  Streamers = 'streamers',
-  StreamersCount = 'streamersCount',
-  Users = 'users',
-  UsersCount = 'usersCount'
+  Global = 'global',
+  Id = 'id'
 }
 
-/** Defines the order direction, either ascending or descending */
-export enum OrderDirection {
-  Asc = 'asc',
-  Desc = 'desc'
-}
-
-export type Project = {
-  __typename?: 'Project';
-  active: Scalars['Boolean'];
-  coin: Scalars['Bytes'];
-  collection: Collection;
+export type Collection = {
+  __typename?: 'Collection';
+  address: CollectionAddress;
+  background: Scalars['String'];
+  coin: Coin;
+  content: Array<Content>;
   description: Scalars['String'];
   donated: Scalars['BigInt'];
-  donationCount: Scalars['Int'];
   donationOptions: Array<Scalars['String']>;
   donations: Array<Donation>;
+  donationsCount: Scalars['Int'];
   goal: Scalars['String'];
   id: Scalars['ID'];
   image: Scalars['String'];
-  index: Scalars['BigInt'];
   ipfs: Scalars['String'];
   name: Scalars['String'];
-  owner: Scalars['String'];
+  owner?: Maybe<Account>;
+  questions: Array<Question>;
+  questionsCount: Scalars['Int'];
   socials: Array<Scalars['String']>;
+  supporters: Array<Supporter>;
   time: Scalars['BigInt'];
   url: Scalars['String'];
 };
 
 
-export type ProjectDonationsArgs = {
+export type CollectionContentArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Content_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Content_Filter>;
+};
+
+
+export type CollectionDonationsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Donation_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
@@ -366,19 +308,33 @@ export type ProjectDonationsArgs = {
   where?: InputMaybe<Donation_Filter>;
 };
 
-export type Project_Filter = {
+
+export type CollectionQuestionsArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Question_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Question_Filter>;
+};
+
+
+export type CollectionSupportersArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Supporter_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Supporter_Filter>;
+};
+
+export type CollectionAddress = {
+  __typename?: 'CollectionAddress';
+  collection: Collection;
+  id: Scalars['ID'];
+};
+
+export type CollectionAddress_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
-  active?: InputMaybe<Scalars['Boolean']>;
-  active_in?: InputMaybe<Array<Scalars['Boolean']>>;
-  active_not?: InputMaybe<Scalars['Boolean']>;
-  active_not_in?: InputMaybe<Array<Scalars['Boolean']>>;
-  coin?: InputMaybe<Scalars['Bytes']>;
-  coin_contains?: InputMaybe<Scalars['Bytes']>;
-  coin_in?: InputMaybe<Array<Scalars['Bytes']>>;
-  coin_not?: InputMaybe<Scalars['Bytes']>;
-  coin_not_contains?: InputMaybe<Scalars['Bytes']>;
-  coin_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
   collection?: InputMaybe<Scalars['String']>;
   collection_contains?: InputMaybe<Scalars['String']>;
   collection_contains_nocase?: InputMaybe<Scalars['String']>;
@@ -399,6 +355,84 @@ export type Project_Filter = {
   collection_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
   collection_starts_with?: InputMaybe<Scalars['String']>;
   collection_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+};
+
+export enum CollectionAddress_OrderBy {
+  Collection = 'collection',
+  Id = 'id'
+}
+
+export type Collection_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  address?: InputMaybe<Scalars['String']>;
+  address_contains?: InputMaybe<Scalars['String']>;
+  address_contains_nocase?: InputMaybe<Scalars['String']>;
+  address_ends_with?: InputMaybe<Scalars['String']>;
+  address_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  address_gt?: InputMaybe<Scalars['String']>;
+  address_gte?: InputMaybe<Scalars['String']>;
+  address_in?: InputMaybe<Array<Scalars['String']>>;
+  address_lt?: InputMaybe<Scalars['String']>;
+  address_lte?: InputMaybe<Scalars['String']>;
+  address_not?: InputMaybe<Scalars['String']>;
+  address_not_contains?: InputMaybe<Scalars['String']>;
+  address_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  address_not_ends_with?: InputMaybe<Scalars['String']>;
+  address_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  address_not_in?: InputMaybe<Array<Scalars['String']>>;
+  address_not_starts_with?: InputMaybe<Scalars['String']>;
+  address_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  address_starts_with?: InputMaybe<Scalars['String']>;
+  address_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  background?: InputMaybe<Scalars['String']>;
+  background_contains?: InputMaybe<Scalars['String']>;
+  background_contains_nocase?: InputMaybe<Scalars['String']>;
+  background_ends_with?: InputMaybe<Scalars['String']>;
+  background_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  background_gt?: InputMaybe<Scalars['String']>;
+  background_gte?: InputMaybe<Scalars['String']>;
+  background_in?: InputMaybe<Array<Scalars['String']>>;
+  background_lt?: InputMaybe<Scalars['String']>;
+  background_lte?: InputMaybe<Scalars['String']>;
+  background_not?: InputMaybe<Scalars['String']>;
+  background_not_contains?: InputMaybe<Scalars['String']>;
+  background_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  background_not_ends_with?: InputMaybe<Scalars['String']>;
+  background_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  background_not_in?: InputMaybe<Array<Scalars['String']>>;
+  background_not_starts_with?: InputMaybe<Scalars['String']>;
+  background_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  background_starts_with?: InputMaybe<Scalars['String']>;
+  background_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  coin?: InputMaybe<Scalars['String']>;
+  coin_contains?: InputMaybe<Scalars['String']>;
+  coin_contains_nocase?: InputMaybe<Scalars['String']>;
+  coin_ends_with?: InputMaybe<Scalars['String']>;
+  coin_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  coin_gt?: InputMaybe<Scalars['String']>;
+  coin_gte?: InputMaybe<Scalars['String']>;
+  coin_in?: InputMaybe<Array<Scalars['String']>>;
+  coin_lt?: InputMaybe<Scalars['String']>;
+  coin_lte?: InputMaybe<Scalars['String']>;
+  coin_not?: InputMaybe<Scalars['String']>;
+  coin_not_contains?: InputMaybe<Scalars['String']>;
+  coin_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  coin_not_ends_with?: InputMaybe<Scalars['String']>;
+  coin_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  coin_not_in?: InputMaybe<Array<Scalars['String']>>;
+  coin_not_starts_with?: InputMaybe<Scalars['String']>;
+  coin_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  coin_starts_with?: InputMaybe<Scalars['String']>;
+  coin_starts_with_nocase?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   description_contains?: InputMaybe<Scalars['String']>;
   description_contains_nocase?: InputMaybe<Scalars['String']>;
@@ -427,20 +461,20 @@ export type Project_Filter = {
   donated_lte?: InputMaybe<Scalars['BigInt']>;
   donated_not?: InputMaybe<Scalars['BigInt']>;
   donated_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  donationCount?: InputMaybe<Scalars['Int']>;
-  donationCount_gt?: InputMaybe<Scalars['Int']>;
-  donationCount_gte?: InputMaybe<Scalars['Int']>;
-  donationCount_in?: InputMaybe<Array<Scalars['Int']>>;
-  donationCount_lt?: InputMaybe<Scalars['Int']>;
-  donationCount_lte?: InputMaybe<Scalars['Int']>;
-  donationCount_not?: InputMaybe<Scalars['Int']>;
-  donationCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
   donationOptions?: InputMaybe<Array<Scalars['String']>>;
   donationOptions_contains?: InputMaybe<Array<Scalars['String']>>;
   donationOptions_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
   donationOptions_not?: InputMaybe<Array<Scalars['String']>>;
   donationOptions_not_contains?: InputMaybe<Array<Scalars['String']>>;
   donationOptions_not_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+  donationsCount?: InputMaybe<Scalars['Int']>;
+  donationsCount_gt?: InputMaybe<Scalars['Int']>;
+  donationsCount_gte?: InputMaybe<Scalars['Int']>;
+  donationsCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  donationsCount_lt?: InputMaybe<Scalars['Int']>;
+  donationsCount_lte?: InputMaybe<Scalars['Int']>;
+  donationsCount_not?: InputMaybe<Scalars['Int']>;
+  donationsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
   goal?: InputMaybe<Scalars['String']>;
   goal_contains?: InputMaybe<Scalars['String']>;
   goal_contains_nocase?: InputMaybe<Scalars['String']>;
@@ -489,14 +523,6 @@ export type Project_Filter = {
   image_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
   image_starts_with?: InputMaybe<Scalars['String']>;
   image_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  index?: InputMaybe<Scalars['BigInt']>;
-  index_gt?: InputMaybe<Scalars['BigInt']>;
-  index_gte?: InputMaybe<Scalars['BigInt']>;
-  index_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  index_lt?: InputMaybe<Scalars['BigInt']>;
-  index_lte?: InputMaybe<Scalars['BigInt']>;
-  index_not?: InputMaybe<Scalars['BigInt']>;
-  index_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
   ipfs?: InputMaybe<Scalars['String']>;
   ipfs_contains?: InputMaybe<Scalars['String']>;
   ipfs_contains_nocase?: InputMaybe<Scalars['String']>;
@@ -557,6 +583,14 @@ export type Project_Filter = {
   owner_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
   owner_starts_with?: InputMaybe<Scalars['String']>;
   owner_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  questionsCount?: InputMaybe<Scalars['Int']>;
+  questionsCount_gt?: InputMaybe<Scalars['Int']>;
+  questionsCount_gte?: InputMaybe<Scalars['Int']>;
+  questionsCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  questionsCount_lt?: InputMaybe<Scalars['Int']>;
+  questionsCount_lte?: InputMaybe<Scalars['Int']>;
+  questionsCount_not?: InputMaybe<Scalars['Int']>;
+  questionsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
   socials?: InputMaybe<Array<Scalars['String']>>;
   socials_contains?: InputMaybe<Array<Scalars['String']>>;
   socials_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
@@ -593,41 +627,417 @@ export type Project_Filter = {
   url_starts_with_nocase?: InputMaybe<Scalars['String']>;
 };
 
-export enum Project_OrderBy {
-  Active = 'active',
+export enum Collection_OrderBy {
+  Address = 'address',
+  Background = 'background',
   Coin = 'coin',
-  Collection = 'collection',
+  Content = 'content',
   Description = 'description',
   Donated = 'donated',
-  DonationCount = 'donationCount',
   DonationOptions = 'donationOptions',
   Donations = 'donations',
+  DonationsCount = 'donationsCount',
   Goal = 'goal',
   Id = 'id',
   Image = 'image',
-  Index = 'index',
   Ipfs = 'ipfs',
   Name = 'name',
   Owner = 'owner',
+  Questions = 'questions',
+  QuestionsCount = 'questionsCount',
   Socials = 'socials',
+  Supporters = 'supporters',
   Time = 'time',
   Url = 'url'
+}
+
+export type Content = {
+  __typename?: 'Content';
+  collection: Collection;
+  content: Scalars['String'];
+  description: Scalars['String'];
+  id: Scalars['ID'];
+  ipfs: Scalars['String'];
+  price: Scalars['BigInt'];
+  time: Scalars['BigInt'];
+};
+
+export type Content_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  collection?: InputMaybe<Scalars['String']>;
+  collection_contains?: InputMaybe<Scalars['String']>;
+  collection_contains_nocase?: InputMaybe<Scalars['String']>;
+  collection_ends_with?: InputMaybe<Scalars['String']>;
+  collection_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  collection_gt?: InputMaybe<Scalars['String']>;
+  collection_gte?: InputMaybe<Scalars['String']>;
+  collection_in?: InputMaybe<Array<Scalars['String']>>;
+  collection_lt?: InputMaybe<Scalars['String']>;
+  collection_lte?: InputMaybe<Scalars['String']>;
+  collection_not?: InputMaybe<Scalars['String']>;
+  collection_not_contains?: InputMaybe<Scalars['String']>;
+  collection_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  collection_not_ends_with?: InputMaybe<Scalars['String']>;
+  collection_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  collection_not_in?: InputMaybe<Array<Scalars['String']>>;
+  collection_not_starts_with?: InputMaybe<Scalars['String']>;
+  collection_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  collection_starts_with?: InputMaybe<Scalars['String']>;
+  collection_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  content?: InputMaybe<Scalars['String']>;
+  content_contains?: InputMaybe<Scalars['String']>;
+  content_contains_nocase?: InputMaybe<Scalars['String']>;
+  content_ends_with?: InputMaybe<Scalars['String']>;
+  content_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  content_gt?: InputMaybe<Scalars['String']>;
+  content_gte?: InputMaybe<Scalars['String']>;
+  content_in?: InputMaybe<Array<Scalars['String']>>;
+  content_lt?: InputMaybe<Scalars['String']>;
+  content_lte?: InputMaybe<Scalars['String']>;
+  content_not?: InputMaybe<Scalars['String']>;
+  content_not_contains?: InputMaybe<Scalars['String']>;
+  content_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  content_not_ends_with?: InputMaybe<Scalars['String']>;
+  content_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  content_not_in?: InputMaybe<Array<Scalars['String']>>;
+  content_not_starts_with?: InputMaybe<Scalars['String']>;
+  content_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  content_starts_with?: InputMaybe<Scalars['String']>;
+  content_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  description_contains?: InputMaybe<Scalars['String']>;
+  description_contains_nocase?: InputMaybe<Scalars['String']>;
+  description_ends_with?: InputMaybe<Scalars['String']>;
+  description_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  description_gt?: InputMaybe<Scalars['String']>;
+  description_gte?: InputMaybe<Scalars['String']>;
+  description_in?: InputMaybe<Array<Scalars['String']>>;
+  description_lt?: InputMaybe<Scalars['String']>;
+  description_lte?: InputMaybe<Scalars['String']>;
+  description_not?: InputMaybe<Scalars['String']>;
+  description_not_contains?: InputMaybe<Scalars['String']>;
+  description_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  description_not_ends_with?: InputMaybe<Scalars['String']>;
+  description_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  description_not_in?: InputMaybe<Array<Scalars['String']>>;
+  description_not_starts_with?: InputMaybe<Scalars['String']>;
+  description_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  description_starts_with?: InputMaybe<Scalars['String']>;
+  description_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  ipfs?: InputMaybe<Scalars['String']>;
+  ipfs_contains?: InputMaybe<Scalars['String']>;
+  ipfs_contains_nocase?: InputMaybe<Scalars['String']>;
+  ipfs_ends_with?: InputMaybe<Scalars['String']>;
+  ipfs_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  ipfs_gt?: InputMaybe<Scalars['String']>;
+  ipfs_gte?: InputMaybe<Scalars['String']>;
+  ipfs_in?: InputMaybe<Array<Scalars['String']>>;
+  ipfs_lt?: InputMaybe<Scalars['String']>;
+  ipfs_lte?: InputMaybe<Scalars['String']>;
+  ipfs_not?: InputMaybe<Scalars['String']>;
+  ipfs_not_contains?: InputMaybe<Scalars['String']>;
+  ipfs_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  ipfs_not_ends_with?: InputMaybe<Scalars['String']>;
+  ipfs_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  ipfs_not_in?: InputMaybe<Array<Scalars['String']>>;
+  ipfs_not_starts_with?: InputMaybe<Scalars['String']>;
+  ipfs_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  ipfs_starts_with?: InputMaybe<Scalars['String']>;
+  ipfs_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  price?: InputMaybe<Scalars['BigInt']>;
+  price_gt?: InputMaybe<Scalars['BigInt']>;
+  price_gte?: InputMaybe<Scalars['BigInt']>;
+  price_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  price_lt?: InputMaybe<Scalars['BigInt']>;
+  price_lte?: InputMaybe<Scalars['BigInt']>;
+  price_not?: InputMaybe<Scalars['BigInt']>;
+  price_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  time?: InputMaybe<Scalars['BigInt']>;
+  time_gt?: InputMaybe<Scalars['BigInt']>;
+  time_gte?: InputMaybe<Scalars['BigInt']>;
+  time_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  time_lt?: InputMaybe<Scalars['BigInt']>;
+  time_lte?: InputMaybe<Scalars['BigInt']>;
+  time_not?: InputMaybe<Scalars['BigInt']>;
+  time_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+};
+
+export enum Content_OrderBy {
+  Collection = 'collection',
+  Content = 'content',
+  Description = 'description',
+  Id = 'id',
+  Ipfs = 'ipfs',
+  Price = 'price',
+  Time = 'time'
+}
+
+export type Donation = {
+  __typename?: 'Donation';
+  amount: Scalars['BigInt'];
+  collection: Collection;
+  donator: Account;
+  id: Scalars['ID'];
+  message: Scalars['String'];
+  supporter: Supporter;
+  time: Scalars['BigInt'];
+  tokenId: Scalars['String'];
+};
+
+export type Donation_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  amount?: InputMaybe<Scalars['BigInt']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  amount_lt?: InputMaybe<Scalars['BigInt']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']>;
+  amount_not?: InputMaybe<Scalars['BigInt']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  collection?: InputMaybe<Scalars['String']>;
+  collection_contains?: InputMaybe<Scalars['String']>;
+  collection_contains_nocase?: InputMaybe<Scalars['String']>;
+  collection_ends_with?: InputMaybe<Scalars['String']>;
+  collection_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  collection_gt?: InputMaybe<Scalars['String']>;
+  collection_gte?: InputMaybe<Scalars['String']>;
+  collection_in?: InputMaybe<Array<Scalars['String']>>;
+  collection_lt?: InputMaybe<Scalars['String']>;
+  collection_lte?: InputMaybe<Scalars['String']>;
+  collection_not?: InputMaybe<Scalars['String']>;
+  collection_not_contains?: InputMaybe<Scalars['String']>;
+  collection_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  collection_not_ends_with?: InputMaybe<Scalars['String']>;
+  collection_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  collection_not_in?: InputMaybe<Array<Scalars['String']>>;
+  collection_not_starts_with?: InputMaybe<Scalars['String']>;
+  collection_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  collection_starts_with?: InputMaybe<Scalars['String']>;
+  collection_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  donator?: InputMaybe<Scalars['String']>;
+  donator_contains?: InputMaybe<Scalars['String']>;
+  donator_contains_nocase?: InputMaybe<Scalars['String']>;
+  donator_ends_with?: InputMaybe<Scalars['String']>;
+  donator_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  donator_gt?: InputMaybe<Scalars['String']>;
+  donator_gte?: InputMaybe<Scalars['String']>;
+  donator_in?: InputMaybe<Array<Scalars['String']>>;
+  donator_lt?: InputMaybe<Scalars['String']>;
+  donator_lte?: InputMaybe<Scalars['String']>;
+  donator_not?: InputMaybe<Scalars['String']>;
+  donator_not_contains?: InputMaybe<Scalars['String']>;
+  donator_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  donator_not_ends_with?: InputMaybe<Scalars['String']>;
+  donator_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  donator_not_in?: InputMaybe<Array<Scalars['String']>>;
+  donator_not_starts_with?: InputMaybe<Scalars['String']>;
+  donator_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  donator_starts_with?: InputMaybe<Scalars['String']>;
+  donator_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  message?: InputMaybe<Scalars['String']>;
+  message_contains?: InputMaybe<Scalars['String']>;
+  message_contains_nocase?: InputMaybe<Scalars['String']>;
+  message_ends_with?: InputMaybe<Scalars['String']>;
+  message_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  message_gt?: InputMaybe<Scalars['String']>;
+  message_gte?: InputMaybe<Scalars['String']>;
+  message_in?: InputMaybe<Array<Scalars['String']>>;
+  message_lt?: InputMaybe<Scalars['String']>;
+  message_lte?: InputMaybe<Scalars['String']>;
+  message_not?: InputMaybe<Scalars['String']>;
+  message_not_contains?: InputMaybe<Scalars['String']>;
+  message_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  message_not_ends_with?: InputMaybe<Scalars['String']>;
+  message_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  message_not_in?: InputMaybe<Array<Scalars['String']>>;
+  message_not_starts_with?: InputMaybe<Scalars['String']>;
+  message_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  message_starts_with?: InputMaybe<Scalars['String']>;
+  message_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  supporter?: InputMaybe<Scalars['String']>;
+  supporter_contains?: InputMaybe<Scalars['String']>;
+  supporter_contains_nocase?: InputMaybe<Scalars['String']>;
+  supporter_ends_with?: InputMaybe<Scalars['String']>;
+  supporter_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  supporter_gt?: InputMaybe<Scalars['String']>;
+  supporter_gte?: InputMaybe<Scalars['String']>;
+  supporter_in?: InputMaybe<Array<Scalars['String']>>;
+  supporter_lt?: InputMaybe<Scalars['String']>;
+  supporter_lte?: InputMaybe<Scalars['String']>;
+  supporter_not?: InputMaybe<Scalars['String']>;
+  supporter_not_contains?: InputMaybe<Scalars['String']>;
+  supporter_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  supporter_not_ends_with?: InputMaybe<Scalars['String']>;
+  supporter_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  supporter_not_in?: InputMaybe<Array<Scalars['String']>>;
+  supporter_not_starts_with?: InputMaybe<Scalars['String']>;
+  supporter_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  supporter_starts_with?: InputMaybe<Scalars['String']>;
+  supporter_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  time?: InputMaybe<Scalars['BigInt']>;
+  time_gt?: InputMaybe<Scalars['BigInt']>;
+  time_gte?: InputMaybe<Scalars['BigInt']>;
+  time_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  time_lt?: InputMaybe<Scalars['BigInt']>;
+  time_lte?: InputMaybe<Scalars['BigInt']>;
+  time_not?: InputMaybe<Scalars['BigInt']>;
+  time_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  tokenId?: InputMaybe<Scalars['String']>;
+  tokenId_contains?: InputMaybe<Scalars['String']>;
+  tokenId_contains_nocase?: InputMaybe<Scalars['String']>;
+  tokenId_ends_with?: InputMaybe<Scalars['String']>;
+  tokenId_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  tokenId_gt?: InputMaybe<Scalars['String']>;
+  tokenId_gte?: InputMaybe<Scalars['String']>;
+  tokenId_in?: InputMaybe<Array<Scalars['String']>>;
+  tokenId_lt?: InputMaybe<Scalars['String']>;
+  tokenId_lte?: InputMaybe<Scalars['String']>;
+  tokenId_not?: InputMaybe<Scalars['String']>;
+  tokenId_not_contains?: InputMaybe<Scalars['String']>;
+  tokenId_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  tokenId_not_ends_with?: InputMaybe<Scalars['String']>;
+  tokenId_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  tokenId_not_in?: InputMaybe<Array<Scalars['String']>>;
+  tokenId_not_starts_with?: InputMaybe<Scalars['String']>;
+  tokenId_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  tokenId_starts_with?: InputMaybe<Scalars['String']>;
+  tokenId_starts_with_nocase?: InputMaybe<Scalars['String']>;
+};
+
+export enum Donation_OrderBy {
+  Amount = 'amount',
+  Collection = 'collection',
+  Donator = 'donator',
+  Id = 'id',
+  Message = 'message',
+  Supporter = 'supporter',
+  Time = 'time',
+  TokenId = 'tokenId'
+}
+
+export type Global = {
+  __typename?: 'Global';
+  coins: Array<Coin>;
+  collectionsCount: Scalars['Int'];
+  donationsCount: Scalars['Int'];
+  id: Scalars['ID'];
+  supportersCount: Scalars['Int'];
+  usersCount: Scalars['Int'];
+};
+
+
+export type GlobalCoinsArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Coin_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Coin_Filter>;
+};
+
+export type Global_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  collectionsCount?: InputMaybe<Scalars['Int']>;
+  collectionsCount_gt?: InputMaybe<Scalars['Int']>;
+  collectionsCount_gte?: InputMaybe<Scalars['Int']>;
+  collectionsCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  collectionsCount_lt?: InputMaybe<Scalars['Int']>;
+  collectionsCount_lte?: InputMaybe<Scalars['Int']>;
+  collectionsCount_not?: InputMaybe<Scalars['Int']>;
+  collectionsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  donationsCount?: InputMaybe<Scalars['Int']>;
+  donationsCount_gt?: InputMaybe<Scalars['Int']>;
+  donationsCount_gte?: InputMaybe<Scalars['Int']>;
+  donationsCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  donationsCount_lt?: InputMaybe<Scalars['Int']>;
+  donationsCount_lte?: InputMaybe<Scalars['Int']>;
+  donationsCount_not?: InputMaybe<Scalars['Int']>;
+  donationsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  supportersCount?: InputMaybe<Scalars['Int']>;
+  supportersCount_gt?: InputMaybe<Scalars['Int']>;
+  supportersCount_gte?: InputMaybe<Scalars['Int']>;
+  supportersCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  supportersCount_lt?: InputMaybe<Scalars['Int']>;
+  supportersCount_lte?: InputMaybe<Scalars['Int']>;
+  supportersCount_not?: InputMaybe<Scalars['Int']>;
+  supportersCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  usersCount?: InputMaybe<Scalars['Int']>;
+  usersCount_gt?: InputMaybe<Scalars['Int']>;
+  usersCount_gte?: InputMaybe<Scalars['Int']>;
+  usersCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  usersCount_lt?: InputMaybe<Scalars['Int']>;
+  usersCount_lte?: InputMaybe<Scalars['Int']>;
+  usersCount_not?: InputMaybe<Scalars['Int']>;
+  usersCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+};
+
+export enum Global_OrderBy {
+  Coins = 'coins',
+  CollectionsCount = 'collectionsCount',
+  DonationsCount = 'donationsCount',
+  Id = 'id',
+  SupportersCount = 'supportersCount',
+  UsersCount = 'usersCount'
+}
+
+/** Defines the order direction, either ascending or descending */
+export enum OrderDirection {
+  Asc = 'asc',
+  Desc = 'desc'
 }
 
 export type Query = {
   __typename?: 'Query';
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
+  account?: Maybe<Account>;
+  accounts: Array<Account>;
+  answer?: Maybe<Answer>;
+  answers: Array<Answer>;
+  coin?: Maybe<Coin>;
+  coins: Array<Coin>;
   collection?: Maybe<Collection>;
+  collectionAddress?: Maybe<CollectionAddress>;
+  collectionAddresses: Array<CollectionAddress>;
   collections: Array<Collection>;
+  content?: Maybe<Content>;
+  contents: Array<Content>;
   donation?: Maybe<Donation>;
   donations: Array<Donation>;
   global?: Maybe<Global>;
   globals: Array<Global>;
-  project?: Maybe<Project>;
-  projects: Array<Project>;
-  title?: Maybe<Title>;
-  titles: Array<Title>;
+  question?: Maybe<Question>;
+  questions: Array<Question>;
+  supporter?: Maybe<Supporter>;
+  supporters: Array<Supporter>;
+  vote?: Maybe<Vote>;
+  votes: Array<Vote>;
 };
 
 
@@ -636,10 +1046,82 @@ export type Query_MetaArgs = {
 };
 
 
+export type QueryAccountArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryAccountsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Account_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Account_Filter>;
+};
+
+
+export type QueryAnswerArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryAnswersArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Answer_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Answer_Filter>;
+};
+
+
+export type QueryCoinArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryCoinsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Coin_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Coin_Filter>;
+};
+
+
 export type QueryCollectionArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryCollectionAddressArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryCollectionAddressesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<CollectionAddress_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<CollectionAddress_Filter>;
 };
 
 
@@ -651,6 +1133,24 @@ export type QueryCollectionsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<Collection_Filter>;
+};
+
+
+export type QueryContentArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryContentsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Content_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Content_Filter>;
 };
 
 
@@ -690,55 +1190,245 @@ export type QueryGlobalsArgs = {
 };
 
 
-export type QueryProjectArgs = {
+export type QueryQuestionArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type QueryProjectsArgs = {
+export type QueryQuestionsArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Project_OrderBy>;
+  orderBy?: InputMaybe<Question_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Project_Filter>;
+  where?: InputMaybe<Question_Filter>;
 };
 
 
-export type QueryTitleArgs = {
+export type QuerySupporterArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type QueryTitlesArgs = {
+export type QuerySupportersArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Title_OrderBy>;
+  orderBy?: InputMaybe<Supporter_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Title_Filter>;
+  where?: InputMaybe<Supporter_Filter>;
 };
+
+
+export type QueryVoteArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryVotesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Vote_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Vote_Filter>;
+};
+
+export type Question = {
+  __typename?: 'Question';
+  answers: Array<Answer>;
+  collection: Collection;
+  endTime: Scalars['BigInt'];
+  id: Scalars['ID'];
+  index: Scalars['BigInt'];
+  ipfs: Scalars['String'];
+  question: Scalars['String'];
+  time: Scalars['BigInt'];
+  votes: Array<Vote>;
+  votesAmount: Scalars['BigInt'];
+  votesCount: Scalars['Int'];
+};
+
+
+export type QuestionAnswersArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Answer_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Answer_Filter>;
+};
+
+
+export type QuestionVotesArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Vote_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Vote_Filter>;
+};
+
+export type Question_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  collection?: InputMaybe<Scalars['String']>;
+  collection_contains?: InputMaybe<Scalars['String']>;
+  collection_contains_nocase?: InputMaybe<Scalars['String']>;
+  collection_ends_with?: InputMaybe<Scalars['String']>;
+  collection_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  collection_gt?: InputMaybe<Scalars['String']>;
+  collection_gte?: InputMaybe<Scalars['String']>;
+  collection_in?: InputMaybe<Array<Scalars['String']>>;
+  collection_lt?: InputMaybe<Scalars['String']>;
+  collection_lte?: InputMaybe<Scalars['String']>;
+  collection_not?: InputMaybe<Scalars['String']>;
+  collection_not_contains?: InputMaybe<Scalars['String']>;
+  collection_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  collection_not_ends_with?: InputMaybe<Scalars['String']>;
+  collection_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  collection_not_in?: InputMaybe<Array<Scalars['String']>>;
+  collection_not_starts_with?: InputMaybe<Scalars['String']>;
+  collection_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  collection_starts_with?: InputMaybe<Scalars['String']>;
+  collection_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  endTime?: InputMaybe<Scalars['BigInt']>;
+  endTime_gt?: InputMaybe<Scalars['BigInt']>;
+  endTime_gte?: InputMaybe<Scalars['BigInt']>;
+  endTime_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  endTime_lt?: InputMaybe<Scalars['BigInt']>;
+  endTime_lte?: InputMaybe<Scalars['BigInt']>;
+  endTime_not?: InputMaybe<Scalars['BigInt']>;
+  endTime_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  index?: InputMaybe<Scalars['BigInt']>;
+  index_gt?: InputMaybe<Scalars['BigInt']>;
+  index_gte?: InputMaybe<Scalars['BigInt']>;
+  index_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  index_lt?: InputMaybe<Scalars['BigInt']>;
+  index_lte?: InputMaybe<Scalars['BigInt']>;
+  index_not?: InputMaybe<Scalars['BigInt']>;
+  index_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  ipfs?: InputMaybe<Scalars['String']>;
+  ipfs_contains?: InputMaybe<Scalars['String']>;
+  ipfs_contains_nocase?: InputMaybe<Scalars['String']>;
+  ipfs_ends_with?: InputMaybe<Scalars['String']>;
+  ipfs_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  ipfs_gt?: InputMaybe<Scalars['String']>;
+  ipfs_gte?: InputMaybe<Scalars['String']>;
+  ipfs_in?: InputMaybe<Array<Scalars['String']>>;
+  ipfs_lt?: InputMaybe<Scalars['String']>;
+  ipfs_lte?: InputMaybe<Scalars['String']>;
+  ipfs_not?: InputMaybe<Scalars['String']>;
+  ipfs_not_contains?: InputMaybe<Scalars['String']>;
+  ipfs_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  ipfs_not_ends_with?: InputMaybe<Scalars['String']>;
+  ipfs_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  ipfs_not_in?: InputMaybe<Array<Scalars['String']>>;
+  ipfs_not_starts_with?: InputMaybe<Scalars['String']>;
+  ipfs_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  ipfs_starts_with?: InputMaybe<Scalars['String']>;
+  ipfs_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  question?: InputMaybe<Scalars['String']>;
+  question_contains?: InputMaybe<Scalars['String']>;
+  question_contains_nocase?: InputMaybe<Scalars['String']>;
+  question_ends_with?: InputMaybe<Scalars['String']>;
+  question_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  question_gt?: InputMaybe<Scalars['String']>;
+  question_gte?: InputMaybe<Scalars['String']>;
+  question_in?: InputMaybe<Array<Scalars['String']>>;
+  question_lt?: InputMaybe<Scalars['String']>;
+  question_lte?: InputMaybe<Scalars['String']>;
+  question_not?: InputMaybe<Scalars['String']>;
+  question_not_contains?: InputMaybe<Scalars['String']>;
+  question_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  question_not_ends_with?: InputMaybe<Scalars['String']>;
+  question_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  question_not_in?: InputMaybe<Array<Scalars['String']>>;
+  question_not_starts_with?: InputMaybe<Scalars['String']>;
+  question_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  question_starts_with?: InputMaybe<Scalars['String']>;
+  question_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  time?: InputMaybe<Scalars['BigInt']>;
+  time_gt?: InputMaybe<Scalars['BigInt']>;
+  time_gte?: InputMaybe<Scalars['BigInt']>;
+  time_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  time_lt?: InputMaybe<Scalars['BigInt']>;
+  time_lte?: InputMaybe<Scalars['BigInt']>;
+  time_not?: InputMaybe<Scalars['BigInt']>;
+  time_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  votesAmount?: InputMaybe<Scalars['BigInt']>;
+  votesAmount_gt?: InputMaybe<Scalars['BigInt']>;
+  votesAmount_gte?: InputMaybe<Scalars['BigInt']>;
+  votesAmount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  votesAmount_lt?: InputMaybe<Scalars['BigInt']>;
+  votesAmount_lte?: InputMaybe<Scalars['BigInt']>;
+  votesAmount_not?: InputMaybe<Scalars['BigInt']>;
+  votesAmount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  votesCount?: InputMaybe<Scalars['Int']>;
+  votesCount_gt?: InputMaybe<Scalars['Int']>;
+  votesCount_gte?: InputMaybe<Scalars['Int']>;
+  votesCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  votesCount_lt?: InputMaybe<Scalars['Int']>;
+  votesCount_lte?: InputMaybe<Scalars['Int']>;
+  votesCount_not?: InputMaybe<Scalars['Int']>;
+  votesCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+};
+
+export enum Question_OrderBy {
+  Answers = 'answers',
+  Collection = 'collection',
+  EndTime = 'endTime',
+  Id = 'id',
+  Index = 'index',
+  Ipfs = 'ipfs',
+  Question = 'question',
+  Time = 'time',
+  Votes = 'votes',
+  VotesAmount = 'votesAmount',
+  VotesCount = 'votesCount'
+}
 
 export type Subscription = {
   __typename?: 'Subscription';
   /** Access to subgraph metadata */
   _meta?: Maybe<_Meta_>;
+  account?: Maybe<Account>;
+  accounts: Array<Account>;
+  answer?: Maybe<Answer>;
+  answers: Array<Answer>;
+  coin?: Maybe<Coin>;
+  coins: Array<Coin>;
   collection?: Maybe<Collection>;
+  collectionAddress?: Maybe<CollectionAddress>;
+  collectionAddresses: Array<CollectionAddress>;
   collections: Array<Collection>;
+  content?: Maybe<Content>;
+  contents: Array<Content>;
   donation?: Maybe<Donation>;
   donations: Array<Donation>;
   global?: Maybe<Global>;
   globals: Array<Global>;
-  project?: Maybe<Project>;
-  projects: Array<Project>;
-  title?: Maybe<Title>;
-  titles: Array<Title>;
+  question?: Maybe<Question>;
+  questions: Array<Question>;
+  supporter?: Maybe<Supporter>;
+  supporters: Array<Supporter>;
+  vote?: Maybe<Vote>;
+  votes: Array<Vote>;
 };
 
 
@@ -747,10 +1437,82 @@ export type Subscription_MetaArgs = {
 };
 
 
+export type SubscriptionAccountArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionAccountsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Account_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Account_Filter>;
+};
+
+
+export type SubscriptionAnswerArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionAnswersArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Answer_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Answer_Filter>;
+};
+
+
+export type SubscriptionCoinArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionCoinsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Coin_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Coin_Filter>;
+};
+
+
 export type SubscriptionCollectionArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionCollectionAddressArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionCollectionAddressesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<CollectionAddress_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<CollectionAddress_Filter>;
 };
 
 
@@ -762,6 +1524,24 @@ export type SubscriptionCollectionsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<Collection_Filter>;
+};
+
+
+export type SubscriptionContentArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionContentsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Content_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Content_Filter>;
 };
 
 
@@ -801,50 +1581,111 @@ export type SubscriptionGlobalsArgs = {
 };
 
 
-export type SubscriptionProjectArgs = {
+export type SubscriptionQuestionArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type SubscriptionProjectsArgs = {
+export type SubscriptionQuestionsArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Project_OrderBy>;
+  orderBy?: InputMaybe<Question_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Project_Filter>;
+  where?: InputMaybe<Question_Filter>;
 };
 
 
-export type SubscriptionTitleArgs = {
+export type SubscriptionSupporterArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
   subgraphError?: _SubgraphErrorPolicy_;
 };
 
 
-export type SubscriptionTitlesArgs = {
+export type SubscriptionSupportersArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Title_OrderBy>;
+  orderBy?: InputMaybe<Supporter_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
-  where?: InputMaybe<Title_Filter>;
+  where?: InputMaybe<Supporter_Filter>;
 };
 
-export type Title = {
-  __typename?: 'Title';
-  collection: Scalars['String'];
+
+export type SubscriptionVoteArgs = {
+  block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
 };
 
-export type Title_Filter = {
+
+export type SubscriptionVotesArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Vote_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Vote_Filter>;
+};
+
+export type Supporter = {
+  __typename?: 'Supporter';
+  account: Account;
+  collection: Collection;
+  donated: Scalars['BigInt'];
+  donations: Array<Donation>;
+  donationsCount: Scalars['Int'];
+  id: Scalars['ID'];
+  votes: Array<Vote>;
+};
+
+
+export type SupporterDonationsArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Donation_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Donation_Filter>;
+};
+
+
+export type SupporterVotesArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Vote_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<Vote_Filter>;
+};
+
+export type Supporter_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
+  account?: InputMaybe<Scalars['String']>;
+  account_contains?: InputMaybe<Scalars['String']>;
+  account_contains_nocase?: InputMaybe<Scalars['String']>;
+  account_ends_with?: InputMaybe<Scalars['String']>;
+  account_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  account_gt?: InputMaybe<Scalars['String']>;
+  account_gte?: InputMaybe<Scalars['String']>;
+  account_in?: InputMaybe<Array<Scalars['String']>>;
+  account_lt?: InputMaybe<Scalars['String']>;
+  account_lte?: InputMaybe<Scalars['String']>;
+  account_not?: InputMaybe<Scalars['String']>;
+  account_not_contains?: InputMaybe<Scalars['String']>;
+  account_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  account_not_ends_with?: InputMaybe<Scalars['String']>;
+  account_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  account_not_in?: InputMaybe<Array<Scalars['String']>>;
+  account_not_starts_with?: InputMaybe<Scalars['String']>;
+  account_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  account_starts_with?: InputMaybe<Scalars['String']>;
+  account_starts_with_nocase?: InputMaybe<Scalars['String']>;
   collection?: InputMaybe<Scalars['String']>;
   collection_contains?: InputMaybe<Scalars['String']>;
   collection_contains_nocase?: InputMaybe<Scalars['String']>;
@@ -865,6 +1706,22 @@ export type Title_Filter = {
   collection_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
   collection_starts_with?: InputMaybe<Scalars['String']>;
   collection_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  donated?: InputMaybe<Scalars['BigInt']>;
+  donated_gt?: InputMaybe<Scalars['BigInt']>;
+  donated_gte?: InputMaybe<Scalars['BigInt']>;
+  donated_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  donated_lt?: InputMaybe<Scalars['BigInt']>;
+  donated_lte?: InputMaybe<Scalars['BigInt']>;
+  donated_not?: InputMaybe<Scalars['BigInt']>;
+  donated_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  donationsCount?: InputMaybe<Scalars['Int']>;
+  donationsCount_gt?: InputMaybe<Scalars['Int']>;
+  donationsCount_gte?: InputMaybe<Scalars['Int']>;
+  donationsCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  donationsCount_lt?: InputMaybe<Scalars['Int']>;
+  donationsCount_lte?: InputMaybe<Scalars['Int']>;
+  donationsCount_not?: InputMaybe<Scalars['Int']>;
+  donationsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
   id?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
   id_gte?: InputMaybe<Scalars['ID']>;
@@ -875,9 +1732,102 @@ export type Title_Filter = {
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
 };
 
-export enum Title_OrderBy {
+export enum Supporter_OrderBy {
+  Account = 'account',
   Collection = 'collection',
-  Id = 'id'
+  Donated = 'donated',
+  Donations = 'donations',
+  DonationsCount = 'donationsCount',
+  Id = 'id',
+  Votes = 'votes'
+}
+
+export type Vote = {
+  __typename?: 'Vote';
+  answer: Answer;
+  id: Scalars['ID'];
+  question: Question;
+  supporter: Supporter;
+};
+
+export type Vote_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  answer?: InputMaybe<Scalars['String']>;
+  answer_contains?: InputMaybe<Scalars['String']>;
+  answer_contains_nocase?: InputMaybe<Scalars['String']>;
+  answer_ends_with?: InputMaybe<Scalars['String']>;
+  answer_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  answer_gt?: InputMaybe<Scalars['String']>;
+  answer_gte?: InputMaybe<Scalars['String']>;
+  answer_in?: InputMaybe<Array<Scalars['String']>>;
+  answer_lt?: InputMaybe<Scalars['String']>;
+  answer_lte?: InputMaybe<Scalars['String']>;
+  answer_not?: InputMaybe<Scalars['String']>;
+  answer_not_contains?: InputMaybe<Scalars['String']>;
+  answer_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  answer_not_ends_with?: InputMaybe<Scalars['String']>;
+  answer_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  answer_not_in?: InputMaybe<Array<Scalars['String']>>;
+  answer_not_starts_with?: InputMaybe<Scalars['String']>;
+  answer_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  answer_starts_with?: InputMaybe<Scalars['String']>;
+  answer_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  question?: InputMaybe<Scalars['String']>;
+  question_contains?: InputMaybe<Scalars['String']>;
+  question_contains_nocase?: InputMaybe<Scalars['String']>;
+  question_ends_with?: InputMaybe<Scalars['String']>;
+  question_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  question_gt?: InputMaybe<Scalars['String']>;
+  question_gte?: InputMaybe<Scalars['String']>;
+  question_in?: InputMaybe<Array<Scalars['String']>>;
+  question_lt?: InputMaybe<Scalars['String']>;
+  question_lte?: InputMaybe<Scalars['String']>;
+  question_not?: InputMaybe<Scalars['String']>;
+  question_not_contains?: InputMaybe<Scalars['String']>;
+  question_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  question_not_ends_with?: InputMaybe<Scalars['String']>;
+  question_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  question_not_in?: InputMaybe<Array<Scalars['String']>>;
+  question_not_starts_with?: InputMaybe<Scalars['String']>;
+  question_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  question_starts_with?: InputMaybe<Scalars['String']>;
+  question_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  supporter?: InputMaybe<Scalars['String']>;
+  supporter_contains?: InputMaybe<Scalars['String']>;
+  supporter_contains_nocase?: InputMaybe<Scalars['String']>;
+  supporter_ends_with?: InputMaybe<Scalars['String']>;
+  supporter_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  supporter_gt?: InputMaybe<Scalars['String']>;
+  supporter_gte?: InputMaybe<Scalars['String']>;
+  supporter_in?: InputMaybe<Array<Scalars['String']>>;
+  supporter_lt?: InputMaybe<Scalars['String']>;
+  supporter_lte?: InputMaybe<Scalars['String']>;
+  supporter_not?: InputMaybe<Scalars['String']>;
+  supporter_not_contains?: InputMaybe<Scalars['String']>;
+  supporter_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  supporter_not_ends_with?: InputMaybe<Scalars['String']>;
+  supporter_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  supporter_not_in?: InputMaybe<Array<Scalars['String']>>;
+  supporter_not_starts_with?: InputMaybe<Scalars['String']>;
+  supporter_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  supporter_starts_with?: InputMaybe<Scalars['String']>;
+  supporter_starts_with_nocase?: InputMaybe<Scalars['String']>;
+};
+
+export enum Vote_OrderBy {
+  Answer = 'answer',
+  Id = 'id',
+  Question = 'question',
+  Supporter = 'supporter'
 }
 
 export type _Block_ = {
@@ -917,65 +1867,74 @@ export type AccountCollectionsQueryVariables = Exact<{
 }>;
 
 
-export type AccountCollectionsQuery = { __typename?: 'Query', collections: Array<{ __typename?: 'Collection', id: string, address: any, time: any, owner: string }> };
+export type AccountCollectionsQuery = { __typename?: 'Query', collections: Array<{ __typename?: 'Collection', id: string, donated: any, donationsCount: number, name: string, description: string, image: string, goal: string, time: any, coin: { __typename?: 'Coin', id: string }, owner?: { __typename?: 'Account', id: string } | null }> };
 
 export type AccountDonationsQueryVariables = Exact<{
   owner?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type AccountDonationsQuery = { __typename?: 'Query', donations: Array<{ __typename?: 'Donation', id: string, message: string, amount: any, owner: string, time: any, project: { __typename?: 'Project', coin: any, index: any, name: string, image: string, collection: { __typename?: 'Collection', id: string } } }> };
+export type AccountDonationsQuery = { __typename?: 'Query', donations: Array<{ __typename?: 'Donation', id: string, message: string, amount: any, time: any, donator: { __typename?: 'Account', id: string }, collection: { __typename?: 'Collection', name: string, image: string, id: string, coin: { __typename?: 'Coin', id: string } } }> };
 
-export type AccountProjectsQueryVariables = Exact<{
+export type AccountSupportedQueryVariables = Exact<{
   owner?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type AccountProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: string, index: any, donated: any, donationCount: number, coin: any, owner: string, name: string, description: string, image: string, goal: string, time: any, collection: { __typename?: 'Collection', id: string } }> };
+export type AccountSupportedQuery = { __typename?: 'Query', supporters: Array<{ __typename?: 'Supporter', id: string, donated: any, donationsCount: number, collection: { __typename?: 'Collection', image: string, name: string, id: string, coin: { __typename?: 'Coin', id: string } } }> };
 
 export type CollectionQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
-  first?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type CollectionQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, address: any, owner: string, projectsCount: number, projects: Array<{ __typename?: 'Project', donated: any, index: any, coin: any, active: boolean, name: string, description: string, image: string, goal: string, owner: string, collection: { __typename?: 'Collection', id: string } }> } | null };
+export type CollectionQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', donated: any, donationsCount: number, time: any, id: string, name: string, description: string, image: string, background: string, url: string, goal: string, socials: Array<string>, donationOptions: Array<string>, coin: { __typename?: 'Coin', id: string }, owner?: { __typename?: 'Account', id: string } | null, address: { __typename?: 'CollectionAddress', id: string }, donations: Array<{ __typename?: 'Donation', id: string, message: string, amount: any, time: any, donator: { __typename?: 'Account', id: string }, collection: { __typename?: 'Collection', coin: { __typename?: 'Coin', id: string } } }> } | null };
 
 export type CollectionListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CollectionListQuery = { __typename?: 'Query', collections: Array<{ __typename?: 'Collection', id: string }> };
 
+export type CollectionSupportersQueryVariables = Exact<{
+  title?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type CollectionSupportersQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', name: string, coin: { __typename?: 'Coin', id: string }, supporters: Array<{ __typename?: 'Supporter', id: string, donated: any, donationsCount: number, account: { __typename?: 'Account', id: string } }> } | null };
+
+export type ContentQueryVariables = Exact<{
+  title?: InputMaybe<Scalars['ID']>;
+  account?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ContentQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, name: string, owner?: { __typename?: 'Account', id: string } | null, address: { __typename?: 'CollectionAddress', id: string }, coin: { __typename?: 'Coin', id: string }, content: Array<{ __typename?: 'Content', id: string, description: string, content: string, price: any, time: any, collection: { __typename?: 'Collection', coin: { __typename?: 'Coin', id: string } } }>, supporters: Array<{ __typename?: 'Supporter', id: string, donated: any, account: { __typename?: 'Account', id: string } }> } | null };
+
 export type DonationQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
 }>;
 
 
-export type DonationQuery = { __typename?: 'Query', donation?: { __typename?: 'Donation', amount: any, owner: string, message: string, time: any, project: { __typename?: 'Project', index: any, name: string, description: string, url: string, image: string, socials: Array<string>, donationOptions: Array<string>, goal: string } } | null };
+export type DonationQuery = { __typename?: 'Query', donation?: { __typename?: 'Donation', amount: any, message: string, time: any, donator: { __typename?: 'Account', id: string }, collection: { __typename?: 'Collection', name: string, description: string, url: string, image: string, socials: Array<string>, donationOptions: Array<string>, goal: string, coin: { __typename?: 'Coin', id: string } } } | null };
 
 export type GlobalQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GlobalQuery = { __typename?: 'Query', global?: { __typename?: 'Global', donationsCount: number, projectsCount: number, collectionsCount: number, usersCount: number, streamersCount: number } | null };
+export type GlobalQuery = { __typename?: 'Query', global?: { __typename?: 'Global', donationsCount: number, collectionsCount: number, usersCount: number, supportersCount: number, coins: Array<{ __typename?: 'Coin', id: string, donated: any }> } | null };
 
-export type LatestProjectsQueryVariables = Exact<{
+export type LatestCollectionsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type LatestProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', donated: any, time: any, index: any, coin: any, active: boolean, name: string, description: string, image: string, goal: string, donationCount: number, owner: string, collection: { __typename?: 'Collection', id: string } }> };
+export type LatestCollectionsQuery = { __typename?: 'Query', collections: Array<{ __typename?: 'Collection', donated: any, time: any, name: string, description: string, image: string, background: string, goal: string, donationsCount: number, id: string, coin: { __typename?: 'Coin', id: string }, owner?: { __typename?: 'Account', id: string } | null }> };
 
-export type ProjectQueryVariables = Exact<{
-  id?: InputMaybe<Scalars['ID']>;
+export type QuestionsQueryVariables = Exact<{
+  title?: InputMaybe<Scalars['ID']>;
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', donated: any, donationCount: number, index: any, active: boolean, coin: any, time: any, id: string, owner: string, name: string, description: string, image: string, url: string, goal: string, socials: Array<string>, donationOptions: Array<string>, collection: { __typename?: 'Collection', id: string, address: any, owner: string }, donations: Array<{ __typename?: 'Donation', id: string, message: string, owner: string, amount: any, time: any, project: { __typename?: 'Project', coin: any } }> } | null };
-
-export type ProjectListQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ProjectListQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', index: any, collection: { __typename?: 'Collection', id: string, projectsCount: number } }> };
+export type QuestionsQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, name: string, owner?: { __typename?: 'Account', id: string } | null, address: { __typename?: 'CollectionAddress', id: string }, questions: Array<{ __typename?: 'Question', id: string, endTime: any, question: string, votesAmount: any, votesCount: number, index: any, collection: { __typename?: 'Collection', coin: { __typename?: 'Coin', id: string } }, answers: Array<{ __typename?: 'Answer', id: string, answer: string, votesAmount: any, votesCount: number, index: any }> }> } | null };
 
 
 export const AccountCollectionsDocument = gql`
@@ -986,9 +1945,19 @@ export const AccountCollectionsDocument = gql`
     orderDirection: desc
   ) {
     id
-    address
+    donated
+    donationsCount
+    coin {
+      id
+    }
+    owner {
+      id
+    }
+    name
+    description
+    image
+    goal
     time
-    owner
   }
 }
     `;
@@ -1023,22 +1992,23 @@ export type AccountCollectionsQueryResult = Apollo.QueryResult<AccountCollection
 export const AccountDonationsDocument = gql`
     query accountDonations($owner: String = "") {
   donations(
-    where: {owner_contains_nocase: $owner}
+    where: {donator_contains_nocase: $owner}
     orderBy: time
     orderDirection: desc
   ) {
     id
     message
     amount
-    owner
-    project {
-      coin
-      index
-      name
-      image
-      collection {
+    donator {
+      id
+    }
+    collection {
+      coin {
         id
       }
+      name
+      image
+      id
     }
     time
   }
@@ -1072,78 +2042,92 @@ export function useAccountDonationsLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type AccountDonationsQueryHookResult = ReturnType<typeof useAccountDonationsQuery>;
 export type AccountDonationsLazyQueryHookResult = ReturnType<typeof useAccountDonationsLazyQuery>;
 export type AccountDonationsQueryResult = Apollo.QueryResult<AccountDonationsQuery, AccountDonationsQueryVariables>;
-export const AccountProjectsDocument = gql`
-    query accountProjects($owner: String = "") {
-  projects(
-    where: {owner_contains_nocase: $owner}
-    orderBy: time
+export const AccountSupportedDocument = gql`
+    query accountSupported($owner: String = "") {
+  supporters(
+    where: {account_contains_nocase: $owner}
+    orderBy: donated
     orderDirection: desc
   ) {
     id
-    index
     donated
-    donationCount
-    coin
-    owner
-    name
-    description
-    image
-    goal
+    donationsCount
     collection {
+      image
+      name
       id
+      coin {
+        id
+      }
     }
-    time
   }
 }
     `;
 
 /**
- * __useAccountProjectsQuery__
+ * __useAccountSupportedQuery__
  *
- * To run a query within a React component, call `useAccountProjectsQuery` and pass it any options that fit your needs.
- * When your component renders, `useAccountProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAccountSupportedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountSupportedQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAccountProjectsQuery({
+ * const { data, loading, error } = useAccountSupportedQuery({
  *   variables: {
  *      owner: // value for 'owner'
  *   },
  * });
  */
-export function useAccountProjectsQuery(baseOptions?: Apollo.QueryHookOptions<AccountProjectsQuery, AccountProjectsQueryVariables>) {
+export function useAccountSupportedQuery(baseOptions?: Apollo.QueryHookOptions<AccountSupportedQuery, AccountSupportedQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AccountProjectsQuery, AccountProjectsQueryVariables>(AccountProjectsDocument, options);
+        return Apollo.useQuery<AccountSupportedQuery, AccountSupportedQueryVariables>(AccountSupportedDocument, options);
       }
-export function useAccountProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountProjectsQuery, AccountProjectsQueryVariables>) {
+export function useAccountSupportedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccountSupportedQuery, AccountSupportedQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AccountProjectsQuery, AccountProjectsQueryVariables>(AccountProjectsDocument, options);
+          return Apollo.useLazyQuery<AccountSupportedQuery, AccountSupportedQueryVariables>(AccountSupportedDocument, options);
         }
-export type AccountProjectsQueryHookResult = ReturnType<typeof useAccountProjectsQuery>;
-export type AccountProjectsLazyQueryHookResult = ReturnType<typeof useAccountProjectsLazyQuery>;
-export type AccountProjectsQueryResult = Apollo.QueryResult<AccountProjectsQuery, AccountProjectsQueryVariables>;
+export type AccountSupportedQueryHookResult = ReturnType<typeof useAccountSupportedQuery>;
+export type AccountSupportedLazyQueryHookResult = ReturnType<typeof useAccountSupportedLazyQuery>;
+export type AccountSupportedQueryResult = Apollo.QueryResult<AccountSupportedQuery, AccountSupportedQueryVariables>;
 export const CollectionDocument = gql`
-    query collection($id: ID = "", $first: Int = 10) {
+    query collection($id: ID = "") {
   collection(id: $id) {
+    donated
+    donationsCount
+    coin {
+      id
+    }
+    time
     id
-    address
-    owner
-    projectsCount
-    projects(first: $first, orderBy: time, orderDirection: desc) {
-      donated
-      index
-      coin
-      active
-      name
-      description
-      image
-      goal
-      collection {
+    owner {
+      id
+    }
+    name
+    description
+    image
+    background
+    url
+    goal
+    socials
+    donationOptions
+    address {
+      id
+    }
+    donations(first: 1, orderBy: time, orderDirection: desc) {
+      id
+      message
+      donator {
         id
       }
-      owner
+      amount
+      time
+      collection {
+        coin {
+          id
+        }
+      }
     }
   }
 }
@@ -1162,7 +2146,6 @@ export const CollectionDocument = gql`
  * const { data, loading, error } = useCollectionQuery({
  *   variables: {
  *      id: // value for 'id'
- *      first: // value for 'first'
  *   },
  * });
  */
@@ -1211,18 +2194,133 @@ export function useCollectionListLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type CollectionListQueryHookResult = ReturnType<typeof useCollectionListQuery>;
 export type CollectionListLazyQueryHookResult = ReturnType<typeof useCollectionListLazyQuery>;
 export type CollectionListQueryResult = Apollo.QueryResult<CollectionListQuery, CollectionListQueryVariables>;
+export const CollectionSupportersDocument = gql`
+    query collectionSupporters($title: ID = "") {
+  collection(id: $title) {
+    name
+    coin {
+      id
+    }
+    supporters(orderBy: donated, orderDirection: desc) {
+      id
+      donated
+      donationsCount
+      account {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCollectionSupportersQuery__
+ *
+ * To run a query within a React component, call `useCollectionSupportersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollectionSupportersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollectionSupportersQuery({
+ *   variables: {
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useCollectionSupportersQuery(baseOptions?: Apollo.QueryHookOptions<CollectionSupportersQuery, CollectionSupportersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CollectionSupportersQuery, CollectionSupportersQueryVariables>(CollectionSupportersDocument, options);
+      }
+export function useCollectionSupportersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CollectionSupportersQuery, CollectionSupportersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CollectionSupportersQuery, CollectionSupportersQueryVariables>(CollectionSupportersDocument, options);
+        }
+export type CollectionSupportersQueryHookResult = ReturnType<typeof useCollectionSupportersQuery>;
+export type CollectionSupportersLazyQueryHookResult = ReturnType<typeof useCollectionSupportersLazyQuery>;
+export type CollectionSupportersQueryResult = Apollo.QueryResult<CollectionSupportersQuery, CollectionSupportersQueryVariables>;
+export const ContentDocument = gql`
+    query content($title: ID = "", $account: String = "") {
+  collection(id: $title) {
+    id
+    owner {
+      id
+    }
+    name
+    address {
+      id
+    }
+    coin {
+      id
+    }
+    content(orderBy: time, orderDirection: desc) {
+      id
+      description
+      content
+      price
+      time
+      collection {
+        coin {
+          id
+        }
+      }
+    }
+    supporters(where: {account_contains_nocase: $account}) {
+      id
+      donated
+      account {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useContentQuery__
+ *
+ * To run a query within a React component, call `useContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContentQuery({
+ *   variables: {
+ *      title: // value for 'title'
+ *      account: // value for 'account'
+ *   },
+ * });
+ */
+export function useContentQuery(baseOptions?: Apollo.QueryHookOptions<ContentQuery, ContentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ContentQuery, ContentQueryVariables>(ContentDocument, options);
+      }
+export function useContentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ContentQuery, ContentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ContentQuery, ContentQueryVariables>(ContentDocument, options);
+        }
+export type ContentQueryHookResult = ReturnType<typeof useContentQuery>;
+export type ContentLazyQueryHookResult = ReturnType<typeof useContentLazyQuery>;
+export type ContentQueryResult = Apollo.QueryResult<ContentQuery, ContentQueryVariables>;
 export const DonationDocument = gql`
     query donation($id: ID = "") {
   donation(id: $id) {
     amount
-    owner
+    donator {
+      id
+    }
     message
     time
-    project {
-      index
+    collection {
       name
       description
       url
+      coin {
+        id
+      }
       image
       socials
       donationOptions
@@ -1263,10 +2361,13 @@ export const GlobalDocument = gql`
     query global {
   global(id: "0") {
     donationsCount
-    projectsCount
     collectionsCount
     usersCount
-    streamersCount
+    supportersCount
+    coins {
+      id
+      donated
+    }
   }
 }
     `;
@@ -1297,90 +2398,84 @@ export function useGlobalLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Glo
 export type GlobalQueryHookResult = ReturnType<typeof useGlobalQuery>;
 export type GlobalLazyQueryHookResult = ReturnType<typeof useGlobalLazyQuery>;
 export type GlobalQueryResult = Apollo.QueryResult<GlobalQuery, GlobalQueryVariables>;
-export const LatestProjectsDocument = gql`
-    query latestProjects($first: Int = 10) {
-  projects(
-    first: $first
-    orderBy: time
-    orderDirection: desc
-    where: {active: true}
-  ) {
+export const LatestCollectionsDocument = gql`
+    query latestCollections($first: Int = 10) {
+  collections(first: $first, orderBy: time, orderDirection: desc) {
     donated
     time
-    index
-    coin
-    active
+    coin {
+      id
+    }
     name
     description
     image
+    background
     goal
-    donationCount
-    collection {
+    donationsCount
+    id
+    owner {
       id
     }
-    owner
   }
 }
     `;
 
 /**
- * __useLatestProjectsQuery__
+ * __useLatestCollectionsQuery__
  *
- * To run a query within a React component, call `useLatestProjectsQuery` and pass it any options that fit your needs.
- * When your component renders, `useLatestProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useLatestCollectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestCollectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useLatestProjectsQuery({
+ * const { data, loading, error } = useLatestCollectionsQuery({
  *   variables: {
  *      first: // value for 'first'
  *   },
  * });
  */
-export function useLatestProjectsQuery(baseOptions?: Apollo.QueryHookOptions<LatestProjectsQuery, LatestProjectsQueryVariables>) {
+export function useLatestCollectionsQuery(baseOptions?: Apollo.QueryHookOptions<LatestCollectionsQuery, LatestCollectionsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<LatestProjectsQuery, LatestProjectsQueryVariables>(LatestProjectsDocument, options);
+        return Apollo.useQuery<LatestCollectionsQuery, LatestCollectionsQueryVariables>(LatestCollectionsDocument, options);
       }
-export function useLatestProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LatestProjectsQuery, LatestProjectsQueryVariables>) {
+export function useLatestCollectionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LatestCollectionsQuery, LatestCollectionsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<LatestProjectsQuery, LatestProjectsQueryVariables>(LatestProjectsDocument, options);
+          return Apollo.useLazyQuery<LatestCollectionsQuery, LatestCollectionsQueryVariables>(LatestCollectionsDocument, options);
         }
-export type LatestProjectsQueryHookResult = ReturnType<typeof useLatestProjectsQuery>;
-export type LatestProjectsLazyQueryHookResult = ReturnType<typeof useLatestProjectsLazyQuery>;
-export type LatestProjectsQueryResult = Apollo.QueryResult<LatestProjectsQuery, LatestProjectsQueryVariables>;
-export const ProjectDocument = gql`
-    query project($id: ID = "") {
-  project(id: $id) {
-    donated
-    donationCount
-    index
-    active
-    coin
-    time
+export type LatestCollectionsQueryHookResult = ReturnType<typeof useLatestCollectionsQuery>;
+export type LatestCollectionsLazyQueryHookResult = ReturnType<typeof useLatestCollectionsLazyQuery>;
+export type LatestCollectionsQueryResult = Apollo.QueryResult<LatestCollectionsQuery, LatestCollectionsQueryVariables>;
+export const QuestionsDocument = gql`
+    query questions($title: ID = "") {
+  collection(id: $title) {
     id
-    owner
+    owner {
+      id
+    }
     name
-    description
-    image
-    url
-    goal
-    socials
-    donationOptions
-    collection {
+    address {
       id
-      address
-      owner
     }
-    donations(first: 1, orderBy: time, orderDirection: desc) {
+    questions(orderBy: index, orderDirection: desc) {
       id
-      message
-      owner
-      amount
-      time
-      project {
-        coin
+      endTime
+      question
+      votesAmount
+      votesCount
+      index
+      collection {
+        coin {
+          id
+        }
+      }
+      answers {
+        id
+        answer
+        votesAmount
+        votesCount
+        index
       }
     }
   }
@@ -1388,67 +2483,29 @@ export const ProjectDocument = gql`
     `;
 
 /**
- * __useProjectQuery__
+ * __useQuestionsQuery__
  *
- * To run a query within a React component, call `useProjectQuery` and pass it any options that fit your needs.
- * When your component renders, `useProjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useQuestionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuestionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useProjectQuery({
+ * const { data, loading, error } = useQuestionsQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      title: // value for 'title'
  *   },
  * });
  */
-export function useProjectQuery(baseOptions?: Apollo.QueryHookOptions<ProjectQuery, ProjectQueryVariables>) {
+export function useQuestionsQuery(baseOptions?: Apollo.QueryHookOptions<QuestionsQuery, QuestionsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProjectQuery, ProjectQueryVariables>(ProjectDocument, options);
+        return Apollo.useQuery<QuestionsQuery, QuestionsQueryVariables>(QuestionsDocument, options);
       }
-export function useProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectQuery, ProjectQueryVariables>) {
+export function useQuestionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QuestionsQuery, QuestionsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProjectQuery, ProjectQueryVariables>(ProjectDocument, options);
+          return Apollo.useLazyQuery<QuestionsQuery, QuestionsQueryVariables>(QuestionsDocument, options);
         }
-export type ProjectQueryHookResult = ReturnType<typeof useProjectQuery>;
-export type ProjectLazyQueryHookResult = ReturnType<typeof useProjectLazyQuery>;
-export type ProjectQueryResult = Apollo.QueryResult<ProjectQuery, ProjectQueryVariables>;
-export const ProjectListDocument = gql`
-    query projectList {
-  projects {
-    index
-    collection {
-      id
-      projectsCount
-    }
-  }
-}
-    `;
-
-/**
- * __useProjectListQuery__
- *
- * To run a query within a React component, call `useProjectListQuery` and pass it any options that fit your needs.
- * When your component renders, `useProjectListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useProjectListQuery({
- *   variables: {
- *   },
- * });
- */
-export function useProjectListQuery(baseOptions?: Apollo.QueryHookOptions<ProjectListQuery, ProjectListQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProjectListQuery, ProjectListQueryVariables>(ProjectListDocument, options);
-      }
-export function useProjectListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectListQuery, ProjectListQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProjectListQuery, ProjectListQueryVariables>(ProjectListDocument, options);
-        }
-export type ProjectListQueryHookResult = ReturnType<typeof useProjectListQuery>;
-export type ProjectListLazyQueryHookResult = ReturnType<typeof useProjectListLazyQuery>;
-export type ProjectListQueryResult = Apollo.QueryResult<ProjectListQuery, ProjectListQueryVariables>;
+export type QuestionsQueryHookResult = ReturnType<typeof useQuestionsQuery>;
+export type QuestionsLazyQueryHookResult = ReturnType<typeof useQuestionsLazyQuery>;
+export type QuestionsQueryResult = Apollo.QueryResult<QuestionsQuery, QuestionsQueryVariables>;

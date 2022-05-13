@@ -1,14 +1,16 @@
 query donation($id: ID = "") {
   donation(id: $id) {
     amount
-    owner 
+    donator {
+      id
+    }
     message
     time
-    project {
-      index
+    collection {
       name
       description
       url
+      coin{id}
       image
       socials
       donationOptions

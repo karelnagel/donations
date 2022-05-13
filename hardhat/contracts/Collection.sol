@@ -21,112 +21,68 @@ interface IFactory {
 contract Collection is ERC721, Ownable {
     using Counters for Counters.Counter;
 
-    Counters.Counter private _donationCounter;
-    Counters.Counter private _projectCounter;
+    Counters.Counter private _dc;
+    Counters.Counter private _vc;
+    mapping(uint256 => uint256) voteEndTime;
 
     string public title;
-    IFactory factory;
+    IERC20 public coin;
+    string public ipfs;
+    IFactory public factory;
 
-    struct Project {
-        bool active;
-        IERC20 coin;
-        address owner;
-        string ipfs;
-    }
-
-    mapping(uint256 => Project) public projects;
-
-    modifier onlyActive(uint256 id) {
-        require(projects[id].active, "Project not active!");
-        _;
-    }
-
-    constructor(
-        string memory _title,
-        address projectCoin,
-        address projectOwner,
-        string memory projectIpfs
-    ) ERC721(_title, _title) {
+    constructor(string memory _title, address _coin) ERC721(_title, _title) {
         title = _title;
+        coin = IERC20(_coin);
         factory = IFactory(msg.sender);
-        _newProject(projectCoin, projectOwner, projectIpfs);
     }
-
-    // New project
-    function newProject(
-        address coin,
-        address owner,
-        string memory ipfs
-    ) public onlyOwner {
-        _newProject(coin, owner, ipfs);
-        emit NewProject(_projectCounter.current(), coin, owner, ipfs);
-    }
-
-    function _newProject(
-        address coin,
-        address owner,
-        string memory ipfs
-    ) private {
-        _projectCounter.increment();
-        projects[_projectCounter.current()] = Project(
-            true,
-            IERC20(coin),
-            owner,
-            ipfs
-        );
-    }
-
-    event NewProject(uint256 id, address coin, address owner, string ipfs);
 
     // Changing ipfs
-    function setIPFS(uint256 id, string memory ipfs)
-        public
-        onlyOwner
-        onlyActive(id)
-    {
-        projects[id].ipfs = ipfs;
-        emit SetIPFS(id, ipfs);
+    function setIPFS(string memory _ipfs) public onlyOwner {
+        emit SetIPFS(_ipfs);
     }
 
-    event SetIPFS(uint256 id, string ipfs);
-
-    // End
-    function end(uint256 id) public onlyOwner onlyActive(id) {
-        projects[id].active = false;
-        emit End(id);
-    }
-
-    event End(uint256 id);
+    event SetIPFS(string ipfs);
 
     // Donate
-    function donate(
-        uint256 id,
-        uint256 amount,
-        string memory message
-    ) public onlyActive(id) {
+    function donate(uint256 amount, string memory message) public {
         require(amount > 0, "Donation amount is 0");
 
-        projects[id].coin.transferFrom(msg.sender, projects[id].owner, amount);
+        coin.transferFrom(msg.sender, owner(), amount);
 
-        _donationCounter.increment();
-        _safeMint(msg.sender, _donationCounter.current());
+        _dc.increment();
 
-        emit NewDonation(
-            _donationCounter.current(),
-            id,
-            msg.sender,
-            amount,
-            message
-        );
+        emit NewDonation(_dc.current(), amount, message, msg.sender);
+        _safeMint(msg.sender, _dc.current());
     }
 
     event NewDonation(
         uint256 id,
-        uint256 projectId,
-        address owner,
         uint256 amount,
-        string message
+        string message,
+        address sender
     );
+
+    // Add content
+    function addContent(string memory _ipfs) public onlyOwner {
+        emit AddContent(_ipfs);
+    }
+
+    event AddContent(string ipfs);
+
+    function startVote(uint256 time, string memory data) public onlyOwner {
+        _vc.increment();
+        voteEndTime[_vc.current()] = block.timestamp + time;
+        emit StartVote(_vc.current(), voteEndTime[_vc.current()], data);
+    }
+
+    event StartVote(uint256 voteId, uint256 endTime, string data);
+
+    function newVote(uint256 voteId, uint256 answer) public {
+        require(block.timestamp <= voteEndTime[voteId], "Voting ended");
+        emit NewVote(voteId, answer, msg.sender);
+    }
+
+    event NewVote(uint256 voteId, uint256 answer, address sender);
 
     // URI
     function contractURI() public view virtual returns (string memory) {

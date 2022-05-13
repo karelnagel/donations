@@ -1,0 +1,34 @@
+query content($title: ID = "", $account: String = "") {
+  collection(id: $title) {
+    id
+    owner {
+      id
+    }
+    name
+    address {
+      id
+    }
+    coin {
+      id
+    }
+    content(orderBy: time, orderDirection: desc) {
+      id
+      description
+      content
+      price
+      time
+      collection {
+        coin {
+          id
+        }
+      }
+    }
+    supporters(where: { account_contains_nocase: $account }) {
+      id
+      donated
+      account {
+        id
+      }
+    }
+  }
+}

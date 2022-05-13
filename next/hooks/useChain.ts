@@ -1,46 +1,31 @@
-import { useContext } from "react";
-import { Context } from "../idk/context";
 import { ethers } from "ethers";
-import { JsonRpcProvider } from "@ethersproject/providers";
-import { network } from "../config";
+import { getNetwork } from "../config";
+import { useContract, erc20ABI, useAccount, useSigner, useNetwork } from 'wagmi'
 
 export const factoryAbi = [
-  "function newCollection(string memory title,address projectCoin,address projectOwner,string memory projectIpfs)",
+  "function newCollection(string memory title,address coin,string memory ipfs)",
 ];
 
 export const contractAbi = [
-  "function newProject(address coin, address owner,string memory ipfs)",
-  "function end(uint256 id)",
-  "function donate(uint256 id,uint256 amount,string memory message)",
-  "function setIPFS(uint256 id,string memory ipfs)",
-  "event NewDonation(uint256 id,uint256 projectId,address owner,uint256 amount,string message)"
+  "function donate(uint256 amount,string memory message)",
+  "function setIPFS(string memory _ipfs)",
+  "function addContent(string memory _ipfs)",
+  "function startVote(uint256 time, string memory data)",
+  "function newVote(uint256 voteId, uint256 answer)",
+  "event NewDonation(uint256 id,address owner,uint256 amount,string message)"
 ];
 
-export const coinAbi = [
-  "function balanceOf(address owner) view returns (uint)",
-  "function approve(address spender,uint256 amount)",
-  "function allowance(address owner,address spender) view returns (uint)",
-];
+export default function useChain({ contractAddress, coinAddress }: { contractAddress?: string, coinAddress?: string }) {
+  const { data: account } = useAccount()
+  const { data: signer } = useSigner()
+  const { activeChain: chain } = useNetwork()
+  const factory = useContract({ addressOrName: getNetwork(chain?.id).factory, contractInterface: factoryAbi, signerOrProvider: signer })
+  const contract = useContract({ addressOrName: contractAddress ?? ethers.constants.AddressZero, contractInterface: contractAbi, signerOrProvider: signer })
+  const coin = useContract({ addressOrName: coinAddress ?? ethers.constants.AddressZero, contractInterface: erc20ABI, signerOrProvider: signer })
 
-export default function useChain({ contractAddress, projectId, coinAddress }: { contractAddress?: string, projectId?: string, coinAddress?: string }) {
-  const { provider, user } = useContext(Context)
-
-  const factory = (pro?: JsonRpcProvider) => {
-    if (!network.factory || !provider) return
-    return new ethers.Contract(network.factory, factoryAbi, pro ?? provider?.getSigner())
-  }
-  const contract = (pro?: JsonRpcProvider) => {
-    if (!contractAddress || !provider) return
-    return new ethers.Contract(contractAddress, contractAbi, pro ?? provider?.getSigner())
-  }
-  const coin = (pro?: JsonRpcProvider) => {
-    if (!coinAddress || !provider) return
-    return new ethers.Contract(coinAddress!, coinAbi, pro ?? provider.getSigner())
-  }
-
-  async function newCollection(title: string, coin: string, projectOwner: string, ipfs: string) {
+  async function newCollection(title: string, coin: string, ipfs: string) {
     try {
-      const result = await factory()!.newCollection(title, coin, projectOwner, ipfs);
+      const result = await factory.newCollection(title, coin, ipfs);
       await result.wait(1);
       return
     }
@@ -48,23 +33,10 @@ export default function useChain({ contractAddress, projectId, coinAddress }: { 
       console.log(e)
       return "Error starting new contract!"
     }
-
   }
-  async function newProject(coin: string, owner: string, ipfs: string) {
+  async function setIPFS(ipfs: string) {
     try {
-      const result = await contract()!.newProject(coin, owner, ipfs);
-      await result.wait(1)
-      return
-    }
-    catch (e) {
-      console.log(e)
-    }
-    return "Error starting new project!'"
-  }
-
-  async function setIPFS(projectId: number, ipfs: string) {
-    try {
-      const result = await contract()!.setIPFS(projectId, ipfs);
+      const result = await contract.setIPFS(ipfs);
       await result.wait(1)
       return
     }
@@ -74,37 +46,57 @@ export default function useChain({ contractAddress, projectId, coinAddress }: { 
     return "Error setting new ipfs!'"
   }
 
-  async function end() {
-    if (projectId) {
-      try {
-        const result = await contract()!.end(projectId)
-        await result.wait(1)
-        return
-      }
-      catch (e) {
-        console.log(e)
-      }
-    }
-    return "Error ending the project!"
-  }
-
   async function donate(amount: ethers.BigNumber, message: string) {
-    if (projectId) {
-      try {
-        const result = await contract()!.donate(projectId, amount, message)
-        await result.wait(1);
-        return
-      }
-      catch (e) {
-        console.log(e)
-      }
+    try {
+      const result = await contract.donate(amount, message)
+      await result.wait(1);
+      return
+    }
+    catch (e) {
+      console.log(e)
     }
     return "Error with donating!"
   }
+  async function startVote(time: ethers.BigNumber, data: string) {
+    try {
+      const result = await contract.startVote(time, data)
+      await result.wait(1);
+      return
+    }
+    catch (e) {
+      console.log(e)
+    }
+    return "Error with starting vote!"
+  }
+
+  async function newVote(voteId: ethers.BigNumber, answer: ethers.BigNumber) {
+    try {
+      const result = await contract.newVote(voteId, answer)
+      await result.wait(1);
+      return
+    }
+    catch (e) {
+      console.log(e)
+    }
+    return "Error with new vote!"
+  }
+
+  async function addContent(data: string) {
+    try {
+      const result = await contract.addContent(data)
+      await result.wait(1);
+      return
+    }
+    catch (e) {
+      console.log(e)
+    }
+    return "Error with adding content!"
+  }
+
   async function getAllowance() {
-    if (user) {
+    if (account) {
       try {
-        const result = await coin()!.allowance(user.address, contractAddress)
+        const result = await coin.allowance(account.address, contractAddress)
         return result as ethers.BigNumber
       }
       catch (e) {
@@ -114,9 +106,9 @@ export default function useChain({ contractAddress, projectId, coinAddress }: { 
     return ethers.BigNumber.from("0")
   }
   async function approve(amount: ethers.BigNumber) {
-    if (user && contractAddress) {
+    if (account && contractAddress) {
       try {
-        const result = await coin()!.approve(contractAddress, amount)
+        const result = await coin.approve(contractAddress, amount)
         await result.wait(1)
         return
       }
@@ -127,9 +119,9 @@ export default function useChain({ contractAddress, projectId, coinAddress }: { 
     return "Error with approving ERC20 spending"
   }
   async function getBalance() {
-    if (user) {
+    if (account) {
       try {
-        const result = await coin()!.balanceOf(user.address)
+        const result = await coin.balanceOf(account.address)
         return result as ethers.BigNumber
       }
       catch (e) {
@@ -138,5 +130,5 @@ export default function useChain({ contractAddress, projectId, coinAddress }: { 
     }
     return ethers.BigNumber.from("0")
   }
-  return { newCollection, newProject, end, donate, getBalance, approve, getAllowance, setIPFS }
+  return { startVote, newVote, addContent, newCollection, donate, getBalance, approve, getAllowance, setIPFS }
 }

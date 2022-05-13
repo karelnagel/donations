@@ -1,28 +1,29 @@
 import type { GetStaticProps, NextPage } from "next";
 import React from "react";
 import Layout from "../components/Layout";
-import Link from "next/link";
 import Image from "next/image";
-import { GlobalDocument, GlobalQueryResult, LatestProjectsDocument, LatestProjectsQueryResult, Project, Global } from "../graphql/generated";
+import { GlobalDocument, GlobalQueryResult, Global, Collection, LatestCollectionsQueryResult, LatestCollectionsDocument } from "../graphql/generated";
 import { apolloRequest } from "../idk/apollo";
-import { ProjectObject } from "../components/ProjectObject";
+import { CollectionObject } from "../components/CollectionObject";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { faqs } from "../idk/faqs";
-import { crypto, nft, streamer } from "../idk/images";
+import { crypto, nft } from "../idk/images";
 import Button from "../components/Button";
+import { getTotalRaised } from "../lib/getTotalRaised";
 
 interface ProjectProps {
-  projects: Project[];
+  collections: Collection[];
   global: Global | null;
+  total: number;
 }
 
-const Home: NextPage<ProjectProps> = ({ projects, global }) => {
+const Home: NextPage<ProjectProps> = ({ collections, global, total }) => {
   const stats = [
-    { number: global?.streamersCount, stat: "streamers" },
-    { number: global?.usersCount, stat: "donators" },
-    { number: global?.projectsCount, stat: "projects" },
-    { number: global?.donationsCount, stat: "donations" },
+    { number: global?.collectionsCount, stat: "collections" },
+    { number: global?.usersCount, stat: "users" },
+    { number: global?.supportersCount, stat: "donations" },
+    { number: `${total} $`, stat: "donated" },
   ];
   return (
     <Layout className="flex flex-col items-center space-y-4" noMargin>
@@ -34,7 +35,7 @@ const Home: NextPage<ProjectProps> = ({ projects, global }) => {
               <h1 className="text-white text-5xl md:text-6xl font-bold">Crypto donations for streamers</h1>
               <p className="my-10 text-lg">Decentralized opensource platform for accepting crypto donations, with rewarding NFTs</p>
               <Button href="/new" big>
-                Start your project
+                Start your collection
               </Button>
             </div>
           </div>
@@ -86,9 +87,9 @@ const Home: NextPage<ProjectProps> = ({ projects, global }) => {
         <section>
           <h2>How does this work?</h2>
           <ol>
-            <li>Streamer creates a new Project</li>
+            <li>Streamer creates a new Collection</li>
             <li>
-              Streamer can add a overlay of their project to their stream (
+              Streamer can add a overlay of their collection to their stream (
               <a href={process.env.NEXT_PUBLIC_URL + "/projects/ethdon/1/stream"}>example</a>)
             </li>
             <li>
@@ -96,27 +97,22 @@ const Home: NextPage<ProjectProps> = ({ projects, global }) => {
             </li>
             <li>Users go to the link and can donate in crypto using their ethereum wallet</li>
             <li>After donating user receives a NFT with donation message and amount in the attributes</li>
-            <li>Streamer gets all the donated money (or if they set someone other as beneficiary then they will get the money)</li>
-            <li>Streamer can use these NFTs as a access tokens or any other way they wish</li>
+            <li>All the donated money goes to the streamer</li>
+            <li>Streamer can use these NFTs as a access tokens, for private content, as tickets or any other way they wish</li>
           </ol>
         </section>
-        <section id="projects" className="text-center">
-          <h2 className="text-center">Latest projects</h2>
-          <div className="flex flex-col  space-y-6 max-w-lg mx-auto my-10">
-            {projects.map((p, i) => (
-              <ProjectObject project={p} key={i} />
+        <section id="projects" className="flex flex-col items-center">
+          <h2 className="text-center">Latest collections</h2>
+          <div className="flex flex-col  space-y-6 max-w-screen-sm  w-full mx-auto my-10">
+            {collections.map((p, i) => (
+              <CollectionObject collection={p} key={i} network={"Polygon"} />
             ))}
           </div>
-          <Link href={"/projects"} passHref>
-            <Button>
-              Latest projects
-            </Button>
-          </Link>
+          <Button href="/collections">Latest collections</Button>
         </section>
         <section id="faq">
           <h2 className="text-center">FAQ</h2>
           <div>
-            {/* Todo material accordion */}
             {faqs.map((f, i) => (
               <Accordion key={i}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
@@ -135,15 +131,18 @@ const Home: NextPage<ProjectProps> = ({ projects, global }) => {
 };
 
 export const getStaticProps: GetStaticProps<ProjectProps> = async () => {
-  const result = await apolloRequest<LatestProjectsQueryResult>(LatestProjectsDocument, { first: 4 });
-  const projects = result.data?.projects ? result.data.projects.map((p) => p as Project) : [];
+  const result = await apolloRequest<LatestCollectionsQueryResult>(LatestCollectionsDocument, "polygon", { first: 4 });
+  const collections = result.data?.collections ? result.data.collections.map((c) => c as Collection) : [];
 
-  const result2 = await apolloRequest<GlobalQueryResult>(GlobalDocument);
+  const result2 = await apolloRequest<GlobalQueryResult>(GlobalDocument, "polygon");
   const global = result2.data?.global ? (result2.data.global as Global) : null;
+  const total = global?.coins ? await getTotalRaised(global?.coins) : 0;
+
   return {
     props: {
-      projects,
+      collections,
       global,
+      total,
     },
     revalidate: 60,
   };

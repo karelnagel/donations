@@ -10,6 +10,7 @@ export default function Button({
   newTab,
   big,
   submit,
+  className,
 }: {
   secondary?: boolean;
   text?: boolean;
@@ -19,13 +20,19 @@ export default function Button({
   href?: string;
   onClick?: any;
   children: any;
+  className?: string;
 }) {
-  let classes = "rounded-xl text-md py-2 px-6  hover:scale-105 duration-200 bg-cover shadow-md  uppercase font-bold ";
-  if (secondary) classes += "border-2 border-primary ";
-  else if (text) classes += "";
-  else classes += "bg-gradient-to-tr from-primary to-primaryDark hover:bg-project ";
+  let classes = " text-md hover:scale-105 duration-200 bg-cover  uppercase font-bold flex items-center space-x-4 justify-center ";
+
+  if (text) classes += "";
+  else {
+    classes += " py-2 px-6 rounded-xl shadow-md ";
+    if (secondary) classes += "border-2 border-primary ";
+    else classes += "bg-gradient-to-tr from-primary to-primaryDark hover:bg-project ";
+  }
 
   if (big) classes += "text-lg py-3";
+  if (className) classes += className;
 
   if (newTab && href)
     return (
@@ -42,7 +49,7 @@ export default function Button({
       </Link>
     );
   return (
-    <button onClick={onClick} className={classes} type={submit ? "submit" : undefined}>
+    <button onClick={onClick} className={classes} type={submit ? "submit" : "button"}>
       {children}
     </button>
   );

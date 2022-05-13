@@ -14,54 +14,40 @@ contract Factory is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     mapping(string => address) public collections;
     string private _uri;
 
-    function initialize(string memory uri) initializer public {
+    function initialize(string memory uri) public initializer {
         __Ownable_init();
         __UUPSUpgradeable_init();
-        
+
         _uri = uri;
         emit SetURI(uri);
     }
 
     function _authorizeUpgrade(address newImplementation)
         internal
-        onlyOwner
         override
+        onlyOwner
     {}
 
     function newCollection(
         string memory title,
-        address projectCoin,
-        address projectOwner,
-        string memory projectIpfs
+        address coin,
+        string memory ipfs
     ) public {
         require(collections[title] == address(0), "Title already exists");
 
-        Collection collection = new Collection(
-            title,
-            projectCoin,
-            projectOwner,
-            projectIpfs
-        );
+        Collection collection = new Collection(title, coin);
         collection.transferOwnership(msg.sender);
         collections[title] = address(collection);
 
-        emit NewCollection(
-            title,
-            collections[title],
-            msg.sender,
-            projectCoin,
-            projectOwner,
-            projectIpfs
-        );
+        emit NewCollection(title, collections[title], coin, ipfs, msg.sender);
     }
 
     event NewCollection(
         string title,
         address collection,
-        address owner,
-        address projectCoin,
-        address projectOwner,
-        string projectIpfs
+        address coin,
+        string ipfs,
+        address sender
     );
 
     function getContractURI(string memory title)

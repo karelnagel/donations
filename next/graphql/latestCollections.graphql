@@ -1,0 +1,17 @@
+query latestCollections($first: Int = 10) {
+  collections(first: $first, orderBy: time, orderDirection: desc) {
+    donated
+    time
+    coin{id}
+    name
+    description
+    image
+    background
+    goal
+    donationsCount
+    id
+    owner {
+      id
+    }
+  }
+}

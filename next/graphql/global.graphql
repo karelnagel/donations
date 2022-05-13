@@ -1,9 +1,12 @@
 query global {
   global(id: "0") {
     donationsCount
-    projectsCount
     collectionsCount
     usersCount
-    streamersCount
+    supportersCount
+    coins{
+      id
+      donated
+    }
   }
 }

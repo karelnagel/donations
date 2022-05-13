@@ -6,9 +6,9 @@ import { coinName, toCoin } from "../idk/helpers";
 export function TokenObject({ token }: { token: Donation }) {
   return (
     <div className="w-full p-4 shadow-md shadow-primary border-primary border-2 text-center rounded-lg cursor-pointer">
-      <Link href={`/projects/${token.project.collection.id}/${token.project.index}`} passHref>
+      <Link href={`/${token.collection.id}`} passHref>
         <p>
-          Donated {toCoin(token.amount,token.project.coin)} {coinName(token.project.coin)} to {token.project.name}, with message {`"${token.message}"`}
+          Donated {toCoin(token.amount,token.collection.coin.id)} {coinName(token.collection.coin.id)} to {token.collection.name}, with message {`"${token.message}"`}
         </p>
       </Link>
     </div>

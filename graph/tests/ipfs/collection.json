@@ -1,0 +1,19 @@
+{
+    "name": "This is name",
+    "description": "This is description",
+    "goal": "1230000000000000000000",
+    "url": "This is url",
+    "image": "This is image",
+    "background": "This is background",
+    "socials": [
+        "https://twitter.com",
+        "https://facbook.com",
+        "",
+        "a"
+    ],
+    "donationOptions": [
+        "10000000000000000000",
+        "20000000000000000000",
+        "30000000000000000000"
+    ]
+}

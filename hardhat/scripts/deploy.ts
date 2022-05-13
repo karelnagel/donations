@@ -9,7 +9,7 @@ async function main() {
   });
   await contract.deployed();
 
-  console.log(`CONTRACT=${contract.address} yarn verify`);
+  console.log(`CONTRACT=<ADDRESS> yarn verify`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

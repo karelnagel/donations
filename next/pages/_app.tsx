@@ -4,21 +4,39 @@ import React, { useState } from "react";
 import Head from "next/head";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../idk/apollo";
-import { Context, User } from "../idk/context";
-import { Web3Provider } from "@ethersproject/providers";
+import { Context } from "../idk/context";
 import { ThemeProvider } from "@mui/material/styles";
 import { materialTheme } from "../idk/materialTheme";
-import { Alert, AlertColor, CircularProgress, IconButton, Snackbar } from "@mui/material";
+import { Alert, AlertColor, CircularProgress, Snackbar } from "@mui/material";
 import Modal from "../components/Modal";
+import { createClient, WagmiProvider, chain } from "wagmi";
+import "@rainbow-me/rainbowkit/styles.css";
+import { apiProvider, configureChains, darkTheme, getDefaultWallets, midnightTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+
+import { theme } from "./../tailwind.config";
+
+const { chains, provider } = configureChains(
+  [chain.polygon, chain.rinkeby],
+  [apiProvider.infura(process.env.NEXT_PUBLIC_INFURA_ID), apiProvider.fallback()]
+);
+
+const { connectors } = getDefaultWallets({
+  appName: "My RainbowKit App",
+  chains,
+});
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider,
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   const name = "Streamint - Donations for streamers";
   const description = "Crypto donations for streamers";
-  const url = "https://streamint.xyz";
+  const url = process.env.NEXT_PUBLIC_URL ?? "https://streamint.xyz";
   const image = `${url}/logo.png`;
 
-  const [provider, setProvider] = useState<Web3Provider>();
-  const [user, setUser] = useState<User>();
   const [snackBar, setSnackBar] = useState<{ message: string; severity: AlertColor }>();
   const [loading, setLoading] = useState("");
 
@@ -59,23 +77,33 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
       </Head>
-
-      <Context.Provider value={{ provider, user, setUser, setProvider, setSnack, load }}>
-        <ApolloProvider client={client}>
-          <ThemeProvider theme={materialTheme}>
-            <Component {...pageProps} />
-            <Snackbar open={!!snackBar} autoHideDuration={10000} onClose={handleClose}>
-              <Alert onClose={handleClose} severity={snackBar?.severity} sx={{ width: "100%" }}>
-                {snackBar?.message}
-              </Alert>
-            </Snackbar>
-            <Modal visible={!!loading} onClose={() => setLoading("")}>
-              <p className="whitespace-pre-line mb-6 text-md font-bold">{loading}</p>
-              <CircularProgress />
-            </Modal>
-          </ThemeProvider>
-        </ApolloProvider>
-      </Context.Provider>
+      <WagmiProvider client={wagmiClient}>
+        <RainbowKitProvider
+          chains={chains}
+          theme={darkTheme({
+            accentColor: theme.extend.colors.primary,
+          })}
+          appInfo={{ appName: "Streamint" }}
+          coolMode
+        >
+          <Context.Provider value={{ setSnack, load }}>
+            <ApolloProvider client={client}>
+              <ThemeProvider theme={materialTheme}>
+                <Component {...pageProps} />
+                <Snackbar open={!!snackBar} autoHideDuration={10000} onClose={handleClose}>
+                  <Alert onClose={handleClose} severity={snackBar?.severity} sx={{ width: "100%" }}>
+                    {snackBar?.message}
+                  </Alert>
+                </Snackbar>
+                <Modal visible={!!loading} onClose={() => setLoading("")}>
+                  <p className="whitespace-pre-line mb-6 text-md font-bold text-black">{loading}</p>
+                  <CircularProgress />
+                </Modal>
+              </ThemeProvider>
+            </ApolloProvider>
+          </Context.Provider>
+        </RainbowKitProvider>
+      </WagmiProvider>
     </>
   );
 }
