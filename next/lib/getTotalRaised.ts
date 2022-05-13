@@ -18,7 +18,7 @@ export async function getTotalRaised(coins: Coin[], chainId?: number) {
             coins.forEach((c) => {
                 total += (result.data[c.id.toLowerCase()]?.usd ?? 0) * Number(toCoin(c.donated, c.id))
             })
-            return total
+            return total.toFixed(2)
         }
     }
     catch (e) {
