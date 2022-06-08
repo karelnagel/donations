@@ -14,7 +14,7 @@ export default function QuestionObject({ question, vote }: { question: Question;
       <p>
         {toCoin(question.votesAmount, question.collection.coin.id)} {coinName(question.collection.coin.id)} voted by {question.votesCount} voters
       </p>
-      <p>{timeLeft.toFixed(2)} hours remaining</p>
+      <p>{timeLeft >0 ? `${timeLeft.toFixed(2)} hours remaining` : "Voting closed"}</p>
       {question.answers.map((a, i) => (
         <div
           className="group relative my-2 border-black border grid grid-cols-3 justify-items-center p-3 rounded-r-xl cursor-pointer hover:scale-105"

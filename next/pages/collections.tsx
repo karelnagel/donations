@@ -13,7 +13,7 @@ const CollectionPage: NextPage = () => {
   const collections = useLatestCollectionsQuery({ variables: { first: 10 }, context: { network: chain } });
   useEffect(() => {
     collections.refetch();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chain]);
   useEffect(() => {
     if (activeChain?.name) setChain(activeChain.name);
@@ -21,23 +21,22 @@ const CollectionPage: NextPage = () => {
   return (
     <Layout>
       <h1 className="my-10 text-center  text-3xl font-bold">Latest collections on {chain}</h1>
-      
+
       <div className="flex justify-center mb-4">
         <TextField className="w-40" id="select" label="Select network" select onChange={(e) => setChain(e.target.value)} required value={chain}>
-        {networks.map((c, i) => (
-          <MenuItem key={i} value={c.chain.name}>
-            {c.chain.name}
-          </MenuItem>
-        ))}
-      </TextField>
-
+          {networks.map((c, i) => (
+            <MenuItem key={i} value={c.chain.name}>
+              {c.chain.name}
+            </MenuItem>
+          ))}
+        </TextField>
       </div>
-      {collections&& (
+      {collections && (
         <div className="flex flex-col space-y-6 max-w-screen-sm m-auto">
           {collections.loading ? (
             <CircularProgress />
           ) : (
-            collections.data?.collections.map((c, i) => <CollectionObject collection={c as Collection} key={c.time} />)
+            collections.data?.collections.map((c, i) => <CollectionObject collection={c as Collection} key={c.time} network={chain} />)
           )}
         </div>
       )}

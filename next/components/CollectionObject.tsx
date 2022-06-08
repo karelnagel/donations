@@ -9,11 +9,11 @@ import { collectionUrl } from "../idk/urls";
 import Link from "next/link";
 import { useNetwork } from "wagmi";
 
-export function CollectionObject({ collection }: { collection?: Collection }) {
+export function CollectionObject({ collection, network }: { collection?: Collection; network?: string }) {
   const { activeChain: chain } = useNetwork();
 
   return collection ? (
-    <Link href={collectionUrl(collection.id, chain?.name)} passHref>
+    <Link href={collectionUrl(collection.id, network ?? chain?.name)} passHref>
       <div className="relative overflow-hidden shadow-md p-4 rounded-lg cursor-pointer shadow-primary bg-project bg-cover">
         <Image layout="fill" alt="" src={getImage(collection.background)} className="object-cover" />
         <div className="flex justify-between">
