@@ -17,6 +17,7 @@ import { coinName, getImage, toCoin } from "../../idk/helpers";
 import Image from "next/image";
 import Link from "next/link";
 import { useEnsName, useEnsAvatar, useNetwork } from "wagmi";
+import { collectionUrl } from "../../idk/urls";
 
 const AccountPage: NextPage = () => {
   const router = useRouter();
@@ -47,9 +48,11 @@ const AccountPage: NextPage = () => {
     <>
       <Layout>
         <div className="max-w-screen-md mx-auto flex flex-col space-y-10 my-10 items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <div className="w-32 h-32">{avatar && <img className="rounded-full shadow-lg" src={avatar} alt={name ?? account} />}</div>
-          <p className="uppercase font-bold text-lg">{name}</p>
+          <div className="w-32 h-32">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="rounded-full shadow-lg" src={avatar ?? "/logo.png"} alt={name ?? account} />
+          </div>
+          <p className="uppercase font-bold text-lg">{name ?? account}</p>
           <Tabs value={value} onChange={handleChange} centered variant="fullWidth" className="w-full">
             <Tab label="Collections" />
             <Tab label="Donations" />
@@ -60,9 +63,7 @@ const AccountPage: NextPage = () => {
               (collections.loading ? (
                 <CircularProgress />
               ) : (
-                collections.data?.collections.map((c, i) => (
-                  <CollectionObject collection={c as Collection} key={i} network={chain?.name ?? "polygon"} />
-                ))
+                collections.data?.collections.map((c, i) => <CollectionObject collection={c as Collection} key={i} />)
               ))}
             {value === 1 &&
               (donations.loading ? <CircularProgress /> : donations.data?.donations.map((d, i) => <TokenObject key={i} token={d as Donation} />))}
@@ -81,9 +82,11 @@ const AccountPage: NextPage = () => {
 
 export default AccountPage;
 
-function SupporterObject({ supporter }: { supporter: Supporter }) {
+function SupporterObject({ supporter, network }: { supporter: Supporter; network?: string }) {
+  const { activeChain: chain } = useNetwork();
+
   return (
-    <Link href={`/${supporter.collection.id}`} passHref>
+    <Link href={collectionUrl(supporter.collection.id, chain?.name)} passHref>
       <div className="flex justify-center items-center bg-project space-x-10 p-4 rounded-lg cursor-pointer">
         <div className="relative w-20 h-20">
           <Image alt="" src={getImage(supporter.collection.image)} layout="fill" />

@@ -11,6 +11,7 @@ import { faqs } from "../idk/faqs";
 import { crypto, nft } from "../idk/images";
 import Button from "../components/Button";
 import { getTotalRaised } from "../lib/getTotalRaised";
+import { useNetwork } from "wagmi";
 
 interface ProjectProps {
   collections: Collection[];
@@ -102,13 +103,13 @@ const Home: NextPage<ProjectProps> = ({ collections, global, total }) => {
           </ol>
         </section>
         <section id="projects" className="flex flex-col items-center">
-          <h2 className="text-center">Latest collections</h2>
+          <h2 className="text-center">Latest collections on Polygon</h2>
           <div className="flex flex-col  space-y-6 max-w-screen-sm  w-full mx-auto my-10">
             {collections.map((p, i) => (
-              <CollectionObject collection={p} key={i} network={"Polygon"} />
+              <CollectionObject collection={p} key={i} />
             ))}
           </div>
-          <Button href="/collections">Latest collections</Button>
+          <Button href="/collections">See more</Button>
         </section>
         <section id="faq">
           <h2 className="text-center">FAQ</h2>
