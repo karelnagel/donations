@@ -1,28 +1,28 @@
 export const faqs = [
-  { question: "How to start?", answer: "Go to https://streamint.xyz/new and start your first collection and project" },
+  { question: "How to start?", answer: "Go to https://streamint.xyz/new and start your first collection or to https://streamint.xyz/collections to find a collection you want to support." },
 
   {
     question: "Which networks Streamint supports?",
-    answer: "We are currently only on Polygon, but could possibly go to other chains as well if there is demand.",
+    answer: "We are currently on Polygon and Rinkeby test network",
   },
   {
     question: "Are there any commissions?",
-    answer: "There are no commissions, all the money goes to the streamer.",
+    answer: "There are no commissions, all the money goes instantly to the streamer.",
   },
   {
     question: "Which coins it supports?",
-    answer: "It supports every ERC20 coin, but the user interface only has the largest coins right now. If you have a coin that isn't present then hmu.",
+    answer: "It supports every ERC20 coin, but the user interface only has the largest coins right now. If you have a coin that isn't present then contact us and we can add it.",
   },
   {
     question: "What is a collection?",
-    answer: "Collection is a new ERC721 smart contract that gets deployed to the network when you start. Collection appears in Opensea as a collection and they can have multiple projects with different beneficiaries, goals, coins and causes.",
+    answer: "Collection is a new ERC721 smart contract that gets deployed to the network when you start. Collection owner get's to change Opensea info, the collection info on this website, get's all commission fees and all the donations.",
   },
   {
-    question: "What is a project?",
-    answer: "When creating a collection then it will automatically create first project, but you can create other projects afterwards. Each project can have it's own beneficiary, goal, coin etc. Projects are a good way to not create a new collection every time you want to change beneficiary, collect different coin, or collect for a diffferent cause.",
+    question: "What's the point of using NFTs?",
+    answer: "NFT's allow the creator to provide value to donators after donating, currently NFTs allow users to view private content that the streamer uploads and vote for polls that the streamer creates and these are all based on donation amount. Also streamers could use these NFTs any other way to provide even more value, they are based on ERC721 standard and can be used on other projects as well."
   },
   {
-    question: "What happens with the NFT after donating?",
-    answer: "It is up to the streamer to decide what they want to do with the NFTs. They could have like private groups, or events to all the NFT holders or they could do an airdrop or anything else they wish. Every NFT has info about the donation, like amount donated, donator, project id and donation message, so 10 x 1 DAI donation could be treated the same way as one 10 DAI donation."
+    question: "Is Streamint decentralized?",
+    answer: "All the data is hosted on ipfs and fetched by The Graph subgraph, we use a some centralized API endpoints to make the data Opensea friendly and to add text on images (ENS works the same way). All the code is also opensource."
   }
 ];

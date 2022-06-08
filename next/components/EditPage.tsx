@@ -192,7 +192,7 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
           </form>
         </CheckOwner>
         <br />
-        <Button href={`/${collection.id ?? ""}`} secondary className="mx-auto">
+        <Button href={title ? collectionUrl(title, network?.toString()) : "/"} secondary className="mx-auto">
           Back
         </Button>
       </div>
