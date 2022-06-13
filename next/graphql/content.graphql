@@ -1,4 +1,4 @@
-query content($title: ID = "", $account: String = "") {
+query content($title: ID = "", $account: String = "streamint") {
   collection(id: $title) {
     id
     owner {

@@ -22,7 +22,7 @@ const Home: NextPage<ProjectProps> = ({ collections, global, total }) => {
   const stats = [
     { number: global?.collectionsCount, stat: "collections" },
     { number: global?.usersCount, stat: "users" },
-    { number: global?.supportersCount, stat: "donations" },
+    { number: global?.donationsCount, stat: "donations" },
     { number: `${total} $`, stat: "donated" },
   ];
   return (

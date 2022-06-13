@@ -1931,10 +1931,11 @@ export type LatestCollectionsQuery = { __typename?: 'Query', collections: Array<
 
 export type QuestionsQueryVariables = Exact<{
   title?: InputMaybe<Scalars['ID']>;
+  supporter?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type QuestionsQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, name: string, owner?: { __typename?: 'Account', id: string } | null, address: { __typename?: 'CollectionAddress', id: string }, questions: Array<{ __typename?: 'Question', id: string, endTime: any, question: string, votesAmount: any, votesCount: number, index: any, collection: { __typename?: 'Collection', coin: { __typename?: 'Coin', id: string } }, answers: Array<{ __typename?: 'Answer', id: string, answer: string, votesAmount: any, votesCount: number, index: any }> }> } | null };
+export type QuestionsQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, name: string, owner?: { __typename?: 'Account', id: string } | null, address: { __typename?: 'CollectionAddress', id: string }, questions: Array<{ __typename?: 'Question', id: string, endTime: any, question: string, votesAmount: any, votesCount: number, index: any, collection: { __typename?: 'Collection', coin: { __typename?: 'Coin', id: string } }, answers: Array<{ __typename?: 'Answer', id: string, answer: string, votesAmount: any, votesCount: number, index: any }>, votes: Array<{ __typename?: 'Vote', answer: { __typename?: 'Answer', index: any } }> }> } | null };
 
 
 export const AccountCollectionsDocument = gql`
@@ -2448,7 +2449,7 @@ export type LatestCollectionsQueryHookResult = ReturnType<typeof useLatestCollec
 export type LatestCollectionsLazyQueryHookResult = ReturnType<typeof useLatestCollectionsLazyQuery>;
 export type LatestCollectionsQueryResult = Apollo.QueryResult<LatestCollectionsQuery, LatestCollectionsQueryVariables>;
 export const QuestionsDocument = gql`
-    query questions($title: ID = "") {
+    query questions($title: ID = "", $supporter: String = "streamint") {
   collection(id: $title) {
     id
     owner {
@@ -2477,6 +2478,11 @@ export const QuestionsDocument = gql`
         votesCount
         index
       }
+      votes(where: {supporter_contains_nocase: $supporter}) {
+        answer {
+          index
+        }
+      }
     }
   }
 }
@@ -2495,6 +2501,7 @@ export const QuestionsDocument = gql`
  * const { data, loading, error } = useQuestionsQuery({
  *   variables: {
  *      title: // value for 'title'
+ *      supporter: // value for 'supporter'
  *   },
  * });
  */

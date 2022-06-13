@@ -1,4 +1,4 @@
-query questions($title: ID = "") {
+query questions($title: ID = "" $supporter:String="streamint") {
   collection(id: $title) {
     id
     owner {
@@ -26,6 +26,11 @@ query questions($title: ID = "") {
         votesAmount
         votesCount
         index
+      }
+      votes(where: {supporter_contains_nocase: $supporter}) {
+        answer {
+          index
+        }
       }
     }
   }

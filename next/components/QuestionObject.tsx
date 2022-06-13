@@ -8,22 +8,23 @@ export default function QuestionObject({ question, vote }: { question: Question;
   const answerPercents = question.answers.map((a) =>
     question.votesAmount !== "0" ? (Number(a.votesAmount) / Number(question.votesAmount)) * 100 : 0
   );
+  const votedId = question.votes[0]?.answer.index;
   return (
     <div key={question.id} className="">
       <p className="text-2xl mb-4">{question.question}</p>
       <p>
         {toCoin(question.votesAmount, question.collection.coin.id)} {coinName(question.collection.coin.id)} voted by {question.votesCount} voters
       </p>
-      <p>{timeLeft >0 ? `${timeLeft.toFixed(2)} hours remaining` : "Voting closed"}</p>
+      <p>{timeLeft > 0 ? `${timeLeft.toFixed(2)} hours remaining` : "Voting closed"}</p>
       {question.answers.map((a, i) => (
         <div
           className="group relative my-2 border-black border grid grid-cols-3 justify-items-center p-3 rounded-r-xl cursor-pointer hover:scale-105"
           key={a.id}
-          onClick={() => vote(question.index, a.index)}
+          onClick={() => (votedId !== a.index ? vote(question.index, a.index) : undefined)}
         >
           <div style={{ width: `${answerPercents[i]}%` }} className={`absolute bg-secondary h-full left-0 top-0 rounded-r-xl`}></div>
           <p className="relative">{a.answer}</p>
-          <p className="font-bold relative invisible group-hover:visible">VOTE</p>
+          <p className="font-bold relative invisible group-hover:visible">{votedId !== a.index ? "VOTE" : "Voted for this"}</p>
           <p className="relative">
             {answerPercents[i].toFixed(2)}% by {a.votesCount} voters
           </p>
