@@ -10,9 +10,8 @@ import { uploadJson } from "../../../lib/ipfs";
 import useChain from "../../../hooks/useChain";
 import { BigNumber, ethers } from "ethers";
 import QuestionObject from "../../../components/QuestionObject";
-import CheckOwner from "../../../components/CheckOwner";
 import { collectionUrl } from "../../../idk/urls";
-import CheckNetwork from "../../../components/CheckNetwork";
+import Check from "../../../components/Check";
 
 const ProjectVote: NextPage = () => {
   const { title, network } = useRouter().query;
@@ -44,9 +43,9 @@ const ProjectVote: NextPage = () => {
     <Layout className="flex flex-col items-center space-y-10">
       <h1 className="text-3xl">Voting</h1>
       {data?.collection && (
-        <CheckNetwork>
+        <Check>
           <div className="w-full max-w-screen-sm mx-auto">
-            <CheckOwner owner={data.collection.owner?.id}>
+            <Check owner={data.collection.owner?.id}>
               <div className="">
                 <h3>Create new vote</h3>
                 <form action="" onSubmit={startVoteForm}>
@@ -83,14 +82,14 @@ const ProjectVote: NextPage = () => {
                   <Button submit>Create new vote</Button>
                 </form>
               </div>
-            </CheckOwner>
+            </Check>
             <div className="space-y-10">
               {data.collection.questions.map((q) => (
                 <QuestionObject key={q.id} question={q as Question} vote={vote} />
               ))}
             </div>
           </div>
-        </CheckNetwork>
+        </Check>
       )}
       <Button href={collectionUrl(title?.toString(), network?.toString())}>Back</Button>
     </Layout>

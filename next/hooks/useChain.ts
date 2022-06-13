@@ -12,6 +12,7 @@ export const contractAbi = [
   "function addContent(string memory _ipfs)",
   "function startVote(uint256 time, string memory data)",
   "function newVote(uint256 voteId, uint256 answer)",
+  "function transferOwnership(address newOwner)",
   "event NewDonation(uint256 id,address owner,uint256 amount,string message)"
 ];
 
@@ -44,6 +45,18 @@ export default function useChain({ contractAddress, coinAddress }: { contractAdd
       console.log(e)
     }
     return "Error setting new ipfs!'"
+  }
+
+  async function transferOwnership(newOwner: string) {
+    try {
+      const result = await contract.transferOwnership(newOwner);
+      await result.wait(1)
+      return
+    }
+    catch (e) {
+      console.log(e)
+    }
+    return "Error transferring ownership!'"
   }
 
   async function donate(amount: ethers.BigNumber, message: string) {
@@ -130,5 +143,5 @@ export default function useChain({ contractAddress, coinAddress }: { contractAdd
     }
     return ethers.BigNumber.from("0")
   }
-  return { startVote, newVote, addContent, newCollection, donate, getBalance, approve, getAllowance, setIPFS }
+  return { startVote, newVote, addContent, newCollection, donate, getBalance, approve, getAllowance, setIPFS, transferOwnership }
 }

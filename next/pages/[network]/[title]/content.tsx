@@ -12,8 +12,7 @@ import useChain from "../../../hooks/useChain";
 import { useAccount, useNetwork, useSignMessage } from "wagmi";
 import axios from "axios";
 import { encrypt } from "../../../lib/encryption";
-import CheckNetwork from "../../../components/CheckNetwork";
-import CheckOwner from "../../../components/CheckOwner";
+import Check from "../../../components/Check";
 import { collectionUrl } from "../../../idk/urls";
 
 const ProjectContent: NextPage = () => {
@@ -63,9 +62,9 @@ const ProjectContent: NextPage = () => {
     <Layout className="flex flex-col items-center space-y-10">
       <h1 className="text-3xl">Content</h1>
       {collection?.collection && (
-        <CheckNetwork>
+        <Check>
           <div className="w-full max-w-screen-sm mx-auto">
-            <CheckOwner owner={collection.collection.owner?.id}>
+            <Check owner={collection.collection.owner?.id}>
               <div className="">
                 <h3>Add content</h3>
                 <form action="" onSubmit={startVoteForm}>
@@ -93,7 +92,7 @@ const ProjectContent: NextPage = () => {
                   <Button submit>Add content</Button>
                 </form>
               </div>
-            </CheckOwner>
+            </Check>
             <Button onClick={getData}>Load</Button>
             <div className="space-y-10">
               {data &&
@@ -108,7 +107,7 @@ const ProjectContent: NextPage = () => {
                 ))}
             </div>
           </div>
-        </CheckNetwork>
+        </Check>
       )}
       <Button href={collectionUrl(title?.toString(), network?.toString())}>Back</Button>
     </Layout>

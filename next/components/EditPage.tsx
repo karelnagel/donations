@@ -12,7 +12,7 @@ import Button from "./Button";
 import { useAccount, useNetwork } from "wagmi";
 import { getNetwork } from "../config";
 import { collectionUrl } from "../idk/urls";
-import CheckOwner from "./CheckOwner";
+import Check from "./Check";
 
 export enum Type {
   NEW_COLLECTION,
@@ -38,8 +38,9 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
     donationOptions: ["", "", ""],
   } as Collection);
   const [newTitle, setNewTitle] = useState("");
+  const [newOwner, setNewOwner] = useState("");
 
-  const { newCollection, setIPFS } = useChain({ contractAddress: savedCollection.data?.collection?.address.id });
+  const { newCollection, setIPFS, transferOwnership } = useChain({ contractAddress: savedCollection.data?.collection?.address.id });
   const { setSnack, load } = useContext(Context);
 
   useEffect(() => {
@@ -59,6 +60,13 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
       });
   }, [savedCollection.data?.collection]);
 
+  const transfer = async (e: any) => {
+    e.preventDefault();
+    load!(async () => {
+      const result = await transferOwnership(newOwner);
+      if (result) setSnack!("Error transfering ownership!");
+    }, "Transfering ownership");
+  };
   const newPro = async (e: any) => {
     e.preventDefault();
     load!(async () => {
@@ -84,14 +92,13 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
 
       setSnack!("Success", "success");
       router.push(collectionUrl(title ?? newTitle, chain?.name));
-    }, "Editing project! \nPlease continue to your wallet  ");
+    }, "Editing project! \nPlease continue to your wallet");
   };
-  console.log(titles.data?.collections);
   return (
     <Layout>
       <div className="max-w-screen-md m-auto text-center">
         <h2 className="m-10 text-3xl font-bold">{topText}</h2>
-        <CheckOwner owner={savedCollection.data?.collection?.owner?.id} message={"You are not the owner!"}>
+        <Check owner={savedCollection.data?.collection?.owner?.id} message>
           <form onSubmit={newPro}>
             <div className="flex-col flex  px-2 space-y-2 text-left">
               {type === Type.NEW_COLLECTION && (
@@ -187,10 +194,24 @@ const EditPage = ({ title, type, topText, buttonText }: { topText: string; butto
             </div>
             <br />
             <Button submit className="mx-auto">
-              {buttonText} on {chain?.name}
+              {buttonText}
             </Button>
           </form>
-        </CheckOwner>
+
+          {type === Type.EDIT_COLLECTION && (
+            <div className="mt-10 w-full ">
+              <h3 className="text-2xl font-bold">Transfer ownership</h3>
+              <form onSubmit={transfer} className="flex flex-col mt-4">
+                <TextField type="text" label="New owner" value={newOwner} onChange={(e) => setNewOwner(e.target.value)} />
+
+                <br />
+                <Button submit className="mx-auto">
+                  Transfer ownership
+                </Button>
+              </form>
+            </div>
+          )}
+        </Check>
         <br />
         <Button href={title ? collectionUrl(title, network?.toString()) : "/"} secondary className="mx-auto">
           Back

@@ -19,15 +19,13 @@ import { Context } from "../../../idk/context";
 import { ProgresssBar } from "../../../components/ProgressBar";
 import { NewDonation } from "../../../components/NewDonation";
 import Link from "next/link";
-import Modal from "../../../components/Modal";
 import { networks } from "../../../config";
 import Button from "../../../components/Button";
 import { Collection, CollectionDocument, CollectionListDocument, CollectionListQueryResult, CollectionQueryResult } from "../../../graphql/generated";
 import useCollection from "../../../hooks/useCollection";
 import { useBalance, useAccount } from "wagmi";
 import { BigNumber } from "@ethersproject/bignumber";
-import CheckNetwork from "../../../components/CheckNetwork";
-import CheckOwner from "../../../components/CheckOwner";
+import Check from "../../../components/Check";
 import { collectionUrl, openseaUrl } from "../../../idk/urls";
 
 interface Params extends ParsedUrlQuery {
@@ -88,26 +86,29 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
     }, "Making donation! \n\nThis will take 2 transactions: \n1. for approving spending the coins  \n2. for donating. \n\nPlease continue to your wallet!");
   };
   if (!collection) return <h1>Loading...</h1>;
+  else if (!networks.find((n) => sameAddr(n.chain.name, network))) return <h1>No network named {network}!</h1>;
   return (
     <div>
       <CustomHead name={collection.name} description={collection.description} image={getImage(collection.image)} />
       <Layout>
-        <Modal
-          visible={!!tokenId}
-          onClose={() => {
+        <div
+          className={`fixed ${tokenId ? "visible" : "invisible"} top-0 w-full h-full bg-black bg-opacity-50 z-20 flex`}
+          onClick={() => {
             setTokenId("");
           }}
         >
-          <p className="uppercase font-bold my-4 text-black">Donation successful</p>
-          <p className="mb-2 text-black">View your NFT on Opensea:</p>
-          {tokenId && tokenId !== "loading" ? (
-            <Button href={openseaUrl(network, collection.address.id, tokenId)} newTab>
-              View NFT
-            </Button>
-          ) : (
-            <CircularProgress />
-          )}
-        </Modal>
+          <div className="m-auto bg-white p-4 rounded-md flex flex-col items-center">
+            <p className="uppercase font-bold my-4 text-black">Donation successful</p>
+            <p className="mb-2 text-black">View your NFT on Opensea:</p>
+            {tokenId && tokenId !== "loading" ? (
+              <Button href={openseaUrl(network, collection.address.id, tokenId)} newTab>
+                View NFT
+              </Button>
+            ) : (
+              <CircularProgress />
+            )}
+          </div>
+        </div>
         <div className="fixed top-0 right-0 rounded-bl-2xl overflow-hidden">
           <NewDonation donation={lastDonation} />
         </div>
@@ -184,7 +185,7 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
           </div>
           <ProgresssBar collection={collection} />
           <br />
-          <CheckNetwork>
+          <Check>
             <div className="mb-20 flex flex-col items-stretch max-w-sm mx-auto space-y-4">
               <h2 className="my-4 text-lg font-bold">Make a donation to {collection.name}</h2>
               <form onSubmit={makeDonation} className="flex-col flex space-y-2">
@@ -210,11 +211,11 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
                 </div>
                 <Button submit>Donate</Button>
               </form>
-              <CheckOwner owner={collection.owner?.id}>
+              <Check owner={collection.owner?.id}>
                 <div>
-                  <Link href={collectionUrl(title, network, "edit")} passHref>
-                    <Button secondary>Edit</Button>
-                  </Link>
+                  <Button secondary href={collectionUrl(title, network, "edit")}>
+                    Edit
+                  </Button>
                   <Button
                     secondary
                     onClick={() => {
@@ -225,9 +226,9 @@ const CollectionPage: NextPage<CollectionProps> = ({ initialCollection: initialC
                     Copy stream link
                   </Button>
                 </div>
-              </CheckOwner>
+              </Check>
             </div>
-          </CheckNetwork>
+          </Check>
         </div>
       </Layout>
     </div>
@@ -238,8 +239,8 @@ export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const paths: { params: Params }[] = [];
 
   for (const network of networks) {
-    const result = await apolloRequest<CollectionListQueryResult>(CollectionListDocument, network.chain.name);
-    const params = result.data?.collections.map((p) => ({ params: { title: p.id, network: network.chain.name.toLowerCase() } }));
+    const result = await apolloRequest<any>(CollectionListDocument, network.chain.name);
+    const params = result.data?.collections.map((p: any) => ({ params: { title: p.id, network: network.chain.name.toLowerCase() } }));
     if (params) paths.push(...params);
   }
   return {
