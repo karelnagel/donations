@@ -23,13 +23,23 @@ export function getImage(hash: string) {
 }
 
 export const toCoin = (wei: string, coin?: string) => {
-  const decimals = networks.map(n => n.coins).flat().find((c) => c.address === coin)?.decimals ?? 18;
+  const decimals =
+    networks
+      .map((n) => n.coins)
+      .flat()
+      .find((c) => c.address === coin)?.decimals ?? 18;
   return wei ? ethers.utils.formatUnits(wei, decimals) : "0.0";
 };
 
 export const toWei = (ether: string, coin?: string) => {
-  const decimals = networks.map(n => n.coins).flat().find((c) => c.address === coin)?.decimals ?? 18;
-  return ether ? ethers.utils.parseUnits(ether, decimals) : BigNumber.from(0);
+  const decimals =
+    networks
+      .map((n) => n.coins)
+      .flat()
+      .find((c) => c.address === coin)?.decimals ?? 18;
+
+  const etherWithOutOverflow = ether.slice(0, ether.indexOf(".") + decimals + 1);
+  return ether ? ethers.utils.parseUnits(etherWithOutOverflow, decimals) : BigNumber.from(0);
 };
 
 export const toWeiStr = (ether: string, coin?: string) => {
@@ -37,6 +47,10 @@ export const toWeiStr = (ether: string, coin?: string) => {
 };
 
 export const coinName = (address?: string) => {
-  return networks.map(n => n.coins).flat().find((c) => sameAddr(c.address, address))?.coin ?? "ERC20";
-}
-
+  return (
+    networks
+      .map((n) => n.coins)
+      .flat()
+      .find((c) => sameAddr(c.address, address))?.coin ?? "ERC20"
+  );
+};
