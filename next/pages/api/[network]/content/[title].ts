@@ -23,7 +23,7 @@ export default async function content(
     if (sameAddr(collection.owner?.id, account) || Number(c.price) <= Number(balance)) {
       return { ...c, content: decrypt(c.content) ?? "Error with decrypting " }
     }
-    else return { ...c, content: "Donate more to unlock" }
+    else return { ...c, content: "" }
   })
 
   res.status(200).json(returnValue)
